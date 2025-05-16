@@ -1,9 +1,9 @@
-.contenedorLogin-principal{
+.contenedorLogin-principal {
     width: 100%;
     height: 100vh;
 }
 
-.contenedorLogin-vista{
+.contenedorLogin-vista {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -12,11 +12,11 @@
 }
 
 .contenedorLogin-vista #img,
-.contenedorLogin-vista #login{
+.contenedorLogin-vista #login {
     width: 50%;
 }
 
-.contenedorLogin-vista #login{
+.contenedorLogin-vista #login {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -27,7 +27,7 @@
 }
 
 .formLogin {
-    position: relative;
+    /* position: relative; */
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -42,29 +42,29 @@
     font-weight: bold;
     animation: brilloBorde 2s ease-in-out infinite alternate;
     border: 1px solid rgba(0, 183, 255, 0.5);
-  }
-  
- 
-  
-  
-  .formLogin h3 {
+}
+
+
+
+
+.formLogin h3 {
     text-align: center;
     font-size: 24px;
     margin-bottom: 10px;
     color: #ffffff;
-  }
-  
-  .opciones {
+}
+
+.opciones {
     display: flex;
     flex-direction: column;
-  }
-  
-  .opciones label {
+}
+
+.opciones label {
     font-size: 14px;
     margin-bottom: 5px;
-  }
-  
-  .opciones input {
+}
+
+.opciones input {
     padding: 10px;
     border: none;
     border-radius: 10px;
@@ -72,13 +72,13 @@
     outline: none;
     background: rgba(255, 255, 255, 0.8);
     color: #0f2027;
-  }
-  
-  .opciones input::placeholder {
+}
+
+.opciones input::placeholder {
     color: #837e7e;
-  }
-  
-  button {
+}
+
+button {
     padding: 12px;
     background: linear-gradient(90deg, #00b4db, #0083b0);
     color: white;
@@ -87,46 +87,47 @@
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s ease, background 0.3s ease;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     transform: scale(1.05);
-    background: linear-gradient(90deg, #0083b0, #00b4db);
-  }
-  
+    background: linear-gradient(90deg, #00b06d, #afdb00);
+}
+
 .contenedorLogin-vista #img {
-    background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0)), /* capa transparente */
-    url('./img/login.jpg');
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0)),
+        /* capa transparente */
+        url('./img/login.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    
+
     width: 50%;
     height: 100%;
-  
+
     position: relative;
     overflow: hidden;
-  }
-  
+}
 
-  /* @keyframes brilloBorde {
+
+@keyframes brilloBorde {
     0% {
-      box-shadow: 0 0 10px rgba(0, 183, 255, 0.4),
-                  0 0 20px rgba(0, 183, 255, 0.3),
-                  0 0 30px rgba(0, 183, 255, 0.2);
-      border-color: rgba(0, 183, 255, 0.4);
+        box-shadow: 0 0 10px rgba(60, 255, 0, 0.4),
+            0 0 20px rgba(0, 255, 68, 0.3),
+            0 0 30px rgba(0, 255, 145, 0.2);
+        border-color: rgba(7, 110, 79, 0.4);
     }
-    100% {
-      box-shadow: 0 0 20px rgba(0, 183, 255, 1),
-                  0 0 30px rgba(0, 183, 255, 0.8),
-                  0 0 40px rgba(0, 183, 255, 0.6);
-      border-color: rgba(0, 183, 255, 1);
-    }
-  }
-   */
 
-   @keyframes brilloBorde {
+    100% {
+        box-shadow: 0 0 20px rgba(0, 183, 255, 1),
+            0 0 30px rgba(0, 183, 255, 0.8),
+            0 0 40px rgba(0, 183, 255, 0.6);
+        border-color: rgba(0, 183, 255, 1);
+    }
+}
+
+/* @keyframes brilloBorde {
     0% {
       box-shadow: 0 0 10px rgba(255, 111, 97, 0.4),
                   0 0 20px rgba(255, 111, 97, 0.3);
@@ -135,4 +136,36 @@
       box-shadow: 0 0 25px rgba(255, 111, 97, 1),
                   0 0 40px rgba(255, 111, 97, 0.7);
     }
-  }
+  } */
+
+@media (max-width: 700px) {
+
+    .contenedorLogin-vista #img {
+        width: 0;
+        height: 0;
+    }
+
+    .formLogin {
+        background: rgba(255, 255, 255, 0.01);
+        /* fondo semi-transparente */
+        backdrop-filter: blur(10px);
+        /* desenfoque real del fondo */
+        -webkit-backdrop-filter: blur(10px);
+        /* compatibilidad Safari */
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        color: white;
+    }
+
+    .contenedorLogin-vista #login {
+        width: 100%;
+        background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0)),
+        /* capa transparente */
+        url('./img/login.jpg');
+        background-size: cover;
+    }
+
+}
