@@ -20,7 +20,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(90deg, #C1440E, #dc8649);
+    background: linear-gradient(90deg, #15a361, #046b1a);
     /* background: linear-gradient(to top, #1e1f26, #323644); */
     /* background: linear-gradient(to top, #0f2027, #2c5364); */
     color: rgb(4, 3, 3);
@@ -35,7 +35,7 @@
     padding: 30px;
     border-radius: 20px;
     /* background: rgba(255, 255, 255, 0.15); */
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.356);
     box-shadow: 0 0 15px rgba(0, 183, 255, 0.5);
     backdrop-filter: blur(10px);
     color: #fff;
@@ -120,10 +120,10 @@ button:hover {
     }
 
     100% {
-        box-shadow: 0 0 20px rgba(0, 183, 255, 1),
-            0 0 30px rgba(0, 183, 255, 0.8),
-            0 0 40px rgba(0, 183, 255, 0.6);
-        border-color: rgba(0, 183, 255, 1);
+              box-shadow: 0 0 10px rgba(228, 231, 227, 0.4),
+            0 0 20px rgba(0, 0, 0, 0.3),
+            0 0 30px rgba(0, 255, 145, 0.2);
+        border-color: rgba(7, 110, 79, 0.4);
     }
 }
 
