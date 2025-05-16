@@ -20,7 +20,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to top, #1e1f26, #323644);
+    background: linear-gradient(90deg, #C1440E, #dc8649);
+    /* background: linear-gradient(to top, #1e1f26, #323644); */
     /* background: linear-gradient(to top, #0f2027, #2c5364); */
     color: rgb(4, 3, 3);
 }
