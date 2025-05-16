@@ -1,15 +1,24 @@
 import { useState } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import LoginPage from './componentes/paginas/LoginPage'
 
-import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1 class="text-3xl font-bold underline">
-        Hello world!
-      </h1>
+      <BrowserRouter>
+        <Main />
+      </BrowserRouter>
+    </>
+  )
+}
+
+function Main() {
+  return (
+    <>
+      <Routes>
+        <Route path="" element={<LoginPage />} />
+      </Routes>
     </>
   )
 }
