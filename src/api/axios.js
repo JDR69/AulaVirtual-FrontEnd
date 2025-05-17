@@ -1,12 +1,12 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: 'https://venerable-palmier-c7fb94.netlify.app',
+    baseURL: 'https://backendcolegio-production.up.railway.app',
     timeout:100000
 })
 
 instance.interceptors.request.use((config) =>{
-    const token = localStorage.get('token');
+    const token = localStorage.getItem('token');
     if(token){
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -17,5 +17,6 @@ instance.interceptors.request.use((config) =>{
 )
 
 export default instance
+
 
 
