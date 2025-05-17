@@ -89,7 +89,7 @@
 }
 
 /* Botón */
-button {
+.formLogin button {
     padding: 12px;
     background: linear-gradient(90deg, #00b4db, #0083b0);
     color: white;
@@ -101,7 +101,7 @@ button {
     transition: all 0.3s ease;
 }
 
-button:hover {
+.formLogin button:hover {
     transform: translateY(-2px) scale(1.03);
     background: linear-gradient(90deg, #00b06d, #afdb00);
 }
