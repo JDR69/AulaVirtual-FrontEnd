@@ -17,7 +17,7 @@ const LoginPage = () => {
     const loguearse = async() =>{
         try {
             await signin(data)
-            navigate('//dasboard/homeda')
+            navigate('/dasboard/homeda')
         } catch (error) {
             console.log(error)
         }
