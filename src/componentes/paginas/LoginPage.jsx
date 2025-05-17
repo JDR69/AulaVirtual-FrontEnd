@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import '../css/LoginPageCss.css'
 import { useAuth } from '../../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const LoginPage = () => {
+
+    const navigate = useNavigate();
 
     const { signin } = useAuth();
 
@@ -14,6 +17,7 @@ const LoginPage = () => {
     const loguearse = async() =>{
         try {
             await signin(data)
+            navigate('//dasboard/homeda')
         } catch (error) {
             console.log(error)
         }
