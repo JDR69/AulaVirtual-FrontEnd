@@ -13,8 +13,8 @@ const CustomNavbar = () => {
 
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect>
-      <Container style={{ fontWeight: "bold" }}>
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top"  collapseOnSelect >
+      <Container style={{ fontWeight: "bold"}}>
         {/* Logo / Marca */}
         <Navbar.Brand as={Link} to="/">
           Mi App
@@ -26,24 +26,54 @@ const CustomNavbar = () => {
         {/* Contenido colapsable */}
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">
-              Inicio
-            </Nav.Link>
+            <NavDropdown title="Usuarios" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/dasboard/perfil-usuario">
+                Perfil
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/categorias/electronica">
+                Gestion de usuarios
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/categorias/ropa">
+                Gestion de permisos
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/categorias">
+                Detalle Bitacora
+              </NavDropdown.Item>
+            </NavDropdown>
 
-            <Nav.Link as={Link} to="/catalogoVehiculo">
-              Catálogo
-            </Nav.Link>
 
-            <Nav.Link as={Link} to="/comentarios">
-              Comentarios
-            </Nav.Link>
+            <NavDropdown title="Academico" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/categorias/electronica">
+                Electrónica
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/categorias/ropa">
+                Ropa
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/categorias">
+                Ver todas
+              </NavDropdown.Item>
+            </NavDropdown>
 
-            <Nav.Link as={Link} to="/catalogoVehiculo">
-              Seguros
-            </Nav.Link>
 
-            Dropdown (opcional)
-            <NavDropdown title="Categorías" id="basic-nav-dropdown">
+            <NavDropdown title="Evaluaciones" id="basic-nav-dropdown">
+              <NavDropdown.Item as={Link} to="/categorias/electronica">
+                Electrónica
+              </NavDropdown.Item>
+              <NavDropdown.Item as={Link} to="/categorias/ropa">
+                Ropa
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/categorias">
+                Ver todas
+              </NavDropdown.Item>
+            </NavDropdown>
+
+
+            <NavDropdown title="Periodos" id="basic-nav-dropdown">
               <NavDropdown.Item as={Link} to="/categorias/electronica">
                 Electrónica
               </NavDropdown.Item>
@@ -58,12 +88,12 @@ const CustomNavbar = () => {
           </Nav>
           <Nav>
 
-          <Nav.Link as={Link} to="/login">
-            Iniciar Sesión
-          </Nav.Link>
-          <Nav.Link as={Link} to="/register">
-            Registrarse
-          </Nav.Link>
+            <Nav.Link as={Link} to="/login">
+              Iniciar Sesión
+            </Nav.Link>
+            <Nav.Link as={Link} to="/login">
+              <i className="bi bi-bell-fill"></i>
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

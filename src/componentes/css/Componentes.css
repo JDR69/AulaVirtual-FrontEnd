@@ -1,0 +1,20 @@
+.contenedor-principal {
+    margin: 0;
+    padding: 25px;
+    background: linear-gradient(to right, #003a63, #005f99);
+    height: 100vh;
+    width: 100%;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    display: flex;
+}
+
+.contenedor-secundario {
+    border-radius: 12px;
+    padding: 20px 30px;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
