@@ -1,15 +1,22 @@
-import React from 'react'
+import React,{useState} from 'react'
 import '../../css/Academia.css'
 
 const GestionAcademico = () => {
-  return (
-    <div className='contenedor-principal'>
-        <div className='contenedor-secundario'>
-        <div className="contenedor-academia">
-                    <div  className="seccion-academia">
+
+    const [mostrarEstado, setMostrarEstado] = useState(false)
+
+  const nuevoNivel = () => {
+    setMostrarEstado(!mostrarEstado)
+  }
+
+    return (
+        <div className='contenedor-principal'>
+            <div className='contenedor-secundario'>
+                <div className="contenedor-academia">
+                    <div className="seccion-academia">
                         <div className="encabezado">
                             <label>🎓 Niveles</label>
-                            <button id='agregar'>✚</button>
+                            <button id='agregar' onClick={nuevoNivel}>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
@@ -30,6 +37,19 @@ const GestionAcademico = () => {
                             </table>
                         </div>
                     </div>
+
+                    {
+                        mostrarEstado && (
+
+                            <div className='form-gris'>
+                                <div className='form-flotante '>
+                                    <button onClick={nuevoNivel}>cancelar</button>
+                                </div>
+
+                            </div>
+
+                        )
+                    }
 
                     <div className="seccion-academia">
                         <div className="encabezado">
@@ -130,9 +150,9 @@ const GestionAcademico = () => {
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default GestionAcademico
