@@ -43,9 +43,11 @@ const CustomNavbar = () => {
                 Detalle Bitacora
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/dasboard/gestion-alumno">
-                Gestion Alumno
+              <NavDropdown.Item as={Link} to="/dasboard/gestion-usuario">
+                Gestion de Usuarios
               </NavDropdown.Item>
+                 <NavDropdown.Divider />
+            
             </NavDropdown>
 
 
