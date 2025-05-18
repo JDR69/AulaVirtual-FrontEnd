@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../src/componentes/css/Componentes.css';
 import '../src/componentes/css/TablasComplets.css'
+import '../src/componentes/css/formFlotantes.css'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
