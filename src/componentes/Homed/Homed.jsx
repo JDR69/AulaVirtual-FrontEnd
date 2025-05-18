@@ -24,6 +24,7 @@ export const Homed = () => {
                 <Routes>
                     <Route path="/homeda" element={<Home />} />
                     <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
+                     <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
                     <Route path="*" element={<div>No encontrado</div>} />
                 </Routes>
                 <Outlet />

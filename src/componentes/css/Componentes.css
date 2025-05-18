@@ -6,15 +6,35 @@
     width: 100%;
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     display: flex;
+    
 }
 
 .contenedor-secundario {
     border-radius: 8px;
-    padding: 20px 30px;
+    padding: 30px 30px;
     width: 100%;
-    background: #ffffff;
+    background: #fffffff5;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
     transition: transform 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    gap: 30px;
+ 
 }
 
+.input-group {
+  display: flex; 
+}
+
+
+
+.mb-3 {
+  flex: 1 1 45%; 
+  margin-right: 20px; 
+}
+
+@media screen and (max-width: 768px) {
+.contenedor-principal {
+    height: 100%;
+}
+}
