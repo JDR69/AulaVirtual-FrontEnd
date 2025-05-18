@@ -25,7 +25,7 @@ const PerfilUsuarioPage = () => {
 
   return (
     <div className='contenedor-principal'>
-      <div className='contenedor-secundario' id='contenedor-secundario-Perfil'>
+      <div className='contenedor-secundario'>
         <h1>Perfil de Usuario</h1>
 
         <div className='contenedor-perfil'>

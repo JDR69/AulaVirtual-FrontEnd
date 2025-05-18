@@ -22,9 +22,6 @@
     padding: 10px 0;
 }
 
-#contenedor-secundario-Perfil{
-       height: 70%
-}
 
 @media screen and (max-width: 768px) {
 .contenedor-perfil {
