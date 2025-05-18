@@ -1,0 +1,102 @@
+.contenedor-usuario{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    align-items: center;
+    overflow-x: auto;
+    gap: 10px;
+}
+
+.contenedor-usuario #titulo{
+    text-align: center;
+    width: 100%;
+}
+
+.contenedor-usuario #titulo h1{
+    font-size: 2rem;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #000000;
+}
+
+.filterReporte{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filterReporte #buscadores {
+    display: flex;
+    flex-wrap: wrap; 
+    flex-direction: row;
+    width: 100%;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.filterReporte #buscadores input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    border: 2px solid #003a63;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    width: 350px;
+    transition: border-color 0.3s ease;
+}
+
+.filterReporte #buscadores input:focus {
+    border-color: #007acc;
+    box-shadow: 0 0 6px rgba(0, 122, 204, 0.5);
+}
+
+.contenedor-reportes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f0f8ff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.grupo-botones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-reporte,
+.btn-nuevo {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+
+.btn-reporte {
+    background-color: #007acc;
+    color: white;
+}
+
+.btn-reporte:hover {
+    background-color: #005fa3;
+}
+
+
+.btn-nuevo {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-nuevo:hover {
+    background-color: #218838;
+}
+

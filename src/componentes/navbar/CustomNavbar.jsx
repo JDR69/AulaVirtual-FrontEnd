@@ -31,7 +31,7 @@ const CustomNavbar = () => {
                 Perfil
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/categorias/electronica">
+              <NavDropdown.Item as={Link} to="/dasboard/detalle-usuario">
                 Gestion de usuarios
               </NavDropdown.Item>
               <NavDropdown.Divider />
