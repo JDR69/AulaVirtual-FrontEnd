@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import Home from "../paginas/User/Home";
 import CustomNavbar from "../navbar/CustomNavbar";
+import PerfilUsuarioPage from "../paginas/User/PerfilUsuarioPage";
 
 export const Homed = () => {
     //   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export const Homed = () => {
             <div >
                 <Routes>
                     <Route path="/homeda" element={<Home />} />
+                    <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
                     <Route path="*" element={<div>No encontrado</div>} />
                 </Routes>
                 <Outlet />

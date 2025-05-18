@@ -13,8 +13,8 @@ const CustomNavbar = () => {
 
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect>
-      <Container style={{ fontWeight: "bold" }}>
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top"  collapseOnSelect >
+      <Container style={{ fontWeight: "bold"}}>
         {/* Logo / Marca */}
         <Navbar.Brand as={Link} to="/">
           Mi App
@@ -27,7 +27,7 @@ const CustomNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <NavDropdown title="Usuarios" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/categorias/electronica">
+              <NavDropdown.Item as={Link} to="/dasboard/perfil-usuario">
                 Perfil
               </NavDropdown.Item>
               <NavDropdown.Divider />
@@ -90,6 +90,9 @@ const CustomNavbar = () => {
 
             <Nav.Link as={Link} to="/login">
               Iniciar Sesión
+            </Nav.Link>
+            <Nav.Link as={Link} to="/login">
+              <i className="bi bi-bell-fill"></i>
             </Nav.Link>
           </Nav>
         </Navbar.Collapse>
