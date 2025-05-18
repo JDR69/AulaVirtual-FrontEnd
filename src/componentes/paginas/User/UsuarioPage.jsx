@@ -22,7 +22,7 @@ const UsuarioPage = () => {
                                 <button class="btn-reporte">Reporte 3</button>
                             </div>
                             <div class="grupo-botones">
-                                <button class="btn-nuevo"><i class="bi bi-person-fill-add"></i>  Nuevo</button>
+                                <button class="btn-nuevo"><i className="bi bi-person-fill-add"></i>  Nuevo</button>
                             </div>
                         </div>
 
@@ -37,8 +37,8 @@ const UsuarioPage = () => {
                                     <th>nombre</th>
                                     <th>estado</th>
                                     <th>genero</th>
-                                    <th>id</th>
-                                    <th>id</th>
+                                    <th>fecha nacimiento</th>
+                                    <th>accion</th>
                                 </tr>
                             </thead>
                             <tbody>

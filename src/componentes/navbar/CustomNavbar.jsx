@@ -88,8 +88,8 @@ const CustomNavbar = () => {
           </Nav>
           <Nav>
 
-            <Nav.Link as={Link} to="/login">
-              Iniciar Sesión
+            <Nav.Link as={Link} to="/dasboard/homeda">
+              Home
             </Nav.Link>
             <Nav.Link as={Link} to="/login">
               <i className="bi bi-bell-fill"></i>
