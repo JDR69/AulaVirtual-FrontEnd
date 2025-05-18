@@ -46,13 +46,13 @@ function GestionUsuario() {
 
                     <div className="mb-3">
                         <label>Curso:</label>
-                        <select className="form-control" name="curso">
+                        <select className="form-select" name="curso">
                             {/* Opciones de curso */}
                         </select>
                     </div>
                     <div className="mb-3">
                         <label>Paralelo:</label>
-                        <select className="form-control" name="paralelo">
+                        <select className="form-select" name="paralelo">
                             {/* Opciones de paralelo */}
                         </select>
                     </div>
@@ -61,7 +61,7 @@ function GestionUsuario() {
                         <>
                             <div className="mb-3">
                                 <label>Materia:</label>
-                                <select className="form-control" name="materia">
+                                <select className="form-select" name="materia">
                                     {/* Opciones de materia */}
                                 </select>
                             </div>

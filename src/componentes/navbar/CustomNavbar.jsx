@@ -32,7 +32,7 @@ const CustomNavbar = () => {
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/dasboard/detalle-usuario">
-                Gestion de usuarios
+                Detalle de usuarios
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/dasboard/permiso-usuario">

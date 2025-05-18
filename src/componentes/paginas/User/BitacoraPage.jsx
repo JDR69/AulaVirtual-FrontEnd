@@ -78,11 +78,13 @@ function BitacoraPage() {
                         <div id='buscadores'>
                             <input
                                 type="text"
+                                className='form-control'
                                 placeholder='Buscar por Usuario'
                                 value={usuarioFiltro}
                                 onChange={e => setUsuarioFiltro(e.target.value)}
                             />
                             <input
+                            className='form-control'
                                 type="date"
                                 value={fechaFiltro}
                                 onChange={e => setFechaFiltro(e.target.value)}
