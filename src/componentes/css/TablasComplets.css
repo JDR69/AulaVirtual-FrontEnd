@@ -1,5 +1,6 @@
 .dimensionTable {
     width: 100%;
+    padding: 20px;
     border-collapse: collapse;
     border-radius: 8px;
     overflow: auto;
@@ -18,7 +19,7 @@
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
     color: black;
-    font-weight:500 ;
+
     font-size: 12px;
 }
 

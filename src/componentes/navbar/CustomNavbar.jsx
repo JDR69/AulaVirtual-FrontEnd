@@ -13,8 +13,8 @@ const CustomNavbar = () => {
 
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top"  collapseOnSelect >
-      <Container style={{ fontWeight: "bold"}}>
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect >
+      <Container style={{ fontWeight: "bold" }}>
         {/* Logo / Marca */}
         <Navbar.Brand as={Link} to="/">
           Mi App
@@ -41,6 +41,10 @@ const CustomNavbar = () => {
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/dasboard/bitacora">
                 Detalle Bitacora
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to="/dasboard/gestion-alumno">
+                Gestion Alumno
               </NavDropdown.Item>
             </NavDropdown>
 
