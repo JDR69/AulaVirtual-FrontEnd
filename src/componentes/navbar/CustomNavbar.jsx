@@ -35,7 +35,7 @@ const CustomNavbar = () => {
                 Gestion de usuarios
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/dasboard/detalle-usuario">
+              <NavDropdown.Item as={Link} to="/dasboard/permiso-usuario">
                 Gestion de permisos
               </NavDropdown.Item>
               <NavDropdown.Divider />
@@ -88,8 +88,8 @@ const CustomNavbar = () => {
           </Nav>
           <Nav>
 
-            <Nav.Link as={Link} to="/login">
-              Iniciar Sesión
+            <Nav.Link as={Link} to="/dasboard/homeda">
+              Home
             </Nav.Link>
             <Nav.Link as={Link} to="/login">
               <i className="bi bi-bell-fill"></i>

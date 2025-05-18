@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
-import Home from "../paginas/User/Home";
+import { Home } from "../paginas/User/Home";
 import CustomNavbar from "../navbar/CustomNavbar";
 import PerfilUsuarioPage from "../paginas/User/PerfilUsuarioPage";
 import UsuarioPage from "../paginas/User/UsuarioPage";
@@ -27,6 +27,7 @@ export const Homed = () => {
                     <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
                     <Route path="/detalle-usuario" element={<UsuarioPage />} />
                    <Route path="/bitacora" element={<BitacoraPage />} />
+                    <Route path="/permiso-usuario" element={<PermisoPage />} />
                     <Route path="*" element={<div>No encontrado</div>} />
                 </Routes>
                 <Outlet />
