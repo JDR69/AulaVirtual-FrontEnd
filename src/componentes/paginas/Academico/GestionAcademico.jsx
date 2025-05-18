@@ -9,7 +9,7 @@ const GestionAcademico = () => {
                     <div  className="seccion-academia">
                         <div className="encabezado">
                             <label>🎓 Niveles</label>
-                            <button id='agregar'>➕ Nuevo Nivel</button>
+                            <button id='agregar'>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
@@ -34,7 +34,7 @@ const GestionAcademico = () => {
                     <div className="seccion-academia">
                         <div className="encabezado">
                             <label>🏫 Cursos</label>
-                            <button id='agregar'>➕ Agregar Curso</button>
+                            <button id='agregar'>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
@@ -59,7 +59,7 @@ const GestionAcademico = () => {
                     <div className="seccion-academia">
                         <div className="encabezado">
                             <label>📚 Paralelos</label>
-                            <button id='agregar'>➕ Agregar Paralelo</button>
+                            <button id='agregar'>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
@@ -84,7 +84,7 @@ const GestionAcademico = () => {
                     <div className="seccion-academia">
                         <div className="encabezado">
                             <label>📖 Materias</label>
-                            <button id='agregar'>➕ Agregar Materia</button>
+                            <button id='agregar'>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
@@ -108,7 +108,7 @@ const GestionAcademico = () => {
                     <div className="seccion-academia">
                         <div className="encabezado">
                             <label>⏰ Horarios</label>
-                            <button id='agregar'>➕ Horario Nuevo</button>
+                            <button id='agregar'>✚</button>
                         </div>
                         <div className="dimensionTable">
                             <table className="table-striped">
