@@ -7,6 +7,7 @@ import UsuarioPage from "../paginas/User/UsuarioPage";
 import BitacoraPage from "../paginas/User/BitacoraPage";
 import PermisoPage from "../paginas/User/PermisoPage";
 import GestionAlumno from "../paginas/User/GestionAlumno";
+import GestionAcademico from "../paginas/Academico/GestionAcademico";
 export const Homed = () => {
     //   const navigate = useNavigate();
 
@@ -30,6 +31,7 @@ export const Homed = () => {
                     <Route path="/detalle-usuario" element={<UsuarioPage />} />
                     <Route path="/bitacora" element={<BitacoraPage />} />
                     <Route path="/permiso-usuario" element={<PermisoPage />} />
+                    <Route path="/detalle-academica" element={<GestionAcademico />} />
 
                     <Route path="/gestion-alumno" element={<GestionAlumno />} />
                     <Route path="*" element={<div>No encontrado</div>} />

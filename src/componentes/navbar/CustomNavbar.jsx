@@ -50,15 +50,16 @@ const CustomNavbar = () => {
 
 
             <NavDropdown title="Academico" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/categorias/electronica">
-                Electrónica
+              <NavDropdown.Item as={Link} to="/dasboard/detalle-academica">
+                Gestion Academica
               </NavDropdown.Item>
+              <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias/ropa">
-                Ropa
+                Detalle del Curso
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias">
-                Ver todas
+                Detalle de la Materia
               </NavDropdown.Item>
             </NavDropdown>
 
