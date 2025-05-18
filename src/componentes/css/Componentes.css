@@ -26,7 +26,11 @@
 }
 
 
-
+#reportes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .mb-3 {
   flex: 1 1 45%; 
   margin-right: 20px; 

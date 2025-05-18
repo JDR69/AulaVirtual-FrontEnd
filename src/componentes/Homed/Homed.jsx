@@ -4,6 +4,7 @@ import Home from "../paginas/User/Home";
 import CustomNavbar from "../navbar/CustomNavbar";
 import PerfilUsuarioPage from "../paginas/User/PerfilUsuarioPage";
 import UsuarioPage from "../paginas/User/UsuarioPage";
+import BitacoraPage from "../paginas/User/BitacoraPage";
 export const Homed = () => {
     //   const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ export const Homed = () => {
                     <Route path="/homeda" element={<Home />} />
                     <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
                     <Route path="/detalle-usuario" element={<UsuarioPage />} />
+                   <Route path="/bitacora" element={<BitacoraPage />} />
                     <Route path="*" element={<div>No encontrado</div>} />
                 </Routes>
                 <Outlet />
