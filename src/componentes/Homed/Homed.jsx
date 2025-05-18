@@ -5,6 +5,7 @@ import CustomNavbar from "../navbar/CustomNavbar";
 import PerfilUsuarioPage from "../paginas/User/PerfilUsuarioPage";
 import UsuarioPage from "../paginas/User/UsuarioPage";
 import BitacoraPage from "../paginas/User/BitacoraPage";
+import PermisoPage from "../paginas/User/PermisoPage";
 export const Homed = () => {
     //   const navigate = useNavigate();
 

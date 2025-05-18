@@ -13,20 +13,20 @@ export const Home = () => {
       <div className='contenedor-secundario'>
         <div className="containerHome">
           <div onClick={() => navigate("/dasboard/vehiculos")}>
-            <i className="bi bi-truck"></i>
-            <h2>Vehiculos</h2>
+          <i className="bi bi-bookmark-star-fill"></i>
+            <h2>Academico</h2>
           </div>
           <div onClick={() => navigate("/dasboard/usuarios")}>
             <i className="bi bi-person-vcard"></i>
             <h2>Usuarios</h2>
           </div>
           <div onClick={() => navigate("/dasboard/regisChofer")}>
-            <i className="bi bi-person-plus-fill"></i>
-            <h2>Choferes</h2>
+          <i className="bi bi-calendar2-week"></i>
+            <h2>Evaluacion</h2>
           </div>
           <div onClick={() => navigate("/dasboard/seguros")}>
             <i className="bi bi-file-earmark-text-fill"></i>
-            <h2>Seguros</h2>
+            <h2>Periodos</h2>
           </div>
         </div>
         <GraficasDashboard />
