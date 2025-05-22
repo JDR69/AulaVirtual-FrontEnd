@@ -10,7 +10,7 @@ function ActividadesPage() {
         fechaFin: '',
         horaInicio: '',
         horaFin: '',
-        alumno: '',
+        Curso: '',
         estado: ''
     });
     const [editIndex, setEditIndex] = useState(null);
@@ -18,7 +18,7 @@ function ActividadesPage() {
     // Estados para los buscadores
     const [searchDescripcion, setSearchDescripcion] = useState('');
     const [searchFecha, setSearchFecha] = useState('');
-    const [searchAlumno, setSearchAlumno] = useState('');
+    const [searchCurso, setSearchCurso] = useState('');
     const [searchEstado, setSearchEstado] = useState('');
 
     const handleOpenModal = () => setShowModal(true);
@@ -31,7 +31,7 @@ function ActividadesPage() {
             fechaFin: '',
             horaInicio: '',
             horaFin: '',
-            alumno: '',
+            Curso: '',
             estado: ''
         });
         setEditIndex(null);
@@ -68,17 +68,17 @@ function ActividadesPage() {
     const actividadesFiltradas = actividades.filter((act) => {
         const descripcionMatch = act.descripcion.toLowerCase().includes(searchDescripcion.toLowerCase());
         const fechaMatch = searchFecha === '' || act.fechaInicio === searchFecha || act.fechaFin === searchFecha;
-        const alumnoMatch = act.alumno.toLowerCase().includes(searchAlumno.toLowerCase());
+        const CursoMatch = act.Curso.toLowerCase().includes(searchCurso.toLowerCase());
         const estadoMatch = searchEstado === '' || act.estado === searchEstado;
-        return descripcionMatch && fechaMatch && alumnoMatch && estadoMatch;
+        return descripcionMatch && fechaMatch && CursoMatch && estadoMatch;
     });
     const exportarPDF = () => {
         const doc = new jsPDF();
         doc.text('Reporte de Actividades', 14, 10);
         doc.autoTable({
-            head: [['Tipo', 'Descripción', 'Fecha Inicio', 'Fecha Fin', 'Hora Inicio', 'Hora Fin', 'Alumno', 'Estado']],
+            head: [['Tipo', 'Descripción', 'Fecha Inicio', 'Fecha Fin', 'Hora Inicio', 'Hora Fin', 'Curso', 'Estado']],
             body: actividadesFiltradas.map(act => [
-                act.tipo, act.descripcion, act.fechaInicio, act.fechaFin, act.horaInicio, act.horaFin, act.alumno, act.estado
+                act.tipo, act.descripcion, act.fechaInicio, act.fechaFin, act.horaInicio, act.horaFin, act.Curso, act.estado
             ]),
         });
         doc.save('actividades.pdf');
@@ -110,7 +110,7 @@ function ActividadesPage() {
                         <th>Fecha Fin</th>
                         <th>Hora Inicio</th>
                         <th>Hora Fin</th>
-                        <th>Alumno</th>
+                        <th>Curso</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
@@ -123,7 +123,7 @@ function ActividadesPage() {
                             <td>${act.fechaFin}</td>
                             <td>${act.horaInicio}</td>
                             <td>${act.horaFin}</td>
-                            <td>${act.alumno}</td>
+                            <td>${act.Curso}</td>
                             <td>${act.estado}</td>
                         </tr>
                     `).join('')}
@@ -139,23 +139,6 @@ function ActividadesPage() {
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <h1>Actividades</h1>
-                <div className='contenedor-buttones'>
-                    <button className="btn btn-primary"
-                        onClick={handleOpenModal}
-                    >
-                        <i className="bi bi-plus-circle-fill"></i>
-                        Crear Actividad
-                    </button>
-                    <button className="btn btn-danger" onClick={exportarPDF}>
-                        Exportar PDF
-                    </button>
-                    <button className="btn btn-success" onClick={exportarExcel}>
-                        Exportar Excel
-                    </button>
-                    <button className="btn btn-info" onClick={exportarHTML}>
-                        Exportar HTML
-                    </button>
-                </div>
                 {/* Buscadores */}
                 <div className="row my-3">
                     <div className="col-md-3 mb-2">
@@ -180,9 +163,9 @@ function ActividadesPage() {
                         <input
                             type="text"
                             className="form-control"
-                            placeholder="Buscar por alumno"
-                            value={searchAlumno}
-                            onChange={e => setSearchAlumno(e.target.value)}
+                            placeholder="Buscar por Curso"
+                            value={searchCurso}
+                            onChange={e => setSearchCurso(e.target.value)}
                         />
                     </div>
                     <div className="col-md-3 mb-2">
@@ -198,6 +181,24 @@ function ActividadesPage() {
                         </select>
                     </div>
                 </div>
+                <div className='contenedor-buttones'>
+                    <button className="btn btn-primary"
+                        onClick={handleOpenModal}
+                    >
+                        <i className="bi bi-plus-circle-fill"></i>
+                        Crear Actividad
+                    </button>
+                    <button className="btn btn-danger" onClick={exportarPDF}>
+                        Exportar PDF
+                    </button>
+                    <button className="btn btn-success" onClick={exportarExcel}>
+                        Exportar Excel
+                    </button>
+                    <button className="btn btn-info" onClick={exportarHTML}>
+                        Exportar HTML
+                    </button>
+                </div>
+
                 {/* Tabla de actividades */}
                 <div className="table-responsive mt-4">
                     <table className="table table-striped">
@@ -209,7 +210,7 @@ function ActividadesPage() {
                                 <th>Fecha Fin</th>
                                 <th>Hora Inicio</th>
                                 <th>Hora Fin</th>
-                                <th>Alumno</th>
+                                <th>Curso</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -223,7 +224,7 @@ function ActividadesPage() {
                                     <td>{act.fechaFin}</td>
                                     <td>{act.horaInicio}</td>
                                     <td>{act.horaFin}</td>
-                                    <td>{act.alumno}</td>
+                                    <td>{act.Curso}</td>
                                     <td>{act.estado}</td>
                                     <td>
                                         <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(actividades.indexOf(act))}>Editar</button>
@@ -282,8 +283,11 @@ function ActividadesPage() {
                                         <input type="time" className="form-control" name="horaFin" value={form.horaFin} onChange={handleChange} required />
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label">Alumno</label>
-                                        <input type="text" className="form-control" name="alumno" value={form.alumno} onChange={handleChange} required />
+                                        <label className="form-label">Curso + Paralelo</label>
+                                        <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required >
+                                            <option value="">Seleccionar</option>
+                                            <option value="Pendiente">Pendiente</option>
+                                        </select>
                                     </div>
                                     <div className="mb-3">
                                         <label className="form-label">Estado</label>
