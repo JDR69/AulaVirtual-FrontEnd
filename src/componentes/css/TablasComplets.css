@@ -36,7 +36,7 @@
 }
 
 .table-striped tr:hover {
-    background-color: #5dd3ed;
+    background-color: #c1dfe8;
     transition: background-color 0.3s ease;
     color: white;
     font-weight: 600;

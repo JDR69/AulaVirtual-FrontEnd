@@ -13,6 +13,12 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
 
+    const [cursos,setCursos] = useState([]);
+    const [materias,setMaterias] = useState([]);
+    const [horarios,setHorarios] = useState([]);
+    const [niveles,setNiveles] = useState([]);
+    const [paralelos,setParalelos] = useState([]);
+
     const signin = async (user) => {
         try {
             const res = await login_request(user);
@@ -53,7 +59,17 @@ export const AuthProvider = ({ children }) => {
 
 return (
     <AuthContext.Provider value={{
-        signin
+        signin,
+        cursos,
+        setCursos,
+        materias,
+        setMaterias,
+        horarios,
+        setHorarios,
+        niveles,
+        setNiveles,
+        paralelos,
+        setParalelos
     }}>
         {children}
     </AuthContext.Provider>
