@@ -81,8 +81,8 @@ const CustomNavbar = () => {
 
 
             <NavDropdown title="Periodos" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/categorias/electronica">
-                Electrónica
+              <NavDropdown.Item as={Link} to="/dasboard/participacion">
+                Participacion
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/categorias/ropa">
                 Ropa

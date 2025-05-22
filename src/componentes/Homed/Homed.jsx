@@ -11,6 +11,7 @@ import GestionAcademico from "../paginas/Academico/GestionAcademico";
 import DetalleCursoPage from "../paginas/Academico/DetalleCursoPage";
 import DetalleMateriaPage from "../paginas/Academico/DetalleMateriaPage";
 import ActividadesPage from "../paginas/Evaluacion/ActividadesPage";
+import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 export const Homed = () => {
     //   const navigate = useNavigate();
 
@@ -29,20 +30,23 @@ export const Homed = () => {
             <CustomNavbar />
             <div >
                 <Routes>
+                    
                     <Route path="/homeda" element={<Home />} />
+                      {/* Rutas de usuario */}
                     <Route path="/perfil-usuario" element={<PerfilUsuarioPage />} />
                     <Route path="/detalle-usuario" element={<UsuarioPage />} />
                     <Route path="/bitacora" element={<BitacoraPage />} />
                     <Route path="/permiso-usuario" element={<PermisoPage />} />
                     <Route path="/gestion-usuario" element={<GestionUsuario />} />
-
+  {/* Rutas de Academico */}
                     <Route path="/detalle-academica" element={<GestionAcademico />} />
                     <Route path="/detalle-curso" element={<DetalleCursoPage />} />
                     <Route path="/detalle-materia" element={<DetalleMateriaPage />} />
 
-
+  {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />
-
+  {/* Rutas de Periodo */}
+                  <Route path="/participacion" element={<ParticipacionPage />} />
                     
 
                     <Route path="*" element={<div>No encontrado</div>} />
