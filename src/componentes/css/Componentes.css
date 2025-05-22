@@ -35,6 +35,37 @@
   display: flex; 
 }
 
+.contenedor-buttones{
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+  gap: 32px; /* Más espacio entre botones */
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 18px 10px;
+  margin-bottom: 24px;
+  background: linear-gradient(90deg, #e3f0ff 0%, #f9fcff 100%);
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0, 58, 99, 0.10), 0 1.5px 6px rgba(0, 95, 153, 0.08);
+  border: 1.5px solid #003a63;
+  transition: box-shadow 0.3s;
+}
+
+.contenedor-buttones button {
+  min-width: 140px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,58,99,0.07);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.contenedor-buttones button:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 6px 20px rgba(0,58,99,0.13);
+  opacity: 0.92;
+}
+
 
 #reportes,#gestion {
   display: flex;

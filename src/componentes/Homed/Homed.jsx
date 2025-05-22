@@ -10,6 +10,7 @@ import GestionUsuario from "../paginas/User/GestionUsuario";
 import GestionAcademico from "../paginas/Academico/GestionAcademico";
 import DetalleCursoPage from "../paginas/Academico/DetalleCursoPage";
 import DetalleMateriaPage from "../paginas/Academico/DetalleMateriaPage";
+import ActividadesPage from "../paginas/Evaluacion/ActividadesPage";
 export const Homed = () => {
     //   const navigate = useNavigate();
 
@@ -33,12 +34,17 @@ export const Homed = () => {
                     <Route path="/detalle-usuario" element={<UsuarioPage />} />
                     <Route path="/bitacora" element={<BitacoraPage />} />
                     <Route path="/permiso-usuario" element={<PermisoPage />} />
+                    <Route path="/gestion-usuario" element={<GestionUsuario />} />
+
                     <Route path="/detalle-academica" element={<GestionAcademico />} />
                     <Route path="/detalle-curso" element={<DetalleCursoPage />} />
                     <Route path="/detalle-materia" element={<DetalleMateriaPage />} />
 
 
-                    <Route path="/gestion-usuario" element={<GestionUsuario />} />
+                    <Route path="/actividades" element={<ActividadesPage />} />
+
+                    
+
                     <Route path="*" element={<div>No encontrado</div>} />
 
                 </Routes>
