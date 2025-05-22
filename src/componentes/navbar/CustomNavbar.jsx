@@ -60,7 +60,7 @@ const CustomNavbar = () => {
                 Detalle del Curso
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/categorias">
+              <NavDropdown.Item as={Link} to="/dasboard/detalle-materia">
                 Detalle de la Materia
               </NavDropdown.Item>
             </NavDropdown>

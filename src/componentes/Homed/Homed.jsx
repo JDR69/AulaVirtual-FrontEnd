@@ -9,6 +9,7 @@ import PermisoPage from "../paginas/User/PermisoPage";
 import GestionUsuario from "../paginas/User/GestionUsuario";
 import GestionAcademico from "../paginas/Academico/GestionAcademico";
 import DetalleCursoPage from "../paginas/Academico/DetalleCursoPage";
+import DetalleMateriaPage from "../paginas/Academico/DetalleMateriaPage";
 export const Homed = () => {
     //   const navigate = useNavigate();
 
@@ -34,6 +35,7 @@ export const Homed = () => {
                     <Route path="/permiso-usuario" element={<PermisoPage />} />
                     <Route path="/detalle-academica" element={<GestionAcademico />} />
                     <Route path="/detalle-curso" element={<DetalleCursoPage />} />
+                    <Route path="/detalle-materia" element={<DetalleMateriaPage />} />
 
 
                     <Route path="/gestion-usuario" element={<GestionUsuario />} />
