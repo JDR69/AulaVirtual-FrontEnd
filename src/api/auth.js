@@ -201,3 +201,24 @@ export const eliminarHorarioRequest = (id) => instance.delete(`/api/academia/eli
         withCredentials:true
     })
 export const obtenerHorariosRequest = () => { return instance.get(`/api/academia/obtener-horarios/`,{timeout:tiempoEspera})}
+
+
+//RUTAS DE DETALLE CURSO MATERIA
+export const nuevoDetalleCursoMateriaRequest = (data) => instance.post(`/api/academia/crear-detalle-curso-materia/`,
+    data,{
+        headers: {
+            "Content-Type": "application/json"
+          },
+        withCredentials:true
+    }
+)
+
+//RUTAS DE DETALLE CURSO PARALELO
+export const nuevoDetalleCursoParaleloRequest = (data) => instance.post(`/api/academia/crear-detalle-curso-paralelo/`,
+    data,{
+        headers: {
+            "Content-Type": "application/json"
+          },
+        withCredentials:true
+    }
+)
