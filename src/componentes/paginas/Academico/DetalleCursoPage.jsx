@@ -94,7 +94,7 @@ function DetalleCursoPage() {
     const eliminarMateriaDeAsignacion = async (asigIndex, materiaId) => {
         try {
             const data = {
-                curso: detalleCompleto[asigIndex].curso_id,
+                curso: cursos.find(c => c.nombre ===detalleCompleto[asigIndex].curso).id,
                 materia: materiaId,
             };
             // await eliminarDetalleCursoMateriaRequest(data);
