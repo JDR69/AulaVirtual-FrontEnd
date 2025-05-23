@@ -4,7 +4,8 @@ import {
     obtenerHorariosRequest,
     obtenerUsuarioRequest,
     obtenerCursosRequest,
-    obtenerParalelosRequest
+    obtenerParalelosRequest,
+    nuevoDetalleMateriaRequest
 } from '../../../api/auth';
 
 function DetalleMateriaPage() {
@@ -67,44 +68,52 @@ function DetalleMateriaPage() {
         setIndiceEditando(null);
     };
 
-    const asignarMateria = () => {
-        if (materiaSeleccionada && profesorSeleccionado && horarioSeleccionado && cursoSeleccionado && paraleloSeleccionado) {
-            if (modoEdicion) {
-                const nuevasAsignaciones = [...asignaciones];
-                nuevasAsignaciones[indiceEditando] = {
-                    materia: materiaSeleccionada,
-                    profesor: profesorSeleccionado,
-                    horario: horarioSeleccionado,
-                    curso: cursoSeleccionado,
-                    paralelo: paraleloSeleccionado
-
-
-                };
-                console.log(nuevasAsignaciones)
-                setAsignaciones(nuevasAsignaciones);
-            } else {
-                setAsignaciones([
-                    ...asignaciones,
-                    {
+    const asignarMateria = async () => {
+        try {
+            if (materiaSeleccionada && profesorSeleccionado && horarioSeleccionado && cursoSeleccionado && paraleloSeleccionado) {
+                if (modoEdicion) {
+                    const nuevasAsignaciones = [...asignaciones];
+                    nuevasAsignaciones[indiceEditando] = {
                         materia: materiaSeleccionada,
                         profesor: profesorSeleccionado,
                         horario: horarioSeleccionado,
                         curso: cursoSeleccionado,
                         paralelo: paraleloSeleccionado
+    
+    
+                    };
+                    console.log(nuevasAsignaciones)
+                    setAsignaciones(nuevasAsignaciones);
+                } else {
+                    setAsignaciones([
+                        ...asignaciones,
+                        {
+                            materia: materiaSeleccionada,
+                            profesor: profesorSeleccionado,
+                            horario: horarioSeleccionado,
+                            curso: cursoSeleccionado,
+                            paralelo: paraleloSeleccionado
+                        }
+                    ]);
+                    const data = {
+                        materia: parseInt(materiaSeleccionada),
+                        profesor: parseInt(profesorSeleccionado),
+                        horario: parseInt(horarioSeleccionado),
+                        curso: parseInt(cursoSeleccionado),
+                        paralelo: parseInt(paraleloSeleccionado)
                     }
-                ]);
-                const data = {
-                    materia: parseInt(materiaSeleccionada),
-                    profesor: parseInt(profesorSeleccionado),
-                    horario: parseInt(horarioSeleccionado),
-                    curso: parseInt(cursoSeleccionado),
-                    paralelo: parseInt(paraleloSeleccionado)
+                    console.log(data)
+                    const re = await nuevoDetalleMateriaRequest(data)
+                    console.log(re.data)
+
                 }
-                console.log(data)
+                limpiarFormulario();
+            } else {
+                alert('Por favor seleccione materia, profesor y horario.');
             }
-            limpiarFormulario();
-        } else {
-            alert('Por favor seleccione materia, profesor y horario.');
+            
+        } catch (error) {
+            console.log(error)
         }
     };
 

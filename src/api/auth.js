@@ -251,3 +251,13 @@ export const eliminarDetalleCursoParaleloRequest = (dato) =>
     },
     withCredentials: true,
   });
+
+//DETALLE COMPLETO DE MATERIA PROFESOR
+export const nuevoDetalleMateriaRequest = (data) => instance.post(`/api/academia/crear-detalle-materia/`,
+  data,{
+        headers: {
+            "Content-Type": "application/json"
+          },
+        withCredentials:true
+    }
+)
