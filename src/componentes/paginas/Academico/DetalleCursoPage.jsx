@@ -97,8 +97,9 @@ function DetalleCursoPage() {
                 curso: cursos.find(c => c.nombre ===detalleCompleto[asigIndex].curso).id,
                 materia: materiaId,
             };
-            // await eliminarDetalleCursoMateriaRequest(data);
+          
             console.log(data);
+               await eliminarDetalleCursoMateriaRequest(data);
             alert('Implementa la lógica para eliminar la materia del curso en el backend');
             // window.location.reload();
         } catch (error) {
