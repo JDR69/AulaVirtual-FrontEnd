@@ -252,7 +252,7 @@ function DetalleMateriaPage() {
                                 <th>Horario</th>
                                 <th>Curso</th>
                                 <th>Paralelo</th>
-                                <th>Acciones</th>
+                             
                             </tr>
                         </thead>
                         <tbody>
@@ -270,20 +270,7 @@ function DetalleMateriaPage() {
                                         <td>{asig.horarios[0].hora_inicial + ' - ' + asig.horarios[0].hora_final}</td>
                                         <td>{asig.horarios[0].nombre_curso}</td>
                                         <td>{asig.horarios[0].descripcion_paralelo}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn-warning btn-sm me-2"
-                                                onClick={() => editarAsignacion(index)}
-                                            >
-                                                Editar
-                                            </button>
-                                            <button
-                                                className="btn btn-danger btn-sm"
-                                                onClick={() => eliminarAsignacion(index)}
-                                            >
-                                                Eliminar
-                                            </button>
-                                        </td>
+                                        
                                     </tr>
                                 ))
                             )}
