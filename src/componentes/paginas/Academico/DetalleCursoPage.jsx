@@ -42,28 +42,83 @@ function DetalleCursoPage() {
 };
 
     // Guardar o actualizar asignación
-    const guardarAsignacion = async () => {
-        try {
-
-            const data = {
-                curso: cursoSeleccionado,
-                paralelos: paralelosAsignados.map((id) => parseInt(id)),
-                materias: materiasAsignadas.map((id) => parseInt(id)),
-            };
-
-            await nuevoDetalleCursoMateriaRequest(data);
-            await nuevoDetalleCursoParaleloRequest(data);
-
-            setCursoSeleccionado('');
-            setParalelosAsignados([]);
-            setMateriasAsignadas([]);
-            setEditIndex(null);
-            alert('Registrado correctamente');
-            window.location.reload();
-        } catch (error) {
-            console.log(error);
+const guardarAsignacion = async () => {
+    try {
+        if (!cursoSeleccionado) {
+            alert('Debe seleccionar un curso');
+            return;
         }
-    };
+
+        const cursoExistente = detalleCompleto.some(
+            detalle => detalle.curso === cursos.find(c => c.id === parseInt(cursoSeleccionado))?.nombre
+        );
+
+        if (!cursoExistente && (paralelosAsignados.length === 0 || materiasAsignadas.length === 0)) {
+            alert('Para un curso nuevo, debe agregar al menos un paralelo y una materia');
+            return;
+        }
+
+        // Si es curso existente, validar que haya al menos un paralelo o una materia
+        if (cursoExistente && paralelosAsignados.length === 0 && materiasAsignadas.length === 0) {
+            alert('Debe agregar al menos un paralelo o una materia');
+            return;
+        }
+
+        // Validar que no se registre el mismo paralelo en el curso
+        const paralelosExistentes = detalleCompleto
+            .filter(detalle => detalle.curso === cursos.find(c => c.id === parseInt(cursoSeleccionado))?.nombre)
+            .flatMap(detalle => detalle.paralelos.map(p => p.id));
+
+        const paralelosDuplicados = paralelosAsignados.some(paraleloId => 
+            paralelosExistentes.includes(parseInt(paraleloId))
+        );
+
+        if (paralelosDuplicados) {
+            alert('No puede registrar un paralelo que ya está asignado a este curso');
+            return;
+        }
+
+        // Validar que no se registre la misma materia en el curso
+        const materiasExistentes = detalleCompleto
+            .filter(detalle => detalle.curso === cursos.find(c => c.id === parseInt(cursoSeleccionado))?.nombre)
+            .flatMap(detalle => detalle.materias.map(m => m.id));
+
+        const materiasDuplicadas = materiasAsignadas.some(materiaId => 
+            materiasExistentes.includes(parseInt(materiaId))
+        );
+
+        if (materiasDuplicadas) {
+            alert('No puede registrar una materia que ya está asignada a este curso');
+            return;
+        }
+
+        const data = {
+            curso: cursoSeleccionado,
+            paralelos: paralelosAsignados.map((id) => parseInt(id)),
+            materias: materiasAsignadas.map((id) => parseInt(id)),
+        };
+
+        // Solo enviar solicitud si hay paralelos para asignar
+        if (paralelosAsignados.length > 0) {
+            await nuevoDetalleCursoParaleloRequest(data);
+        }
+
+        // Solo enviar solicitud si hay materias para asignar
+        if (materiasAsignadas.length > 0) {
+            await nuevoDetalleCursoMateriaRequest(data);
+        }
+
+        setCursoSeleccionado('');
+        setParalelosAsignados([]);
+        setMateriasAsignadas([]);
+        setEditIndex(null);
+        alert('Registrado correctamente');
+        window.location.reload();
+    } catch (error) {
+        console.log(error);
+        alert('Error al guardar la asignación: ' + error.message);
+    }
+};
     // Eliminar paralelo de una asignación registrada
     const eliminarParaleloDeAsignacion = async (asigIndex, paraleloId) => {
         try {
