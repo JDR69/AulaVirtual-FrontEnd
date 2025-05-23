@@ -1,6 +1,13 @@
 import React, { useState } from 'react'
 import '../../css/Academia.css'
 import { useAuth } from '../../../context/AuthContext'
+import {
+  nuevoCursoRequest, actualizarCursoRequest,
+  nuevoNivelRequest, actualizarNivelRequest,
+  nuevoParaleloRequest, actualizarParaleloRequest,
+  nuevoMateriaRequest, actualizarMateriaRequest,
+  nuevoHorarioRequest, actualizarHorarioRequest
+} from '../../../api/auth'
 
 const GestionAcademico = () => {
   const {
@@ -25,11 +32,11 @@ const GestionAcademico = () => {
   const [mostrarMateria, setMostrarMateria] = useState(false)
   const [mostrarHorario, setMostrarHorario] = useState(false)
 
-  const [nuevoCurso, setNuevoCurso] = useState({ nombre: '', estado: true })
+  const [nuevoCurso, setNuevoCurso] = useState({ nombre: '', estado: true, nivel: 0 })
   const [nuevoDato, setNuevoDato] = useState({ nombre: '', estado: true })
   const [nuevoParalelo, setNuevoParalelo] = useState({ descripcion: '', estado: true })
   const [nuevaMateria, setNuevaMateria] = useState({ nombre: '', descripcion: '', estado: true })
-  const [nuevoHorario, setNuevoHorario] = useState({ inicio: '', fin: '' })
+  const [nuevoHorario, setNuevoHorario] = useState({ hora_inicial: '', hora_final: '',estado:true })
 
   //CRUD DE NIVELES
 
@@ -39,15 +46,26 @@ const GestionAcademico = () => {
     setIndex(null)
     setMostrarEstado(true)
   }
-  const guardarNivel_backend = () => {
-    if (editar) {
-      setNiveles(niveles.map((nivel, i) => i === index ? nuevoDato : nivel))
-      setEditar(false)
-    } else {
-      setNiveles([nuevoDato, ...niveles])
+  const guardarNivel_backend = async () => {
+    try {
+      if (editar) {
+        const edi = await actualizarNivelRequest(nuevoDato, nuevoDato.id)
+        console.log(edi.data)
+        setNiveles(niveles.map((nivel, i) => i === index ? nuevoDato : nivel))
+        setEditar(false)
+      } else {
+        const res = await nuevoNivelRequest(nuevoDato)
+        console.log(res.data)
+        setNiveles([nuevoDato, ...niveles])
+        alert('correctamente registrado')
+        window.location.reload();
+      }
+      setMostrarEstado(false)
+      setNuevoDato({ nombre: '', estado: true })
+
+    } catch (error) {
+      console.log(error)
     }
-    setMostrarEstado(false)
-    setNuevoDato({ nombre: '', estado: true })
   }
 
   const eliminarNivel_backend = (index) => {
@@ -68,15 +86,31 @@ const GestionAcademico = () => {
     setIndex(null)
     setMostrarCurso(true)
   }
-  const guardarCurso_backend = () => {
-    if (editar) {
-      setCursos(cursos.map((curso, i) => i === index ? nuevoCurso : curso))
-      setEditar(false)
-    } else {
-      setCursos([nuevoCurso, ...cursos])
+  const guardarCurso_backend = async () => {
+    try {
+      if (!nuevoCurso.nivel || nuevoCurso.nombre === '') {
+        alert('rellena los apartados por favor')
+        return;
+      }
+      if (editar) {
+        const edi = await actualizarCursoRequest(nuevoCurso, nuevoCurso.id)
+        console.log(edi.data)
+        setCursos(cursos.map((curso, i) => i === index ? nuevoCurso : curso))
+        setEditar(false)
+        alert(`👍🏻 ${edi.data.mensaje}`)
+      } else {
+        const res = await nuevoCursoRequest(nuevoCurso);
+        console.log(res.data)
+        setCursos([nuevoCurso, ...cursos])
+        alert('👍🏻TODO SALIO BIEN')
+        window.location.reload();
+      }
+      setMostrarCurso(false)
+      setNuevoCurso({ nombre: '', estado: true })
+    } catch (error) {
+      console.log(error)
+      alert('vuelve a intentarlo')
     }
-    setMostrarCurso(false)
-    setNuevoCurso({ nombre: '', estado: true })
   }
 
   const eliminarCurso_backend = (index) => {
@@ -97,15 +131,26 @@ const GestionAcademico = () => {
     setIndex(null)
     setMostrarParalelo(true)
   }
-  const guardarParalelo_backend = () => {
-    if (editar) {
-      setParalelos(paralelos.map((paralelo, i) => i === index ? nuevoParalelo : paralelo))
-      setEditar(false)
-    } else {
-      setParalelos([nuevoParalelo, ...paralelos])
+  const guardarParalelo_backend = async () => {
+    try {
+      if (editar) {
+        const edi = await actualizarParaleloRequest(nuevoParalelo,nuevoParalelo.id)
+        console.log(edi.data)
+        setParalelos(paralelos.map((paralelo, i) => i === index ? nuevoParalelo : paralelo))
+        setEditar(false)
+        alert(`${edi.data.mensaje}`)
+      } else {
+        const res = await nuevoParaleloRequest(nuevoParalelo)
+        console.log(res.data)
+        setParalelos([nuevoParalelo, ...paralelos])
+        alert(`${res.data.mensaje}`)
+        window.location.reload();
+      }
+      setMostrarParalelo(false)
+      setNuevoParalelo({ descripcion: '', estado: true })
+    } catch (error) {
+      console.log(error)
     }
-    setMostrarParalelo(false)
-    setNuevoParalelo({ descripcion: '', estado: true })
   }
 
   const eliminarParalelo_backend = (index) => {
@@ -126,15 +171,25 @@ const GestionAcademico = () => {
     setIndex(null)
     setMostrarMateria(true)
   }
-  const guardarMateria_backend = () => {
-    if (editar) {
-      setMaterias(materias.map((materia, i) => i === index ? nuevaMateria : materia))
-      setEditar(false)
-    } else {
-      setMaterias([nuevaMateria, ...materias])
+  const guardarMateria_backend = async() => {
+    try {
+      if (editar) {
+        const edi = await actualizarMateriaRequest(nuevaMateria,nuevaMateria.id)
+        setMaterias(materias.map((materia, i) => i === index ? nuevaMateria : materia))
+        alert(`${edi.data.mensaje}`)
+        setEditar(false)
+      } else {
+        const res = await nuevoMateriaRequest(nuevaMateria)
+        setMaterias([nuevaMateria, ...materias])
+        alert(`${res.data.mensaje}`)
+        window.location.reload();
+      }
+      setMostrarMateria(false)
+      setNuevaMateria({ nombre: '', descripcion: '', estado: true })
+      
+    } catch (error) {
+      console.log(error)
     }
-    setMostrarMateria(false)
-    setNuevaMateria({ nombre: '', descripcion: '', estado: true })
   }
 
   const eliminarMateria_backend = (index) => {
@@ -155,15 +210,24 @@ const GestionAcademico = () => {
     setIndex(null)
     setMostrarHorario(true)
   }
-  const guardarHorario_backend = () => {
-    if (editar) {
-      setHorarios(horarios.map((horario, i) => i === index ? nuevoHorario : horario))
-      setEditar(false)
-    } else {
-      setHorarios([nuevoHorario, ...horarios])
+  const guardarHorario_backend = async() => {
+    try {
+      if (editar) {
+        const edi = await actualizarHorarioRequest(nuevoHorario,nuevoHorario.id)
+        setHorarios(horarios.map((horario, i) => i === index ? nuevoHorario : horario))
+        alert(`${edi.data.mensaje}`)
+        setEditar(false)
+      } else {
+        const res = await nuevoHorarioRequest(nuevoHorario)
+        setHorarios([nuevoHorario, ...horarios])
+        alert(`${res.data.mensaje}`)
+        window.location.reload();
+      }
+      setMostrarHorario(false)
+      setNuevoHorario({ hora_inicial: '', hora_final: '' ,estado:true})  
+    } catch (error) {
+      
     }
-    setMostrarHorario(false)
-    setNuevoHorario({ inicio: '', fin: '' })
   }
 
   const eliminarHorario_backend = (index) => {
@@ -221,6 +285,18 @@ const GestionAcademico = () => {
                       onChange={(e) => setNuevoDato({ ...nuevoDato, [e.target.name]: e.target.value })}
                       placeholder='nombre del nivel'
                     />
+                    <select
+                      className="selector-rol"
+                      name='estado'
+                      value={nuevoDato.estado}
+                      onChange={(e) =>
+                        setNuevoDato({ ...nuevoDato, estado: e.target.value === 'true' })
+                      }
+                    >
+                      <option value="">Seleccione el Estado</option>
+                      <option value="true">Activo</option>
+                      <option value="false">Inactivo</option>
+                    </select>
                     <div id='botone-option'>
                       <button onClick={guardarNivel_backend} className='btn btn-success'>{editar ? 'Actualizar' : 'Guardar'}</button>
                       <button onClick={() => setMostrarEstado(false)} className='btn btn-danger'>Cancelar</button>
@@ -240,7 +316,7 @@ const GestionAcademico = () => {
             <div className="dimensionTable">
               <table className="table-striped">
                 <thead>
-                  <tr><th>ID</th><th>Nombre</th><th>Estado</th><th>Acciones</th></tr>
+                  <tr><th>ID</th><th>Nombre</th><th>Nivel ID</th><th>Estado</th><th>Acciones</th></tr>
                 </thead>
                 <tbody>
                   {
@@ -248,6 +324,7 @@ const GestionAcademico = () => {
                       <tr key={index}>
                         <td>{index + 1}</td>
                         <td>{curso.nombre}</td>
+                        <td>{curso.nivel}</td>
                         <td>{curso.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarCurso_backend(curso, index)}><i className="bi bi-pencil-square"></i></button>
@@ -273,6 +350,33 @@ const GestionAcademico = () => {
                       onChange={(e) => setNuevoCurso({ ...nuevoCurso, [e.target.name]: e.target.value })}
                       placeholder='nombre del curso'
                     />
+                    <select
+                      className="selector-rol"
+                      name='estado'
+                      value={nuevoCurso.estado}
+                      onChange={(e) =>
+                        setNuevoCurso({ ...nuevoCurso, estado: e.target.value === 'true' })
+                      }
+                    >
+                      <option value="">Seleccione el Estado</option>
+                      <option value="true">Activo</option>
+                      <option value="false">Inactivo</option>
+                    </select>
+
+                    <select
+                      className="selector-rol"
+                      name='nivel'
+                      value={nuevoCurso.nivel}
+                      onChange={(e) =>
+                        setNuevoCurso({ ...nuevoCurso, nivel: parseInt(e.target.value) })
+                      }
+                    >
+                      <option value="">Seleccione el Nivel</option>
+                      {niveles.map((nivel) => (
+                        <option key={nivel.id} value={nivel.id}>{nivel.nombre}</option>
+                      ))}
+                    </select>
+
                     <div id='botone-option'>
                       <button onClick={guardarCurso_backend} className='btn btn-success'>{editar ? 'Actualizar' : 'Guardar'}</button>
                       <button onClick={() => setMostrarCurso(false)} className='btn btn-danger'>Cancelar</button>
@@ -325,6 +429,18 @@ const GestionAcademico = () => {
                       onChange={(e) => setNuevoParalelo({ ...nuevoParalelo, [e.target.name]: e.target.value })}
                       placeholder='descripción del paralelo'
                     />
+                    <select
+                      className="selector-rol"
+                      name='estado'
+                      value={nuevoParalelo.estado}
+                      onChange={(e) =>
+                        setNuevoParalelo({ ...nuevoParalelo, estado: e.target.value === 'true' })
+                      }
+                    >
+                      <option value="">Seleccione el Estado</option>
+                      <option value="true">Activo</option>
+                      <option value="false">Inactivo</option>
+                    </select>
                     <div id='botone-option'>
                       <button onClick={guardarParalelo_backend} className='btn btn-success'>{editar ? 'Actualizar' : 'Guardar'}</button>
                       <button onClick={() => setMostrarParalelo(false)} className='btn btn-danger'>Cancelar</button>
@@ -386,6 +502,18 @@ const GestionAcademico = () => {
                       onChange={(e) => setNuevaMateria({ ...nuevaMateria, [e.target.name]: e.target.value })}
                       placeholder='descripción de la materia'
                     />
+                    <select
+                      className="selector-rol"
+                      name='estado'
+                      value={nuevaMateria.estado}
+                      onChange={(e) =>
+                        setNuevaMateria({ ...nuevaMateria, estado: e.target.value === 'true' })
+                      }
+                    >
+                      <option value="">Seleccione el Estado</option>
+                      <option value="true">Activo</option>
+                      <option value="false">Inactivo</option>
+                    </select>
                     <div id='botone-option'>
                       <button onClick={guardarMateria_backend} className='btn btn-success'>{editar ? 'Actualizar' : 'Guardar'}</button>
                       <button onClick={() => setMostrarMateria(false)} className='btn btn-danger'>Cancelar</button>
@@ -405,15 +533,16 @@ const GestionAcademico = () => {
             <div className="dimensionTable">
               <table className="table-striped">
                 <thead>
-                  <tr><th>ID</th><th>Horario Inicial</th><th>Horario Final</th><th>Acciones</th></tr>
+                  <tr><th>ID</th><th>Horario Inicial</th><th>Horario Final</th><th>Estado</th><th>Acciones</th></tr>
                 </thead>
                 <tbody>
                   {
                     horarios.map((horario, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>{horario.inicio}</td>
-                        <td>{horario.fin}</td>
+                        <td>{horario.hora_inicial}</td>
+                        <td>{horario.hora_final}</td>
+                        <td>{horario.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarHorario_backend(horario, index)}><i className="bi bi-pencil-square"></i></button>
                           <button onClick={() => eliminarHorario_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
@@ -433,17 +562,29 @@ const GestionAcademico = () => {
                     <label>Horario Inicial</label>
                     <input
                       type="time"
-                      name='inicio'
-                      value={nuevoHorario.inicio}
+                      name='hora_inicial'
+                      value={nuevoHorario.hora_inicial}
                       onChange={(e) => setNuevoHorario({ ...nuevoHorario, [e.target.name]: e.target.value })}
                     />
                     <label>Horario Final</label>
                     <input
                       type="time"
-                      name='fin'
-                      value={nuevoHorario.fin}
+                      name='hora_final'
+                      value={nuevoHorario.hora_final}
                       onChange={(e) => setNuevoHorario({ ...nuevoHorario, [e.target.name]: e.target.value })}
                     />
+                    <select
+                      className="selector-rol"
+                      name='estado'
+                      value={nuevoHorario.estado}
+                      onChange={(e) =>
+                        setNuevoHorario({ ...nuevoHorario, estado: e.target.value === 'true' })
+                      }
+                    >
+                      <option value="">Seleccione el Estado</option>
+                      <option value="true">Activo</option>
+                      <option value="false">Inactivo</option>
+                    </select>
                     <div id='botone-option'>
                       <button onClick={guardarHorario_backend} className='btn btn-success'>{editar ? 'Actualizar' : 'Guardar'}</button>
                       <button onClick={() => setMostrarHorario(false)} className='btn btn-danger'>Cancelar</button>
