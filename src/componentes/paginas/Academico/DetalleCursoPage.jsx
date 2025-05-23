@@ -58,6 +58,14 @@ function DetalleCursoPage() {
       materias: materiasAsignadas,
     };
 
+    const paraMostrar = {
+       curso: cursoSeleccionado,
+      paralelos: paralelosAsignados.map((id) => parseInt(id)),
+      materias: materiasAsignadas.map((id) => parseInt(id)), 
+    }
+
+    console.log(paraMostrar)
+
     if (editIndex !== null) {
       const copia = [...registros];
       copia[editIndex] = nuevoRegistro;
@@ -145,7 +153,7 @@ function DetalleCursoPage() {
               >
                 <option value="">Seleccione una materia</option>
                 {materias.map((materia) => (
-                  <option key={materia.id} value={materia.nombre}>{materia.nombre}</option>
+                  <option key={materia.id} value={materia.id}>{materia.nombre}</option>
                 ))}
               </select>
               <button className="btn btn-primary" onClick={agregarMateria}>Agregar</button>
