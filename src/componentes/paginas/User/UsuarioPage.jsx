@@ -3,9 +3,11 @@ import '../../css/Usuario.css';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import { obtenerUsuarioRequest, crearNuevoUsuarioRequest } from '../../../api/auth';
+import { obtenerUsuarioRequest, crearNuevoUsuarioRequest, actualizarUsuarioRequest } from '../../../api/auth';
+import { useAuth } from '../../../context/AuthContext';
 
 const UsuarioPage = () => {
+    const { roles } = useAuth();
     const [showForm, setShowForm] = useState(false);
     const [usuario, setUsuario] = useState({
         id: '',
@@ -40,7 +42,7 @@ const UsuarioPage = () => {
                 estado: u.estado ? 'Activo' : 'Inactivo',
                 genero: u.sexo === 'M' ? 'Masculino' : (u.sexo === 'F' ? 'Femenino' : ''),
                 fechaNacimiento: u.fecha_nacimiento || '',
-                telefono: u.alumno?.telefono || '',
+                telefono: u.telefono || '',
                 matricula: u.alumno?.matricula || '',
                 especialidad: u.profesor?.especialidad || '',
             }));
@@ -57,36 +59,34 @@ const UsuarioPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (editIndex !== null) {
-            // Aquí iría la lógica para editar usuario si tienes endpoint
-            const updatedUsuarios = [...usuarios];
-            updatedUsuarios[editIndex] = usuario;
-            setUsuarios(updatedUsuarios);
-            setEditIndex(null);
-        } else {
-            // Crear usuario en backend
-            try {
-                // Adaptar datos para el backend
-                const newUser = {
-                    ci: usuario.ci,
-                    nombre: usuario.nombre,
-                    fecha_nacimiento: usuario.fechaNacimiento,
-                    sexo: usuario.genero === 'Masculino' ? 'M' : usuario.genero === 'Femenino' ? 'F' : '',
-                    estado: usuario.estado === 'Activo',
-                    telefono: usuario.telefono,
-                    rol_nombre: usuario.rol,
-                    alumno: usuario.rol === 'Alumno' ? {
-                        matricula: usuario.matricula
-                    } : null,
-                    profesor: usuario.rol === 'Profesor' ? {
-                        especialidad: usuario.especialidad
-                    } : null
-                };
+        try {
+            const newUser = {
+                id: usuario.id,
+                ci: usuario.ci,
+                nombre: usuario.nombre,
+                fecha_nacimiento: usuario.fechaNacimiento,
+                sexo: usuario.genero === 'Masculino' ? 'M' : usuario.genero === 'Femenino' ? 'F' : '',
+                estado: usuario.estado === 'Activo',
+                telefono: usuario.telefono,
+                rol: roles.find(r => r.nombre === usuario.rol).id,
+                alumno: usuario.rol === 'Alumno' ? {
+                    matricula: usuario.matricula
+                } : null,
+                profesor: usuario.rol === 'Profesor' ? {
+                    especialidad: usuario.especialidad
+                } : null
+            };
+            if (editIndex !== null) {
+                // Aquí iría la lógica para editar usuario si tienes endpoint
+
+                console.log(newUser)
+                await actualizarUsuarioRequest(newUser, newUser.id)
+            } else {
                 await crearNuevoUsuarioRequest(newUser);
-                await fetchUsuarios();
-            } catch (error) {
-                alert('Error al crear usuario');
             }
+            await fetchUsuarios();
+        } catch (error) {
+            console.log(error)
         }
         setUsuario({
             id: '',
@@ -101,7 +101,7 @@ const UsuarioPage = () => {
             especialidad: '',
         });
         setShowForm(false);
-    };
+    }
 
     const handleEditar = (index) => {
         setUsuario(usuarios[index]);
@@ -304,8 +304,11 @@ const UsuarioPage = () => {
                                             onChange={handleChange}
                                         >
                                             <option value="">Seleccionar</option>
-                                            <option value="Alumno">Alumno</option>
-                                            <option value="Profesor">Profesor</option>
+                                            {
+                                                roles.map((rol) => (
+                                                    <option key={rol.id} value={rol.nombre}>{rol.nombre}</option>
+                                                ))
+                                            }
                                         </select>
                                     </div>
                                     <div className="mb-3">

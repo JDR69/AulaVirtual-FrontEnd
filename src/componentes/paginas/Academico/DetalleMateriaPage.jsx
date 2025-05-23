@@ -72,6 +72,7 @@ function DetalleMateriaPage() {
 
 
                 };
+                console.log(nuevasAsignaciones)
                 setAsignaciones(nuevasAsignaciones);
             } else {
                 setAsignaciones([
@@ -84,6 +85,14 @@ function DetalleMateriaPage() {
                         paralelo: paraleloSeleccionado
                     }
                 ]);
+                const data = {
+                    materia: materiaSeleccionada,
+                    profesor: profesorSeleccionado,
+                    horario: horarioSeleccionado,
+                    curso: cursoSeleccionado,
+                    paralelo: paraleloSeleccionado
+                }
+                console.log(data)
             }
             limpiarFormulario();
         } else {
@@ -162,7 +171,7 @@ function DetalleMateriaPage() {
                             ))}
                         </select>
                     </div>
-                 
+
                     {/* Select Curso */}
                     <div className="mb-3">
                         <label>Curso:</label>

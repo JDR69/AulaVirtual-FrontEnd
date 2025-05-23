@@ -18,6 +18,14 @@ export const crearNuevoUsuarioRequest = (data) => instance.post(`/api/usuario/cr
         }
     }
 )
+export const actualizarUsuarioRequest = (data,id) => instance.put(`/api/usuario/actualizarUsuario/${id}/`,
+  data,
+  {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }
+)
 export const obtenerUsuarioRequest = () => {
     return instance.get(`/api/usuario/obtenerUsuario/`,
         { timeout: tiempoEspera }
