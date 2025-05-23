@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/Usuario.css';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
+import { obtenerUsuarioRequest, crearNuevoUsuarioRequest } from '../../../api/auth';
 
 const UsuarioPage = () => {
     const [showForm, setShowForm] = useState(false);
@@ -14,25 +15,78 @@ const UsuarioPage = () => {
         estado: '',
         genero: '',
         fechaNacimiento: '',
+        telefono: '',
+        matricula: '',
+        especialidad: '',
     });
 
     const [usuarios, setUsuarios] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
+
+    // Cargar usuarios del backend al montar el componente
+    useEffect(() => {
+        fetchUsuarios();
+    }, []);
+
+    const fetchUsuarios = async () => {
+        try {
+            const res = await obtenerUsuarioRequest();
+            const data = Array.isArray(res.data) ? res.data : [res.data];
+            const usuariosAdaptados = data.map(u => ({
+                id: u.id,
+                ci: u.ci,
+                rol: u.rol_nombre,
+                nombre: u.nombre,
+                estado: u.estado ? 'Activo' : 'Inactivo',
+                genero: u.sexo === 'M' ? 'Masculino' : (u.sexo === 'F' ? 'Femenino' : ''),
+                fechaNacimiento: u.fecha_nacimiento || '',
+                telefono: u.alumno?.telefono || '',
+                matricula: u.alumno?.matricula || '',
+                especialidad: u.profesor?.especialidad || '',
+            }));
+            setUsuarios(usuariosAdaptados);
+        } catch (error) {
+            console.error('Error al obtener usuarios:', error);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setUsuario({ ...usuario, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (editIndex !== null) {
+            // Aquí iría la lógica para editar usuario si tienes endpoint
             const updatedUsuarios = [...usuarios];
             updatedUsuarios[editIndex] = usuario;
             setUsuarios(updatedUsuarios);
             setEditIndex(null);
         } else {
-            setUsuarios([...usuarios, { ...usuario, id: Date.now().toString() }]);
+            // Crear usuario en backend
+            try {
+                // Adaptar datos para el backend
+                const newUser = {
+                    ci: usuario.ci,
+                    nombre: usuario.nombre,
+                    fecha_nacimiento: usuario.fechaNacimiento,
+                    sexo: usuario.genero === 'Masculino' ? 'M' : usuario.genero === 'Femenino' ? 'F' : '',
+                    estado: usuario.estado === 'Activo',
+                    rol_nombre: usuario.rol,
+                    alumno: usuario.rol === 'Alumno' ? {
+                        matricula: usuario.matricula,
+                        telefono: usuario.telefono
+                    } : null,
+                    profesor: usuario.rol === 'Profesor' ? {
+                        especialidad: usuario.especialidad
+                    } : null
+                };
+                await crearNuevoUsuarioRequest(newUser);
+                await fetchUsuarios();
+            } catch (error) {
+                alert('Error al crear usuario');
+            }
         }
         setUsuario({
             id: '',
@@ -42,6 +96,9 @@ const UsuarioPage = () => {
             estado: '',
             genero: '',
             fechaNacimiento: '',
+            telefono: '',
+            matricula: '',
+            especialidad: '',
         });
         setShowForm(false);
     };
@@ -74,8 +131,19 @@ const UsuarioPage = () => {
         doc.text('Reporte de Usuarios', 10, 10);
         autoTable(doc, {
             startY: 20,
-            head: [['ID', 'CI', 'Rol', 'Nombre', 'Estado', 'Género', 'Fecha de Nacimiento']],
-            body: usuarios.map(u => [u.id, u.ci, u.rol, u.nombre, u.estado, u.genero, u.fechaNacimiento]),
+            head: [['ID', 'CI', 'Rol', 'Nombre', 'Teléfono', 'Matrícula', 'Especialidad', 'Estado', 'Género', 'Fecha de Nacimiento']],
+            body: usuarios.map(u => [
+                u.id,
+                u.ci,
+                u.rol,
+                u.nombre,
+                u.telefono || '',
+                u.rol === "Alumno" ? u.matricula : '',
+                u.rol === "Profesor" ? u.especialidad : '',
+                u.estado,
+                u.genero,
+                u.fechaNacimiento
+            ]),
         });
         doc.save('reporte_usuarios.pdf');
     };
@@ -91,13 +159,16 @@ const UsuarioPage = () => {
         const ventana = window.open('', '_blank');
         ventana.document.write('<html><head><title>Reporte HTML</title></head><body>');
         ventana.document.write('<h1>Reporte de Usuarios</h1>');
-        ventana.document.write('<table border="1"><tr><th>ID</th><th>CI</th><th>Rol</th><th>Nombre</th><th>Estado</th><th>Género</th><th>Fecha de Nacimiento</th></tr>');
+        ventana.document.write('<table border="1"><tr><th>ID</th><th>CI</th><th>Rol</th><th>Nombre</th><th>Teléfono</th><th>Matrícula</th><th>Especialidad</th><th>Estado</th><th>Género</th><th>Fecha de Nacimiento</th></tr>');
         usuarios.forEach(u => {
             ventana.document.write(`<tr>
                 <td>${u.id}</td>
                 <td>${u.ci}</td>
                 <td>${u.rol}</td>
                 <td>${u.nombre}</td>
+                <td>${u.telefono || ''}</td>
+                <td>${u.rol === "Alumno" ? u.matricula : ''}</td>
+                <td>${u.rol === "Profesor" ? u.especialidad : ''}</td>
                 <td>${u.estado}</td>
                 <td>${u.genero}</td>
                 <td>${u.fechaNacimiento}</td>
@@ -131,7 +202,7 @@ const UsuarioPage = () => {
                                         className='form-select'
                                     >
                                         <option value="">Filtrar por Rol</option>
-                                        <option value="Estudiante">Estudiante</option>
+                                        <option value="Alumno">Alumno</option>
                                         <option value="Profesor">Profesor</option>
                                     </select>
                                     <select
@@ -140,8 +211,8 @@ const UsuarioPage = () => {
                                         onChange={(e) => setFiltroEstado(e.target.value)}
                                     >
                                         <option value="">Filtrar por Estado</option>
-                                        <option value="Habilitado">Habilitado</option>
-                                        <option value="Deshabilitado">Deshabilitado</option>
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
                                     </select>
                                 </div>
                                 <div className="contenedor-reportes">
@@ -160,6 +231,9 @@ const UsuarioPage = () => {
                                                 estado: '',
                                                 genero: '',
                                                 fechaNacimiento: '',
+                                                telefono: '',
+                                                matricula: '',
+                                                especialidad: '',
                                             });
                                             setEditIndex(null);
                                             setShowForm(true);
@@ -178,6 +252,9 @@ const UsuarioPage = () => {
                                             <th>CI</th>
                                             <th>Rol</th>
                                             <th>Nombre</th>
+                                            <th>Teléfono</th>
+                                            <th>Matrícula</th>
+                                            <th>Especialidad</th>
                                             <th>Estado</th>
                                             <th>Género</th>
                                             <th>Fecha Nacimiento</th>
@@ -186,12 +263,14 @@ const UsuarioPage = () => {
                                     </thead>
                                     <tbody>
                                         {usuariosFiltrados.map((u, index) => (
-
                                             <tr key={u.id}>
                                                 <td>{u.id}</td>
                                                 <td>{u.ci}</td>
                                                 <td>{u.rol}</td>
                                                 <td>{u.nombre}</td>
+                                                <td>{u.telefono || ''}</td>
+                                                <td>{u.rol === "Alumno" ? u.matricula : ''}</td>
+                                                <td>{u.rol === "Profesor" ? u.especialidad : ''}</td>
                                                 <td>{u.estado}</td>
                                                 <td>{u.genero}</td>
                                                 <td>{u.fechaNacimiento}</td>
@@ -225,7 +304,7 @@ const UsuarioPage = () => {
                                             onChange={handleChange}
                                         >
                                             <option value="">Seleccionar</option>
-                                            <option value="Estudiante">Estudiante</option>
+                                            <option value="Alumno">Alumno</option>
                                             <option value="Profesor">Profesor</option>
                                         </select>
                                     </div>
@@ -233,6 +312,22 @@ const UsuarioPage = () => {
                                         <label>Nombre:</label>
                                         <input className='form-control' name="nombre" value={usuario.nombre} onChange={handleChange} />
                                     </div>
+                                    <div className="mb-3">
+                                        <label>Teléfono:</label>
+                                        <input className='form-control' name="telefono" value={usuario.telefono} onChange={handleChange} />
+                                    </div>
+                                    {usuario.rol === "Alumno" && (
+                                        <div className="mb-3">
+                                            <label>Matrícula:</label>
+                                            <input className='form-control' name="matricula" value={usuario.matricula} onChange={handleChange} />
+                                        </div>
+                                    )}
+                                    {usuario.rol === "Profesor" && (
+                                        <div className="mb-3">
+                                            <label>Especialidad:</label>
+                                            <input className='form-control' name="especialidad" value={usuario.especialidad} onChange={handleChange} />
+                                        </div>
+                                    )}
                                     <div className="mb-3">
                                         <label>Estado:</label>
                                         <select name="estado" value={usuario.estado} onChange={handleChange} className='form-select'>

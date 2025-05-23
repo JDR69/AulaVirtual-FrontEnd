@@ -139,7 +139,9 @@ return (
         privilegios,
         setPrivilegios,
         permisos,
-        setPermisos
+        setPermisos,
+        usuarios,           
+        setUsuarios,
     }}>
         {children}
     </AuthContext.Provider>
