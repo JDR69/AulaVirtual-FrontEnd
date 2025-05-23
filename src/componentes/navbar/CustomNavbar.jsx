@@ -70,6 +70,7 @@ const CustomNavbar = () => {
               <NavDropdown.Item as={Link} to="/dasboard/actividades">
                 Actividades
               </NavDropdown.Item>
+                  <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias/ropa">
                 Ropa
               </NavDropdown.Item>
@@ -84,6 +85,7 @@ const CustomNavbar = () => {
               <NavDropdown.Item as={Link} to="/dasboard/participacion">
                 Participacion
               </NavDropdown.Item>
+                  <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias/ropa">
                 Ropa
               </NavDropdown.Item>
@@ -98,7 +100,7 @@ const CustomNavbar = () => {
             <Nav.Link as={Link} to="/dasboard/homeda">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/login">
+            <Nav.Link as={Link} to="/dasboard/notificacion">
               <i className="bi bi-bell-fill"></i>
             </Nav.Link>
           </Nav>

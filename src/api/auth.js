@@ -33,7 +33,7 @@ export const obtenerUsuarioRequest = () => {
 }
 
 //ROL
-export const crearNuevoRolRequest = (data) => instance.post(`/api/usuario/crearcrearRol/`,
+export const crearNuevoRolRequest = (data) => instance.post(`/api/usuario/crearRol/`,
     data,{
         headers: {
             "Content-Type": "application/json"
