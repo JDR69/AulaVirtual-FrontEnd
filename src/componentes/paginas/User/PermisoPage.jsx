@@ -156,7 +156,7 @@ const handleActualizarPrivilegio = async (e) => {
       {/* Modal global para agregar/editar rol o privilegio */}
       {mostrarForm && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="form-flotante">
             
             {/* MODAL AGREGAR ROL */}
             {mostrarForm === 'rol' && (
@@ -170,8 +170,10 @@ const handleActualizarPrivilegio = async (e) => {
                     value={nuevoRol.nombre}
                     onChange={e => setNuevoRol({ ...nuevoRol, nombre: e.target.value })}
                   />
+                <div className='contenedor-contenido'>
                   <button type="submit" className="btn btn-success">Guardar</button>
                   <button type="button" className="btn btn-danger" onClick={cerrarModal}>Cancelar</button>
+                  </div>
                 </form>
               </>
             )}
@@ -188,8 +190,10 @@ const handleActualizarPrivilegio = async (e) => {
                     value={nuevoRol.nombre}
                     onChange={e => setNuevoRol({ ...nuevoRol, nombre: e.target.value })}
                   />
-                  <button type="submit" className="btn btn-success">Actualizar</button>
+                   <div className='contenedor-contenido'>
+                  <button type="submit" className="btn btn-success">Guardar</button>
                   <button type="button" className="btn btn-danger" onClick={cerrarModal}>Cancelar</button>
+                  </div>
                 </form>
               </>
             )}
@@ -206,8 +210,10 @@ const handleActualizarPrivilegio = async (e) => {
                     value={nuevoPrivilegio.descripcion}
                     onChange={e => setNuevoPrivilegio({ descripcion: e.target.value })}
                   />
+                  <div className='contenedor-contenido'>
                   <button type="submit" className="btn btn-success">Guardar</button>
                   <button type="button" className="btn btn-danger" onClick={cerrarModal}>Cancelar</button>
+                  </div>
                 </form>
               </>
             )}
@@ -224,8 +230,10 @@ const handleActualizarPrivilegio = async (e) => {
                     value={nuevoPrivilegio.descripcion}
                     onChange={e => setNuevoPrivilegio({ descripcion: e.target.value })}
                   />
-                  <button type="submit" className="btn btn-success">Actualizar</button>
+                   <div className='contenedor-contenido'>
+                  <button type="submit" className="btn btn-success">Guardar</button>
                   <button type="button" className="btn btn-danger" onClick={cerrarModal}>Cancelar</button>
+                  </div>
                 </form>
               </>
             )}
