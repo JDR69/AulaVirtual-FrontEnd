@@ -224,6 +224,8 @@ export const eliminarDetalleCursoMateriaRequest = (dato) =>
     withCredentials: true,
   });
 
+
+
 //RUTAS DE DETALLE CURSO PARALELO
 export const nuevoDetalleCursoParaleloRequest = (data) => instance.post(`/api/academia/crear-detalle-curso-paralelo/`,
     data,{
@@ -233,3 +235,11 @@ export const nuevoDetalleCursoParaleloRequest = (data) => instance.post(`/api/ac
         withCredentials:true
     }
 )
+export const eliminarDetalleCursoParaleloRequest = (dato) =>
+  instance.delete('/api/academia/eliminar-detalle-curso-paralelo/', {
+    data: dato, 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });

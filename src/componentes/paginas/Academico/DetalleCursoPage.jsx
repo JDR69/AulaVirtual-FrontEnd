@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import '../../css/DetalleCurso.css';
 import { useAuth } from '../../../context/AuthContext';
-import { nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest,
-        eliminarDetalleCursoMateriaRequest
- } from '../../../api/auth';
+import {
+    nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest,
+    eliminarDetalleCursoMateriaRequest
+} from '../../../api/auth';
 
 function DetalleCursoPage() {
     const { cursos, materias, paralelos, detalleCompleto } = useAuth();
@@ -14,32 +15,35 @@ function DetalleCursoPage() {
     const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
     const [materiasAsignadas, setMateriasAsignadas] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
+    const [quitarIndex, setQuitarIndex] = useState(null);
 
     // Agregar materia a la lista temporal
     const agregarMateria = () => {
-        if (materiaSeleccionada && !materiasAsignadas.includes(materiaSeleccionada)) {
-            setMateriasAsignadas([...materiasAsignadas, materiaSeleccionada]);
-            setMateriaSeleccionada('');
-        }
-    };
+    if (!materiaSeleccionada) return;
+    const idStr = String(materiaSeleccionada);
+    if (materiasAsignadas.map(String).includes(idStr)) {
+        alert('La materia ya fue agregada.');
+        return;
+    }
+    setMateriasAsignadas([...materiasAsignadas, idStr]);
+    setMateriaSeleccionada('');
+};
 
- 
     // Agregar paralelo a la lista temporal
-    const agregarParalelo = () => {
-        if (paraleloSeleccionado && !paralelosAsignados.includes(paraleloSeleccionado)) {
-            setParalelosAsignados([...paralelosAsignados, paraleloSeleccionado]);
-            setParaleloSeleccionado('');
-        }
-    };
+   const agregarParalelo = () => {
+    if (!paraleloSeleccionado) return;
+    const idStr = String(paraleloSeleccionado);
+    if (paralelosAsignados.map(String).includes(idStr)) {
+        alert('El paralelo ya fue agregado.');
+        return;
+    }
+    setParalelosAsignados([...paralelosAsignados, idStr]);
+    setParaleloSeleccionado('');
+};
 
- 
     // Guardar o actualizar asignación
     const guardarAsignacion = async () => {
         try {
-            if (!cursoSeleccionado || paralelosAsignados.length === 0 || materiasAsignadas.length === 0) {
-                alert("Por favor, completa todos los campos.");
-                return;
-            }
 
             const data = {
                 curso: cursoSeleccionado,
@@ -60,32 +64,19 @@ function DetalleCursoPage() {
             console.log(error);
         }
     };
-
-    // Editar: cargar datos de la asignación para agregar más paralelos o materias
-    const editarRegistro = (index) => {
-        const reg = detalleCompleto[index];
-        setCursoSeleccionado(reg.curso_id?.toString() || reg.curso?.toString() || '');
-        setParalelosAsignados(reg.paralelos.map((p) => p.id.toString()));
-        setMateriasAsignadas(reg.materias.map((m) => m.id.toString()));
-        setEditIndex(index);
-    };
-
     // Eliminar paralelo de una asignación registrada
-    const eliminarParaleloDeAsignacion =async (asigIndex, paraleloId) => {
-    try
-        {
+    const eliminarParaleloDeAsignacion = async (asigIndex, paraleloId) => {
+        try {
             const data = {
-                curso: detalleCompleto[asigIndex].curso_id,
+                curso: cursos.find(c => c.nombre === detalleCompleto[asigIndex].curso).id,
                 paralelo: paraleloId,
             };
-            // await eliminarDetalleCursoMateriaRequest(data);
-              console.log(data);
+
+            console.log(data);
+            const res = await eliminarDetalleCursoMateriaRequest(data);
             alert('Implementa la lógica para eliminar el paralelo del curso en el backend');
-           window.location.reload();
-              
-        
-        
-          } catch (error) {
+            // window.location.reload();
+        } catch (error) {
             console.log(error);
         }
     }
@@ -94,10 +85,10 @@ function DetalleCursoPage() {
     const eliminarMateriaDeAsignacion = async (asigIndex, materiaId) => {
         try {
             const data = {
-                curso: cursos.find(c => c.nombre ===detalleCompleto[asigIndex].curso).id,
+                curso: cursos.find(c => c.nombre === detalleCompleto[asigIndex].curso).id,
                 materia: materiaId,
             };
-          
+
             console.log(data);
             const res = await eliminarDetalleCursoMateriaRequest(data);
             alert('Implementa la lógica para eliminar la materia del curso en el backend');
@@ -209,11 +200,13 @@ function DetalleCursoPage() {
                                             {reg.paralelos.map((p) => (
                                                 <span key={p.id} style={{ marginRight: 8 }}>
                                                     {p.nombre || p.descripcion}
-                                                    <button
-                                                        className="btn btn-danger btn-sm ms-1"
-                                                        title="Eliminar paralelo"
-                                                        onClick={() => eliminarParaleloDeAsignacion(index, p.id)}
-                                                    >×</button>
+                                                    {quitarIndex === index && (
+                                                        <button
+                                                            className="btn btn-danger btn-sm ms-1"
+                                                            title="Eliminar paralelo"
+                                                            onClick={() => eliminarParaleloDeAsignacion(index, p.id)}
+                                                        >×</button>
+                                                    )}
                                                 </span>
                                             ))}
                                         </td>
@@ -221,17 +214,23 @@ function DetalleCursoPage() {
                                             {reg.materias.map((m) => (
                                                 <span key={m.id} style={{ marginRight: 8 }}>
                                                     {m.nombre}
-                                                    <button
-                                                        className="btn btn-danger btn-sm ms-1"
-                                                        title="Eliminar materia"
-                                                        onClick={() => eliminarMateriaDeAsignacion(index, m.id)}
-                                                    >×</button>
+                                                    {quitarIndex === index && (
+                                                        <button
+                                                            className="btn btn-danger btn-sm ms-1"
+                                                            title="Eliminar materia"
+                                                            onClick={() => eliminarMateriaDeAsignacion(index, m.id)}
+                                                        >×</button>
+                                                    )}
                                                 </span>
                                             ))}
                                         </td>
                                         <td>
-                                            <button className="btn btn-warning btn-sm me-2" onClick={() => editarRegistro(index)}>Editar</button>
-                                            {/* No mostrar botón de eliminar curso */}
+                                            <button
+                                                className={`btn btn-warning btn-sm me-2`}
+                                                onClick={() => setQuitarIndex(quitarIndex === index ? null : index)}
+                                            >
+                                                {quitarIndex === index ? 'Cancelar' : 'Quitar'}
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}
