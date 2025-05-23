@@ -99,7 +99,7 @@ function DetalleCursoPage() {
             };
           
             console.log(data);
-               await eliminarDetalleCursoMateriaRequest(data);
+            const res = await eliminarDetalleCursoMateriaRequest(data);
             alert('Implementa la lógica para eliminar la materia del curso en el backend');
             // window.location.reload();
         } catch (error) {

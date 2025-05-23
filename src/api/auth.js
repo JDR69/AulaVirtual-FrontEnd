@@ -215,12 +215,15 @@ export const nuevoDetalleCursoMateriaRequest = (data) => instance.post(`/api/aca
         withCredentials:true
     }
 )
-export const eliminarDetalleCursoMateriaRequest = (data) => instance.delete(`/api/academia/eliminar-detalle-curso-materia/`,data,{
-        headers: {
-            "Content-Type": "application/json"
-          },
-        withCredentials:true
-    })
+export const eliminarDetalleCursoMateriaRequest = (dato) =>
+  instance.delete('/api/academia/eliminar-detalle-curso-materia/', {
+    data: dato, 
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
 //RUTAS DE DETALLE CURSO PARALELO
 export const nuevoDetalleCursoParaleloRequest = (data) => instance.post(`/api/academia/crear-detalle-curso-paralelo/`,
     data,{
