@@ -190,11 +190,6 @@ function DetalleCursoPage() {
                                         </td>
                                     </tr>
                                 ))}
-                                {registros.length === 0 && (
-                                    <tr>
-                                        <td colSpan="4" className="text-center">No hay asignaciones registradas.</td>
-                                    </tr>
-                                )}
                             </tbody>
                         </table>
                     </div>
