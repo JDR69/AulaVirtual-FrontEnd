@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import {
+    obtenerMateriasRequest,
+    obtenerHorariosRequest,
+    obtenerUsuarioRequest
+} from '../../../api/auth';
 
 function DetalleMateriaPage() {
-    const materias = ['Matemáticas', 'Física', 'Historia'];
-    const profesores = ['Prof. Gómez', 'Prof. López', 'Prof. Ramírez', 'Prof. Martínez', 'Prof. Pérez'];
-    const horarios = ['08:00 - 10:00', '10:00 - 12:00', '14:00 - 16:00', '15:00 - 17:00'];
+    const [materias, setMaterias] = useState([]);
+    const [profesores, setProfesores] = useState([]);
+    const [horarios, setHorarios] = useState([]);
 
     const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
     const [profesorSeleccionado, setProfesorSeleccionado] = useState('');
@@ -11,6 +16,22 @@ function DetalleMateriaPage() {
     const [asignaciones, setAsignaciones] = useState([]);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [indiceEditando, setIndiceEditando] = useState(null);
+
+    useEffect(() => {
+      
+        obtenerMateriasRequest().then(res => {
+            setMaterias(res.data || []);
+        });
+       
+        obtenerHorariosRequest().then(res => {
+            setHorarios(res.data || []);
+        });
+      
+        obtenerUsuarioRequest().then(res => {
+        
+            setProfesores((res.data || []).map(u => u.nombre));
+        });
+    }, []);
 
     const limpiarFormulario = () => {
         setMateriaSeleccionada('');
@@ -78,8 +99,8 @@ function DetalleMateriaPage() {
                             onChange={(e) => setMateriaSeleccionada(e.target.value)}
                         >
                             <option value="">Seleccione una materia</option>
-                            {materias.map((materia, index) => (
-                                <option key={index} value={materia}>{materia}</option>
+                            {materias.map((materia) => (
+                                <option key={materia.id} value={materia.nombre}>{materia.nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -93,8 +114,8 @@ function DetalleMateriaPage() {
                             onChange={(e) => setProfesorSeleccionado(e.target.value)}
                         >
                             <option value="">Seleccione un profesor</option>
-                            {profesores.map((profesor, index) => (
-                                <option key={index} value={profesor}>{profesor}</option>
+                            {profesores.map((nombre, index) => (
+                                <option key={index} value={nombre}>{nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -108,8 +129,10 @@ function DetalleMateriaPage() {
                             onChange={(e) => setHorarioSeleccionado(e.target.value)}
                         >
                             <option value="">Seleccione un horario</option>
-                            {horarios.map((horario, index) => (
-                                <option key={index} value={horario}>{horario}</option>
+                            {horarios.map((horario) => (
+                                <option key={horario.id} value={`${horario.hora_inicial} - ${horario.hora_final}`}>
+                                    {horario.hora_inicial} - {horario.hora_final}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -128,20 +151,27 @@ function DetalleMateriaPage() {
                 </div>
 
                 {/* Tabla de asignaciones */}
-                {asignaciones.length > 0 && (
-                    <div className="dimensionTable">
-                        <h2>Asignaciones Realizadas</h2>
-                        <table className="table-striped table-bordered">
-                            <thead>
+                {/* Tabla de asignaciones */}
+                <div className="dimensionTable">
+                    <h2>Asignaciones Realizadas</h2>
+                    <table className="table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Profesor</th>
+                                <th>Horario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {asignaciones.length === 0 ? (
                                 <tr>
-                                    <th>Materia</th>
-                                    <th>Profesor</th>
-                                    <th>Horario</th>
-                                    <th>Acciones</th>
+                                    <td colSpan="4" style={{ textAlign: 'center' }}>
+                                        Sin asignaciones
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {asignaciones.map((asig, index) => (
+                            ) : (
+                                asignaciones.map((asig, index) => (
                                     <tr key={index}>
                                         <td>{asig.materia}</td>
                                         <td>{asig.profesor}</td>
@@ -161,11 +191,11 @@ function DetalleMateriaPage() {
                                             </button>
                                         </td>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>           
             </div>
         </div>
     );
