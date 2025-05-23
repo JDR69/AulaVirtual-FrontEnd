@@ -11,7 +11,6 @@ import {
     obtenerNivelesRequest,
     obtenerParalelosRequest,
     obtenerDetalleCompletoPorCurso,
-    obtenerDetalleMateriaRequest
  } from "../api/auth";
 
 const AuthContext = createContext();
@@ -42,7 +41,6 @@ export const AuthProvider = ({ children }) => {
 
     //DETALLE CURSO
     const [detalleCompleto,setDetalleCompleto] = useState([])
-    const [obtenerDetalleMateria,setObtenerDetalleMateria] = useState([])
 
 
     const signin = async (user) => {
@@ -70,8 +68,7 @@ export const AuthProvider = ({ children }) => {
                 resParalelos,
                 resHorarios,
                 resNiveles,
-                resDetalleCurso,
-                resDetalleMateria
+                resDetalleCurso
             ] = await Promise.all([
                 obtenerUsuarioRequest(),
                 obtenerRolesRequest(),
@@ -83,7 +80,6 @@ export const AuthProvider = ({ children }) => {
                 obtenerHorariosRequest(),
                 obtenerNivelesRequest(),
                 obtenerDetalleCompletoPorCurso(),
-                obtenerDetalleMateriaRequest(),
             ])
             console.log(resUsuarios.data)
             setUsuarios(resUsuarios.data)
@@ -97,8 +93,6 @@ export const AuthProvider = ({ children }) => {
             setNiveles(resNiveles.data)
             console.log(resDetalleCurso.data)
             setDetalleCompleto(resDetalleCurso.data)
-            console.log(resDetalleMateria.data)
-            setObtenerDetalleMateria(resDetalleMateria.data)
         } catch (err) {
             throw err;
         }

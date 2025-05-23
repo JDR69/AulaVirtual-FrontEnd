@@ -5,8 +5,10 @@ import {
     obtenerUsuarioRequest,
     obtenerCursosRequest,
     obtenerParalelosRequest,
-    nuevoDetalleMateriaRequest
+    nuevoDetalleMateriaRequest,
+    obtenerDetalleMateriaRequest
 } from '../../../api/auth';
+
 
 function DetalleMateriaPage() {
     const [materias, setMaterias] = useState([]);
@@ -14,6 +16,7 @@ function DetalleMateriaPage() {
     const [horarios, setHorarios] = useState([]);
     const [cursos, setCursos] = useState([]);
     const [paralelos, setParalelos] = useState([]);
+    const [detalleMateria,setDetalleMateria] = useState([]);
 
     const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
     const [profesorSeleccionado, setProfesorSeleccionado] = useState('');
@@ -48,6 +51,11 @@ function DetalleMateriaPage() {
             );
 
         });
+
+        obtenerDetalleMateriaRequest().then(res =>{
+            console.log(res.data)
+            setDetalleMateria((res.data || []))
+        })
 
         obtenerCursosRequest().then(res => {
             setCursos((res.data || []));
@@ -248,20 +256,20 @@ function DetalleMateriaPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {asignaciones.length === 0 ? (
+                            {detalleMateria.length === 0 ? (
                                 <tr>
                                     <td colSpan="4" style={{ textAlign: 'center' }}>
                                         Sin asignaciones
                                     </td>
                                 </tr>
                             ) : (
-                                asignaciones.map((asig, index) => (
+                                detalleMateria.map((asig, index) => (
                                     <tr key={index}>
-                                        <td>{asig.materia}</td>
-                                        <td>{asig.profesor}</td>
-                                        <td>{asig.horario}</td>
-                                        <td>{asig.curso}</td>
-                                        <td>{asig.paralelo}</td>
+                                        <td>{asig.descripcion.materia_nombre}</td>
+                                        <td>{asig.descripcion.profesor_nombre}</td>
+                                        <td>{asig.horarios[0].hora_inicial + ' - ' + asig.horarios[0].hora_final}</td>
+                                        <td>{asig.horarios[0].nombre_curso}</td>
+                                        <td>{asig.horarios[0].descripcion_paralelo}</td>
                                         <td>
                                             <button
                                                 className="btn btn-warning btn-sm me-2"
