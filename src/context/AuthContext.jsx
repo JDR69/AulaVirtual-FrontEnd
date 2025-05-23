@@ -150,6 +150,8 @@ return (
         setPermisos,
         usuarios,           
         setUsuarios,
+
+        detalleCompleto,
     }}>
         {children}
     </AuthContext.Provider>

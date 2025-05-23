@@ -4,7 +4,7 @@ import { useAuth } from '../../../context/AuthContext';
 import { nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest } from '../../../api/auth';
 
 function DetalleCursoPage() {
-    const { cursos, materias, paralelos } = useAuth();
+    const { cursos, materias, paralelos, detalleCompleto} = useAuth();
 
     const [cursoSeleccionado, setCursoSeleccionado] = useState('');
     const [paraleloSeleccionado, setParaleloSeleccionado] = useState('');
@@ -54,35 +54,19 @@ function DetalleCursoPage() {
                 return;
             }
     
-            const nuevoRegistro = {
-                curso: cursoSeleccionado,
-                paralelos: paralelosAsignados,
-                materias: materiasAsignadas,
-            };
-    
-            const paraMostrar = {
+            const data = {
                 curso: cursoSeleccionado,
                 paralelos: paralelosAsignados.map((id) => parseInt(id)),
                 materias: materiasAsignadas.map((id) => parseInt(id)),
             }
     
-            const res1 = await nuevoDetalleCursoMateriaRequest(paraMostrar)
-            console.log(res1.data)
-            const res2 = await nuevoDetalleCursoParaleloRequest(paraMostrar)
-            console.log(res2.data)
-    
-            if (editIndex !== null) {
-                const copia = [...registros];
-                copia[editIndex] = nuevoRegistro;
-                setRegistros(copia);
-                setEditIndex(null);
-            } else {
-                setRegistros([...registros, nuevoRegistro]);
-            }
-    
+            const res1 = await nuevoDetalleCursoMateriaRequest(data)
+            const res2 = await nuevoDetalleCursoParaleloRequest(data)
             setCursoSeleccionado('');
             setParalelosAsignados([]);
-            setMateriasAsignadas([]);       
+            setMateriasAsignadas([]);   
+            alert('Registrado correctamente')   
+            window.location.reload() ;
         } catch (error) {
             console.log(error)
         }
@@ -195,11 +179,11 @@ function DetalleCursoPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {registros.map((reg, index) => (
+                                {detalleCompleto.map((reg, index) => (
                                     <tr key={index}>
-                                        <td>{cursos.find(c => c.id === parseInt(reg.curso))?.nombre || reg.curso}</td>
-                                        <td>{reg.paralelos.map((pId) => paralelos.find(p => p.id === parseInt(pId))?.descripcion || pId).join(', ')}</td>
-                                        <td>{reg.materias.join(', ')}</td>
+                                        <td>{reg.curso}</td>
+                                        <td>{reg.paralelos.map((p) => p.nombre).join(', ')}</td>
+                                        <td>{reg.materias.map((m) => m.nombre).join(', ')}</td>
                                         <td>
                                             <button className="btn btn-warning btn-sm me-2" onClick={() => editarRegistro(index)}>Editar</button>
                                             <button className="btn btn-danger btn-sm" onClick={() => eliminarRegistro(index)}>Eliminar</button>
