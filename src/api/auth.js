@@ -236,7 +236,7 @@ export const nuevoDetalleCursoParaleloRequest = (data) => instance.post(`/api/ac
     }
 )
 export const eliminarDetalleCursoParaleloRequest = (dato) =>
-  instance.delete('/api/academia/eliminar-detalle-curso-paralelo/', {
+  instance.delete('/api/academia/eliminar-paralelo/', {
     data: dato, 
     headers: {
       'Content-Type': 'application/json',

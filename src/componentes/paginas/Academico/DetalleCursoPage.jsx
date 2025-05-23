@@ -3,7 +3,7 @@ import '../../css/DetalleCurso.css';
 import { useAuth } from '../../../context/AuthContext';
 import {
     nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest,
-    eliminarDetalleCursoMateriaRequest
+    eliminarDetalleCursoMateriaRequest, eliminarDetalleCursoParaleloRequest
 } from '../../../api/auth';
 
 function DetalleCursoPage() {
@@ -73,9 +73,9 @@ function DetalleCursoPage() {
             };
 
             console.log(data);
-            const res = await eliminarDetalleCursoMateriaRequest(data);
+            const res = await eliminarDetalleCursoParaleloRequest(data);
             alert('Implementa la lógica para eliminar el paralelo del curso en el backend');
-            // window.location.reload();
+            window.location.reload();
         } catch (error) {
             console.log(error);
         }
