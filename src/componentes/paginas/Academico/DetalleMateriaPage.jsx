@@ -2,34 +2,49 @@ import React, { useState, useEffect } from 'react';
 import {
     obtenerMateriasRequest,
     obtenerHorariosRequest,
-    obtenerUsuarioRequest
+    obtenerUsuarioRequest,
+    obtenerCursosRequest,
+    obtenerParalelosRequest
 } from '../../../api/auth';
 
 function DetalleMateriaPage() {
     const [materias, setMaterias] = useState([]);
     const [profesores, setProfesores] = useState([]);
     const [horarios, setHorarios] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [paralelos, setParalelos] = useState([]);
 
     const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
     const [profesorSeleccionado, setProfesorSeleccionado] = useState('');
     const [horarioSeleccionado, setHorarioSeleccionado] = useState('');
+    const [cursoSeleccionado, setCursoSeleccionado] = useState('');
+    const [paraleloSeleccionado, setParaleloSeleccionado] = useState('');
+
     const [asignaciones, setAsignaciones] = useState([]);
     const [modoEdicion, setModoEdicion] = useState(false);
     const [indiceEditando, setIndiceEditando] = useState(null);
 
+
     useEffect(() => {
-      
+
         obtenerMateriasRequest().then(res => {
             setMaterias(res.data || []);
         });
-       
+
         obtenerHorariosRequest().then(res => {
             setHorarios(res.data || []);
         });
-      
+
         obtenerUsuarioRequest().then(res => {
-        
+
             setProfesores((res.data || []).map(u => u.nombre));
+        });
+
+        obtenerCursosRequest().then(res => {
+            setCursos((res.data || []));
+        });
+        obtenerParalelosRequest().then(res => {
+            setParalelos((res.data || []));
         });
     }, []);
 
@@ -37,18 +52,25 @@ function DetalleMateriaPage() {
         setMateriaSeleccionada('');
         setProfesorSeleccionado('');
         setHorarioSeleccionado('');
+        setCursoSeleccionado('');
+        setParaleloSeleccionado('');
+
         setModoEdicion(false);
         setIndiceEditando(null);
     };
 
     const asignarMateria = () => {
-        if (materiaSeleccionada && profesorSeleccionado && horarioSeleccionado) {
+        if (materiaSeleccionada && profesorSeleccionado && horarioSeleccionado && cursoSeleccionado && paraleloSeleccionado) {
             if (modoEdicion) {
                 const nuevasAsignaciones = [...asignaciones];
                 nuevasAsignaciones[indiceEditando] = {
                     materia: materiaSeleccionada,
                     profesor: profesorSeleccionado,
-                    horario: horarioSeleccionado
+                    horario: horarioSeleccionado,
+                    curso: cursoSeleccionado,
+                    paralelo: paraleloSeleccionado
+
+
                 };
                 setAsignaciones(nuevasAsignaciones);
             } else {
@@ -57,7 +79,9 @@ function DetalleMateriaPage() {
                     {
                         materia: materiaSeleccionada,
                         profesor: profesorSeleccionado,
-                        horario: horarioSeleccionado
+                        horario: horarioSeleccionado,
+                        curso: cursoSeleccionado,
+                        paralelo: paraleloSeleccionado
                     }
                 ]);
             }
@@ -80,6 +104,8 @@ function DetalleMateriaPage() {
         setMateriaSeleccionada(asignacion.materia);
         setProfesorSeleccionado(asignacion.profesor);
         setHorarioSeleccionado(asignacion.horario);
+        setCursoSeleccionado(asignacion.curso);
+        setParaleloSeleccionado(asignacion.paralelo);
         setModoEdicion(true);
         setIndiceEditando(index);
     };
@@ -136,6 +162,36 @@ function DetalleMateriaPage() {
                             ))}
                         </select>
                     </div>
+                 
+                    {/* Select Curso */}
+                    <div className="mb-3">
+                        <label>Curso:</label>
+                        <select
+                            className="form-select"
+                            value={cursoSeleccionado}
+                            onChange={(e) => setCursoSeleccionado(e.target.value)}
+                        >
+                            <option value="">Seleccione un curso</option>
+                            {cursos.map((curso) => (
+                                <option key={curso.id} value={curso.nombre}>{curso.nombre}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Select Paralelo */}
+                    <div className="mb-3">
+                        <label>Paralelo:</label>
+                        <select
+                            className="form-select"
+                            value={paraleloSeleccionado}
+                            onChange={(e) => setParaleloSeleccionado(e.target.value)}
+                        >
+                            <option value="">Seleccione un paralelo</option>
+                            {paralelos.map((paralelo) => (
+                                <option key={paralelo.id} value={paralelo.descripcion}>{paralelo.descripcion}</option>
+                            ))}
+                        </select>
+                    </div>
 
                     {/* Botón Asignar */}
                     <div className="mb-3">
@@ -160,6 +216,8 @@ function DetalleMateriaPage() {
                                 <th>Materia</th>
                                 <th>Profesor</th>
                                 <th>Horario</th>
+                                <th>Curso</th>
+                                <th>Paralelo</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -176,6 +234,8 @@ function DetalleMateriaPage() {
                                         <td>{asig.materia}</td>
                                         <td>{asig.profesor}</td>
                                         <td>{asig.horario}</td>
+                                        <td>{asig.curso}</td>
+                                        <td>{asig.paralelo}</td>
                                         <td>
                                             <button
                                                 className="btn btn-warning btn-sm me-2"
@@ -195,7 +255,7 @@ function DetalleMateriaPage() {
                             )}
                         </tbody>
                     </table>
-                </div>           
+                </div>
             </div>
         </div>
     );

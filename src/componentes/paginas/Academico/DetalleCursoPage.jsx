@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import '../../css/DetalleCurso.css';
 import { useAuth } from '../../../context/AuthContext';
-import { nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest } from '../../../api/auth';
+import { nuevoDetalleCursoMateriaRequest, nuevoDetalleCursoParaleloRequest,
+        eliminarDetalleCursoMateriaRequest
+ } from '../../../api/auth';
 
 function DetalleCursoPage() {
-    const { cursos, materias, paralelos, detalleCompleto} = useAuth();
+    const { cursos, materias, paralelos, detalleCompleto } = useAuth();
 
     const [cursoSeleccionado, setCursoSeleccionado] = useState('');
     const [paraleloSeleccionado, setParaleloSeleccionado] = useState('');
     const [paralelosAsignados, setParalelosAsignados] = useState([]);
     const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
     const [materiasAsignadas, setMateriasAsignadas] = useState([]);
-    const [registros, setRegistros] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
 
+    // Agregar materia a la lista temporal
     const agregarMateria = () => {
         if (materiaSeleccionada && !materiasAsignadas.includes(materiaSeleccionada)) {
             setMateriasAsignadas([...materiasAsignadas, materiaSeleccionada]);
@@ -21,10 +23,8 @@ function DetalleCursoPage() {
         }
     };
 
-    const quitarMateria = (materia) => {
-        setMateriasAsignadas(materiasAsignadas.filter((m) => m !== materia));
-    };
-
+ 
+    // Agregar paralelo a la lista temporal
     const agregarParalelo = () => {
         if (paraleloSeleccionado && !paralelosAsignados.includes(paraleloSeleccionado)) {
             setParalelosAsignados([...paralelosAsignados, paraleloSeleccionado]);
@@ -32,58 +32,78 @@ function DetalleCursoPage() {
         }
     };
 
-    const quitarParalelo = (p) => {
-        setParalelosAsignados(paralelosAsignados.filter((x) => x !== p));
-    };
-
+ 
+    // Guardar o actualizar asignación
     const guardarAsignacion = async () => {
         try {
             if (!cursoSeleccionado || paralelosAsignados.length === 0 || materiasAsignadas.length === 0) {
                 alert("Por favor, completa todos los campos.");
                 return;
             }
-    
-            const combinacionExistente = registros.some((r, i) =>
-                i !== editIndex &&
-                r.curso === cursoSeleccionado &&
-                JSON.stringify(r.paralelos) === JSON.stringify(paralelosAsignados)
-            );
-    
-            if (combinacionExistente) {
-                alert("Ya existe una asignación para ese curso y paralelos.");
-                return;
-            }
-    
+
             const data = {
                 curso: cursoSeleccionado,
                 paralelos: paralelosAsignados.map((id) => parseInt(id)),
                 materias: materiasAsignadas.map((id) => parseInt(id)),
-            }
-    
-            const res1 = await nuevoDetalleCursoMateriaRequest(data)
-            const res2 = await nuevoDetalleCursoParaleloRequest(data)
+            };
+
+            await nuevoDetalleCursoMateriaRequest(data);
+            await nuevoDetalleCursoParaleloRequest(data);
+
             setCursoSeleccionado('');
             setParalelosAsignados([]);
-            setMateriasAsignadas([]);   
-            alert('Registrado correctamente')   
-            window.location.reload() ;
+            setMateriasAsignadas([]);
+            setEditIndex(null);
+            alert('Registrado correctamente');
+            window.location.reload();
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
-    const eliminarRegistro = (index) => {
-        const copia = [...registros];
-        copia.splice(index, 1);
-        setRegistros(copia);
+    // Editar: cargar datos de la asignación para agregar más paralelos o materias
+    const editarRegistro = (index) => {
+        const reg = detalleCompleto[index];
+        setCursoSeleccionado(reg.curso_id?.toString() || reg.curso?.toString() || '');
+        setParalelosAsignados(reg.paralelos.map((p) => p.id.toString()));
+        setMateriasAsignadas(reg.materias.map((m) => m.id.toString()));
+        setEditIndex(index);
     };
 
-    const editarRegistro = (index) => {
-        const reg = registros[index];
-        setCursoSeleccionado(reg.curso);
-        setParalelosAsignados(reg.paralelos);
-        setMateriasAsignadas(reg.materias);
-        setEditIndex(index);
+    // Eliminar paralelo de una asignación registrada
+    const eliminarParaleloDeAsignacion =async (asigIndex, paraleloId) => {
+    try
+        {
+            const data = {
+                curso: detalleCompleto[asigIndex].curso_id,
+                paralelo: paraleloId,
+            };
+            // await eliminarDetalleCursoMateriaRequest(data);
+              console.log(data);
+            alert('Implementa la lógica para eliminar el paralelo del curso en el backend');
+           window.location.reload();
+              
+        
+        
+          } catch (error) {
+            console.log(error);
+        }
+    }
+
+    // Eliminar materia de una asignación registrada
+    const eliminarMateriaDeAsignacion = async (asigIndex, materiaId) => {
+        try {
+            const data = {
+                curso: detalleCompleto[asigIndex].curso_id,
+                materia: materiaId,
+            };
+            // await eliminarDetalleCursoMateriaRequest(data);
+            console.log(data);
+            alert('Implementa la lógica para eliminar la materia del curso en el backend');
+            // window.location.reload();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -99,6 +119,8 @@ function DetalleCursoPage() {
                             onChange={(e) => {
                                 setCursoSeleccionado(e.target.value);
                                 setParalelosAsignados([]);
+                                setMateriasAsignadas([]);
+                                setEditIndex(null);
                             }}
                         >
                             <option value="">Seleccione un curso</option>
@@ -128,7 +150,7 @@ function DetalleCursoPage() {
                                 {paralelosAsignados.map((pId, idx) => (
                                     <span className="materia-chip" key={idx}>
                                         {paralelos.find(x => x.id === parseInt(pId))?.descripcion || pId}
-                                        <button className="btn-eliminar" onClick={() => quitarParalelo(pId)}>×</button>
+                                        <button className="btn-eliminar" onClick={() => eliminarParaleloDeAsignacion(pId)}>×</button>
                                     </span>
                                 ))}
                             </div>
@@ -154,8 +176,8 @@ function DetalleCursoPage() {
                             <div className="materias-container mt-2">
                                 {materiasAsignadas.map((mat, idx) => (
                                     <span className="materia-chip" key={idx}>
-                                        {mat}
-                                        <button className="btn-eliminar" onClick={() => quitarMateria(mat)}>×</button>
+                                        {materias.find(x => x.id === parseInt(mat))?.nombre || mat}
+                                        <button className="btn-eliminar" onClick={() => eliminarMateriaDeAsignacion(mat)}>×</button>
                                     </span>
                                 ))}
                             </div>
@@ -181,12 +203,34 @@ function DetalleCursoPage() {
                             <tbody>
                                 {detalleCompleto.map((reg, index) => (
                                     <tr key={index}>
-                                        <td>{reg.curso}</td>
-                                        <td>{reg.paralelos.map((p) => p.nombre).join(', ')}</td>
-                                        <td>{reg.materias.map((m) => m.nombre).join(', ')}</td>
+                                        <td>{reg.curso_nombre || reg.curso}</td>
+                                        <td>
+                                            {reg.paralelos.map((p) => (
+                                                <span key={p.id} style={{ marginRight: 8 }}>
+                                                    {p.nombre || p.descripcion}
+                                                    <button
+                                                        className="btn btn-danger btn-sm ms-1"
+                                                        title="Eliminar paralelo"
+                                                        onClick={() => eliminarParaleloDeAsignacion(index, p.id)}
+                                                    >×</button>
+                                                </span>
+                                            ))}
+                                        </td>
+                                        <td>
+                                            {reg.materias.map((m) => (
+                                                <span key={m.id} style={{ marginRight: 8 }}>
+                                                    {m.nombre}
+                                                    <button
+                                                        className="btn btn-danger btn-sm ms-1"
+                                                        title="Eliminar materia"
+                                                        onClick={() => eliminarMateriaDeAsignacion(index, m.id)}
+                                                    >×</button>
+                                                </span>
+                                            ))}
+                                        </td>
                                         <td>
                                             <button className="btn btn-warning btn-sm me-2" onClick={() => editarRegistro(index)}>Editar</button>
-                                            <button className="btn btn-danger btn-sm" onClick={() => eliminarRegistro(index)}>Eliminar</button>
+                                            {/* No mostrar botón de eliminar curso */}
                                         </td>
                                     </tr>
                                 ))}
