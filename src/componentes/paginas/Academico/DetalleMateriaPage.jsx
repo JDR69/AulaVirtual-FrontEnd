@@ -37,7 +37,15 @@ function DetalleMateriaPage() {
 
         obtenerUsuarioRequest().then(res => {
 
-            setProfesores((res.data || []).map(u => u.nombre));
+            setProfesores(
+                (res.data || [])
+                    .filter(u => u.rol_nombre === 'Profesor')
+                    .map(u => ({
+                        id: u.id,
+                        nombre: u.nombre
+                    }))
+            );
+
         });
 
         obtenerCursosRequest().then(res => {
@@ -86,11 +94,11 @@ function DetalleMateriaPage() {
                     }
                 ]);
                 const data = {
-                    materia: materiaSeleccionada,
-                    profesor: profesorSeleccionado,
-                    horario: horarioSeleccionado,
-                    curso: cursoSeleccionado,
-                    paralelo: paraleloSeleccionado
+                    materia: parseInt(materiaSeleccionada),
+                    profesor: parseInt(profesorSeleccionado),
+                    horario: parseInt(horarioSeleccionado),
+                    curso: parseInt(cursoSeleccionado),
+                    paralelo: parseInt(paraleloSeleccionado)
                 }
                 console.log(data)
             }
@@ -135,7 +143,7 @@ function DetalleMateriaPage() {
                         >
                             <option value="">Seleccione una materia</option>
                             {materias.map((materia) => (
-                                <option key={materia.id} value={materia.nombre}>{materia.nombre}</option>
+                                <option key={materia.id} value={materia.id}>{materia.nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -150,7 +158,7 @@ function DetalleMateriaPage() {
                         >
                             <option value="">Seleccione un profesor</option>
                             {profesores.map((nombre, index) => (
-                                <option key={index} value={nombre}>{nombre}</option>
+                                <option key={index} value={nombre.id}>{nombre.nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -165,7 +173,7 @@ function DetalleMateriaPage() {
                         >
                             <option value="">Seleccione un horario</option>
                             {horarios.map((horario) => (
-                                <option key={horario.id} value={`${horario.hora_inicial} - ${horario.hora_final}`}>
+                                <option key={horario.id} value={horario.id}>
                                     {horario.hora_inicial} - {horario.hora_final}
                                 </option>
                             ))}
@@ -182,7 +190,7 @@ function DetalleMateriaPage() {
                         >
                             <option value="">Seleccione un curso</option>
                             {cursos.map((curso) => (
-                                <option key={curso.id} value={curso.nombre}>{curso.nombre}</option>
+                                <option key={curso.id} value={curso.id}>{curso.nombre}</option>
                             ))}
                         </select>
                     </div>
@@ -197,7 +205,7 @@ function DetalleMateriaPage() {
                         >
                             <option value="">Seleccione un paralelo</option>
                             {paralelos.map((paralelo) => (
-                                <option key={paralelo.id} value={paralelo.descripcion}>{paralelo.descripcion}</option>
+                                <option key={paralelo.id} value={paralelo.id}>{paralelo.descripcion}</option>
                             ))}
                         </select>
                     </div>
