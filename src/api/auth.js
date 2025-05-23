@@ -203,6 +203,9 @@ export const eliminarHorarioRequest = (id) => instance.delete(`/api/academia/eli
 export const obtenerHorariosRequest = () => { return instance.get(`/api/academia/obtener-horarios/`,{timeout:tiempoEspera})}
 
 
+//OBTENER DETALLE COMPLETO POR CURSO
+export const obtenerDetalleCompletoPorCurso = () => { return instance.get(`/api/academia/obtener/`,{timeout:tiempoEspera})}
+
 //RUTAS DE DETALLE CURSO MATERIA
 export const nuevoDetalleCursoMateriaRequest = (data) => instance.post(`/api/academia/crear-detalle-curso-materia/`,
     data,{
