@@ -73,10 +73,10 @@ const UsuarioPage = () => {
                     fecha_nacimiento: usuario.fechaNacimiento,
                     sexo: usuario.genero === 'Masculino' ? 'M' : usuario.genero === 'Femenino' ? 'F' : '',
                     estado: usuario.estado === 'Activo',
+                    telefono: usuario.telefono,
                     rol_nombre: usuario.rol,
                     alumno: usuario.rol === 'Alumno' ? {
-                        matricula: usuario.matricula,
-                        telefono: usuario.telefono
+                        matricula: usuario.matricula
                     } : null,
                     profesor: usuario.rol === 'Profesor' ? {
                         especialidad: usuario.especialidad
