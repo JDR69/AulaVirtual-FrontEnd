@@ -261,3 +261,4 @@ export const nuevoDetalleMateriaRequest = (data) => instance.post(`/api/academia
         withCredentials:true
     }
 )
+export const obtenerDetalleMateriaRequest = () => {return instance.get(`/api/academia/obtener-detalle-materia/`,{timeout:tiempoEspera})}
