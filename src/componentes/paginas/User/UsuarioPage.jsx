@@ -69,12 +69,8 @@ const UsuarioPage = () => {
                 estado: usuario.estado === 'Activo',
                 telefono: usuario.telefono,
                 rol: roles.find(r => r.nombre === usuario.rol).id,
-                alumno: usuario.rol === 'Alumno' ? {
-                    matricula: usuario.matricula
-                } : null,
-                profesor: usuario.rol === 'Profesor' ? {
-                    especialidad: usuario.especialidad
-                } : null
+                matricula: usuario.matricula || null,
+                especialidad: usuario.especialidad || null
             };
             if (editIndex !== null) {
                 // Aquí iría la lógica para editar usuario si tienes endpoint
@@ -82,6 +78,7 @@ const UsuarioPage = () => {
                 console.log(newUser)
                 await actualizarUsuarioRequest(newUser, newUser.id)
             } else {
+                console.log(newUser)
                 await crearNuevoUsuarioRequest(newUser);
             }
             await fetchUsuarios();
@@ -271,7 +268,9 @@ const UsuarioPage = () => {
                                                 <td>{u.telefono || ''}</td>
                                                 <td>{u.rol === "Alumno" ? u.matricula : ''}</td>
                                                 <td>{u.rol === "Profesor" ? u.especialidad : ''}</td>
-                                                <td>{u.estado}</td>
+                                                <td style={u.estado === 'Activo' ? { color: "green", fontWeight: 'bold' } : { color: "red", fontWeight: 'bold' } }>
+                                                    {u.estado}
+                                                </td>
                                                 <td>{u.genero}</td>
                                                 <td>{u.fechaNacimiento}</td>
                                                 <td>
