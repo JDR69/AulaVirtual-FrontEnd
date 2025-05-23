@@ -264,7 +264,7 @@ const GestionAcademico = () => {
                       <td>{nivel.estado ? 'Activo' : 'Inactivo'}</td>
                       <td>
                         <button className='btn btn-primary' onClick={() => editarNivel_backend(nivel, index)}><i className="bi bi-pencil-square"></i></button>
-                        <button onClick={() => eliminarNivel_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
+                        {/* <button onClick={() => eliminarNivel_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button> */}
                       </td>
                     </tr>
                   ))}
@@ -328,7 +328,7 @@ const GestionAcademico = () => {
                         <td>{curso.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarCurso_backend(curso, index)}><i className="bi bi-pencil-square"></i></button>
-                          <button onClick={() => eliminarCurso_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
+                          {/* <button onClick={() => eliminarCurso_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button> */}
                         </td>
                       </tr>
                     ))
@@ -407,7 +407,7 @@ const GestionAcademico = () => {
                         <td>{paralelo.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarParalelo_backend(paralelo, index)}><i className="bi bi-pencil-square"></i></button>
-                          <button onClick={() => eliminarParalelo_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
+                          {/* <button onClick={() => eliminarParalelo_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button> */}
                         </td>
                       </tr>
                     ))
@@ -472,7 +472,7 @@ const GestionAcademico = () => {
                         <td>{materia.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarMateria_backend(materia, index)}><i className="bi bi-pencil-square"></i></button>
-                          <button onClick={() => eliminarMateria_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
+                          {/* <button onClick={() => eliminarMateria_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button> */}
                         </td>
                       </tr>
                     ))
@@ -545,7 +545,7 @@ const GestionAcademico = () => {
                         <td>{horario.estado ? 'Activo' : 'Inactivo'}</td>
                         <td>
                           <button className='btn btn-primary' onClick={() => editarHorario_backend(horario, index)}><i className="bi bi-pencil-square"></i></button>
-                          <button onClick={() => eliminarHorario_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button>
+                          {/* <button onClick={() => eliminarHorario_backend(index)} className='btn btn-danger'><i className="bi bi-trash3-fill"></i></button> */}
                         </td>
                       </tr>
                     ))

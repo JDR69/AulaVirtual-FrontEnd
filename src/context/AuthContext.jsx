@@ -25,7 +25,8 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
 
     //Variables Usuarios
-    const [usuarios,setUsuarios] = useState([]);
+    const [usuarios,setUsuarios] = useState(null);
+    const [permisosDelUsuario, setPermisosDelUsuario] = useState(null)
     const [roles,setRoles]=useState([]);
     const [privilegios,setPrivilegios] =useState([]);
     const [permisos, setPermisos] = useState([]);
@@ -42,6 +43,9 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await login_request(user);
             console.log(res.data);
+            setUsuarios(res.data.usuario)
+            setPermisosDelUsuario(res.data.permisos)
+
         } catch (err) {
             throw err; 
           }
