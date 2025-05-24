@@ -71,8 +71,8 @@ const CustomNavbar = () => {
                 Actividades
               </NavDropdown.Item>
                   <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/categorias/ropa">
-                Ropa
+              <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
+                Calificaciones
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias">
@@ -86,8 +86,8 @@ const CustomNavbar = () => {
                 Participacion
               </NavDropdown.Item>
                   <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to="/categorias/ropa">
-                Ropa
+              <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
+                Calificaciones
               </NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to="/categorias">

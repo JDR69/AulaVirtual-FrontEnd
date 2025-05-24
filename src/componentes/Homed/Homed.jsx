@@ -3,24 +3,26 @@ import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
 import { Home } from "../paginas/User/Home";
 import CustomNavbar from "../navbar/CustomNavbar";
 
-{/* Rutas de usuario */}
+{/* Rutas de usuario */ }
 import PerfilUsuarioPage from "../paginas/User/PerfilUsuarioPage";
 import UsuarioPage from "../paginas/User/UsuarioPage";
 import BitacoraPage from "../paginas/User/BitacoraPage";
 import PermisoPage from "../paginas/User/PermisoPage";
 import GestionUsuario from "../paginas/User/GestionUsuario";
 
-{/* Rutas de Academico */}
+{/* Rutas de Academico */ }
 import GestionAcademico from "../paginas/Academico/GestionAcademico";
 import DetalleCursoPage from "../paginas/Academico/DetalleCursoPage";
 import DetalleMateriaPage from "../paginas/Academico/DetalleMateriaPage";
 
-{/* Rutas de Evaluacion */}
+{/* Rutas de Evaluacion */ }
 import ActividadesPage from "../paginas/Evaluacion/ActividadesPage";
+import CalificacionesPage from "../paginas/Evaluacion/CalificacionesPage";
 
-      {/* Rutas de Periodo */}
+{/* Rutas de Periodo */ }
 import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 import NotificacionesPage from "../paginas/Periodo/NotificacionesPage";
+
 
 
 export const Homed = () => {
@@ -56,6 +58,7 @@ export const Homed = () => {
 
                     {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />
+                    <Route path="/calificaciones" element={<CalificacionesPage />} />
                     {/* Rutas de Periodo */}
                     <Route path="/participacion" element={<ParticipacionPage />} />
                     <Route path="/notificacion" element={<NotificacionesPage />} />
