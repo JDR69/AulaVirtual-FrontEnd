@@ -9,6 +9,7 @@ import UsuarioPage from "../paginas/User/UsuarioPage";
 import BitacoraPage from "../paginas/User/BitacoraPage";
 import PermisoPage from "../paginas/User/PermisoPage";
 import GestionUsuario from "../paginas/User/GestionUsuario";
+import DasboardProfesor from "../paginas/User/DasboardProfesor";
 
 {/* Rutas de Academico */ }
 import GestionAcademico from "../paginas/Academico/GestionAcademico";
@@ -52,6 +53,7 @@ export const Homed = () => {
                     <Route path="/bitacora" element={<BitacoraPage />} />
                     <Route path="/permiso-usuario" element={<PermisoPage />} />
                     <Route path="/gestion-usuario" element={<GestionUsuario />} />
+                    <Route path="/seleccionar-curso" element={<DasboardProfesor />} />
                     {/* Rutas de Academico */}
                     <Route path="/detalle-academica" element={<GestionAcademico />} />
                     <Route path="/detalle-curso" element={<DetalleCursoPage />} />

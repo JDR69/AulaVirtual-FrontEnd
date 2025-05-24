@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import LoginPage from './componentes/paginas/LoginPage'
 import { Homed } from './componentes/Homed/Homed'
 import { AuthProvider } from './context/AuthContext'
+import DasboardProfesor from './componentes/paginas/User/DasboardProfesor'
 
 
 function App() {
@@ -23,7 +24,7 @@ function Main() {
       <Routes>
         <Route path="" element={<LoginPage />} />
         <Route path="/dasboard/*" element={<Homed/>}/>
-          <Route path="/profesor/*" element={<Homed/>}/>
+          <Route path="/profesor/" element={<DasboardProfesor/>}/>
       </Routes>
     </>
   )

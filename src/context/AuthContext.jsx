@@ -25,6 +25,9 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
 
+    //Cargando DATOS
+    const [materiaProfesor,setMateriaProfesor] = useState(null)
+
     //Variables Usuarios
     const [usuarios,setUsuarios] = useState(null);
     const [permisosDelUsuario, setPermisosDelUsuario] = useState(null)
@@ -152,6 +155,9 @@ return (
         setUsuarios,
 
         detalleCompleto,
+
+        materiaProfesor,
+        setMateriaProfesor,
     }}>
         {children}
     </AuthContext.Provider>

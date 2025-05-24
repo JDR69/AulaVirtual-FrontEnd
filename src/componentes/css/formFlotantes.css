@@ -41,8 +41,8 @@
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    width: 100%;
-    max-width: 600px; /* Limitar el ancho máximo */
+    max-width: 730px; /* Limitar el ancho máximo */
+    width: auto;
     min-height: 150px;
     pointer-events: auto; /* Asegura que los eventos del ratón se capturan */
 }
