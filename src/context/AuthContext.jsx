@@ -27,6 +27,8 @@ export const AuthProvider = ({ children }) => {
 
     //Cargando DATOS
     const [materiaProfesor,setMateriaProfesor] = useState(null)
+    const [directorOk,setDirectorOK] = useState(null)
+    const [user,setUser] = useState(null)
 
     //Variables Usuarios
     const [usuarios,setUsuarios] = useState(null);
@@ -50,8 +52,10 @@ export const AuthProvider = ({ children }) => {
         try {
             const res = await login_request(user);
             console.log(res.data);
-            setUsuarios(res.data.usuario)
+            setUser(res.data.usuario)
             setPermisosDelUsuario(res.data.permisos)
+            localStorage.setItem("usuario", JSON.stringify(res.data.usuario));
+            return res.data.usuario.rol_nombre
 
         } catch (err) {
             throw err; 
@@ -106,7 +110,8 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
     async function checklogin() {
         const token = localStorage.getItem('token');
-        const savedUser = localStorage.getItem("user");
+        const savedUser = localStorage.getItem("usuario");
+        setUser(JSON.parse(savedUser));
         cargarDatos();
         // if (!token) {
         //     setLoading(false);
@@ -158,6 +163,11 @@ return (
 
         materiaProfesor,
         setMateriaProfesor,
+
+        user,
+
+        setDirectorOK,
+        directorOk,
     }}>
         {children}
     </AuthContext.Provider>

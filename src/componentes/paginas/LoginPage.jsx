@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import '../css/LoginPageCss.css'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom'
 const LoginPage = () => {
 
     const navigate = useNavigate();
-
-    const { signin } = useAuth();
+    const [loading,setLoading] = useState(false)
+    const { signin,setDirectorOK} = useAuth();
 
     const [data, setData] = useState({
         ci: '',
@@ -16,10 +16,21 @@ const LoginPage = () => {
 
     const loguearse = async() =>{
         try {
-            await signin(data)
-            navigate('/dasboard/homeda')
+            setLoading(true)
+            const res = await signin(data)
+            if(res){
+                if(res === "Profesor"){
+                    navigate('/dasboard/seleccionar-curso')
+                }else{
+                    navigate('/dasboard/homeda')
+                    setDirectorOK("okis")
+                }
+            }
+            console.log(res)
         } catch (error) {
             console.log(error)
+        }finally{
+            setLoading(false)
         }
     }
 
@@ -53,7 +64,7 @@ const LoginPage = () => {
                                 placeholder="********" />
                         </div>
 
-                        <button type="button" onClick={loguearse}>Entrar</button>
+                        <button type="button" onClick={loguearse} disabled={loading}>{loading ? 'Cargando...' : 'Iniciar Sesión'}</button>
                     </form>
                 </div>
                 <div id='img'>

@@ -262,3 +262,6 @@ export const nuevoDetalleMateriaRequest = (data) => instance.post(`/api/academia
     }
 )
 export const obtenerDetalleMateriaRequest = () => {return instance.get(`/api/academia/obtener-detalle-materia/`,{timeout:tiempoEspera})}
+
+//OBTENER DETALLE DE LAS MATERIAS DEL PROFESOR
+export const obtenerDetalleMateriaProfesorRequest = (id) => {return instance.get(`/api/usuario/obtenerMateriaProfesor/${id}/`,{timeout:tiempoEspera})}

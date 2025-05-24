@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import '../../css/DarboardProfesor.css'
 import { useAuth } from '../../../context/AuthContext'
+import { obtenerDetalleMateriaProfesorRequest } from '../../../api/auth'
 
 const DasboardProfesor = () => {
-    const {materiaProfesor,setMateriaProfesor} = useAuth();
+    const { materiaProfesor, setMateriaProfesor, user } = useAuth();
+    const [materiasB, setMateriasB] = useState([])
     const materias = [
         {
             materia: 'Matemáticas',
@@ -28,19 +30,36 @@ const DasboardProfesor = () => {
         },
     ]
 
+    useEffect(() => {
+        if (user && user.id) {
+            fetchUsuarios();
+        }
+    }, [user]);
+
+
+    const fetchUsuarios = async () => {
+        try {
+            console.log(user)
+            const res = await obtenerDetalleMateriaProfesorRequest(user.id);
+            console.log(res.data)
+            setMateriasB(res.data)
+        } catch (error) {
+            console.error('Error al obtener usuarios:', error);
+        }
+    };
+
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <div className="dashboard-container">
                     <h1 className="dashboard-title">Seleccionar el Curso</h1>
                     <div className="cards-container">
-                        {materias.map((item, index) => (
-                            <div key={index} className="card" onClick={()=> setMateriaProfesor("hola")}>
+                        {materiasB.map((mat, index) => (
+                            <div key={index} className="card" onClick={() => setMateriaProfesor(mat)}>
                                 <h2 className="card-title">
-                                    {item.materia} - Grupo {item.grupo}
+                                    {mat.descripcion.materia_nombre} - Curso: {mat.horarios.nombre_curso}  {mat.horarios.descripcion_paralelo}
                                 </h2>
-                                <p><strong>Día:</strong> {item.dia}</p>
-                                <p><strong>Horario:</strong> {item.hora_inicio} - {item.hora_fin}</p>
+                                <p><strong>Horario:</strong> {mat.horarios.hora_inicial} - {mat.horarios.hora_final}</p>
                             </div>
                         ))}
                     </div>

@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 
 
 const CustomNavbar = () => {
-  const { materiaProfesor } = useAuth();
+  const { materiaProfesor , directorOk } = useAuth();
 
 
   // useEffect(() => {
@@ -27,7 +27,7 @@ const CustomNavbar = () => {
         {/* Contenido colapsable */}
 
         {
-          materiaProfesor ? (
+          materiaProfesor || directorOk ? (
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
                 <NavDropdown title="Usuarios" id="basic-nav-dropdown">
