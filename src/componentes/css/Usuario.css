@@ -82,3 +82,14 @@
     background-color: #218838;
 }
 
+.colorActivo {
+    color: green;
+    font-weight: bold;
+}
+
+.colorInactivo {
+    color: red;
+    font-weight: normal;
+}
+
+
