@@ -243,71 +243,69 @@ function ActividadesPage() {
             </div>
             {/* Modal */}
             {showModal && (
-                <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
-                    <div className="modal-dialog">
-                        <div className="form-flotante">
-                            <div className="modal-header">
-                                <h5 className="modal-title">{editIndex !== null ? 'Editar Actividad' : 'Nueva Actividad'}</h5>
-                                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                            </div>
-                            <div className="modal-body">
-                                <form onSubmit={handleSubmit}>
-                                    <div className="mb-3">
-                                        <label className="form-label">Tipo de Actividad</label>
-                                        <select className="form-select" name="tipo" value={form.tipo} onChange={handleChange} required>
-                                            <option value="">Seleccionar</option>
-                                            <option value="Examen">Examen</option>
-                                            <option value="Tarea">Tarea</option>
-                                            <option value="Proyecto">Proyecto</option>
-                                            <option value="Otro">Otro</option>
-                                        </select>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Descripción</label>
-                                        <input type="text" className="form-control" name="descripcion" value={form.descripcion} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Fecha de Inicio</label>
-                                        <input type="date" className="form-control" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Fecha de Fin</label>
-                                        <input type="date" className="form-control" name="fechaFin" value={form.fechaFin} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Hora de Inicio</label>
-                                        <input type="time" className="form-control" name="horaInicio" value={form.horaInicio} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Hora de Fin</label>
-                                        <input type="time" className="form-control" name="horaFin" value={form.horaFin} onChange={handleChange} required />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Curso + Paralelo</label>
-                                        <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required >
-                                            <option value="">Seleccionar</option>
-                                            <option value="Pendiente">Pendiente</option>
-                                        </select>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label className="form-label">Estado</label>
-                                        <select className="form-select" name="estado" value={form.estado} onChange={handleChange} required>
-                                            <option value="">Seleccionar</option>
-                                            <option value="Pendiente">Pendiente</option>
-                                            <option value="Entregado">Entregado</option>
-                                            <option value="Calificado">Calificado</option>
-                                        </select>
-                                    </div>
-                                    <div className="modal-footer">
-                                        <button type="button" className="btn btn-danger" onClick={handleCloseModal}>
-                                            Cancelar
-                                        </button>
-                                        <button type="submit" className="btn btn-success">
-                                            {editIndex !== null ? 'Guardar Cambios' : 'Guardar Actividad'}
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                <div className='form-gris'>
+                    <div className="form-flotante">
+                        <div className="modal-header">
+                            <h5 className="modal-title">{editIndex !== null ? 'Editar Actividad' : 'Nueva Actividad'}</h5>
+                            <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                        </div>
+                        <div className="modal-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label className="form-label">Tipo de Actividad</label>
+                                    <select className="form-select" name="tipo" value={form.tipo} onChange={handleChange} required>
+                                        <option value="">Seleccionar</option>
+                                        <option value="Examen">Examen</option>
+                                        <option value="Tarea">Tarea</option>
+                                        <option value="Proyecto">Proyecto</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Descripción</label>
+                                    <input type="text" className="form-control" name="descripcion" value={form.descripcion} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Fecha de Inicio</label>
+                                    <input type="date" className="form-control" name="fechaInicio" value={form.fechaInicio} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Fecha de Fin</label>
+                                    <input type="date" className="form-control" name="fechaFin" value={form.fechaFin} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Hora de Inicio</label>
+                                    <input type="time" className="form-control" name="horaInicio" value={form.horaInicio} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Hora de Fin</label>
+                                    <input type="time" className="form-control" name="horaFin" value={form.horaFin} onChange={handleChange} required />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Curso + Paralelo</label>
+                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required >
+                                        <option value="">Seleccionar</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                    </select>
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Estado</label>
+                                    <select className="form-select" name="estado" value={form.estado} onChange={handleChange} required>
+                                        <option value="">Seleccionar</option>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Entregado">Entregado</option>
+                                        <option value="Calificado">Calificado</option>
+                                    </select>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-danger" onClick={handleCloseModal}>
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" className="btn btn-success">
+                                        {editIndex !== null ? 'Guardar Cambios' : 'Guardar Actividad'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

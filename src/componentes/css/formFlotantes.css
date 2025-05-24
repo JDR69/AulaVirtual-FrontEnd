@@ -72,4 +72,13 @@
     color: black;
 }
 
+.modal-body{
+    min-width: 700px;
+}
+
+.modal-body form{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
 
