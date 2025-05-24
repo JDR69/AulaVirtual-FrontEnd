@@ -42,7 +42,21 @@
     color: #ffffff;
     margin: 0;
   }
-  
+  /* Agregar a tu archivo Homedas.css */
+.disabled-item {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.containerHome div {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.containerHome div:not(.disabled-item):hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
   @media (max-width: 768px) {
     .containerHome {
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));

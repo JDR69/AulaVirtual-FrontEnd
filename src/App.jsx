@@ -23,6 +23,7 @@ function Main() {
       <Routes>
         <Route path="" element={<LoginPage />} />
         <Route path="/dasboard/*" element={<Homed/>}/>
+          <Route path="/profesor/*" element={<Homed/>}/>
       </Routes>
     </>
   )

@@ -22,6 +22,7 @@ import CalificacionesPage from "../paginas/Evaluacion/CalificacionesPage";
 {/* Rutas de Periodo */ }
 import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 import NotificacionesPage from "../paginas/Periodo/NotificacionesPage";
+import AsistenciaPage from "../paginas/Evaluacion/AsistenciaPage";
 
 
 
@@ -59,6 +60,9 @@ export const Homed = () => {
                     {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />
                     <Route path="/calificaciones" element={<CalificacionesPage />} />
+                    <Route path="/asistencia" element={<AsistenciaPage />} />
+                   
+                   
                     {/* Rutas de Periodo */}
                     <Route path="/participacion" element={<ParticipacionPage />} />
                     <Route path="/notificacion" element={<NotificacionesPage />} />
