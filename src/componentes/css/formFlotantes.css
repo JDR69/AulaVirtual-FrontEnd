@@ -41,7 +41,7 @@
     z-index: 1000;
     width: auto;
     min-width: 400px;
-    min-height: 180px;
+    min-height: auto;
 }
 
 .Usuario-actualizar{

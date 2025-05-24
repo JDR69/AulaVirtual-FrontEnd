@@ -245,7 +245,7 @@ function ActividadesPage() {
             {showModal && (
                 <div className="modal fade show" style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}>
                     <div className="modal-dialog">
-                        <div className="modal-content">
+                        <div className="form-flotante">
                             <div className="modal-header">
                                 <h5 className="modal-title">{editIndex !== null ? 'Editar Actividad' : 'Nueva Actividad'}</h5>
                                 <button type="button" className="btn-close" onClick={handleCloseModal}></button>
