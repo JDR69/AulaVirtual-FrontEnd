@@ -288,3 +288,25 @@ export const actualizarNotificacionesRequest = (id, data) => instance.put(`/api/
   },
   withCredentials: true
 })
+
+//GESTIONES
+export const crearNuevaGestionRequest = (data) => instance.post(`/api/periodo/crear-gestion/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)
+
+export const obtenerGestionRequest = () => { return instance.get(`/api/periodo/obtener-gestiones/`,{timeout:tiempoEspera})}
+
+//TRIMESTRE 
+export const crearNuevoTrimestreRequest = (data) =>  instance.post(`/api/periodo/crear-trimestre/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)
