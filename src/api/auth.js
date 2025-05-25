@@ -266,15 +266,22 @@ export const obtenerDetalleMateriaRequest = () => { return instance.get(`/api/ac
 //OBTENER DETALLE DE LAS MATERIAS DEL PROFESOR
 export const obtenerDetalleMateriaProfesorRequest = (id) => { return instance.get(`/api/usuario/obtenerMateriaProfesor/${id}/`, { timeout: tiempoEspera }) }
 
+
 // NOTIFICACIONES
-
-export const obtenerNotificacionesRequest = (id) => { return instance.get(`api/periodo/obtener-notificacion-uni/${id}/`, 
+export const nuevoNotificacionRequest = (data,id) => instance.post(`/api/periodo/crear-notificacion-uni/${id}/`,
+  data, {
+  headers: {
+    "Content-Type": "application/json"
+  },
+  withCredentials: true
+}
+)
+export const obtenerNotificacionesRequest = (id) => { return instance.get(`/api/periodo/obtener-notificacion-uni/${id}/`, 
   { timeout: tiempoEspera 
-
   }) }
 
-// El error está aquí - falta el parámetro data
-export const actualizarNotificacionesRequest = (id, data) => instance.put(`api/periodo/actualizar-notificacion-uni/${id}/`,
+
+export const actualizarNotificacionesRequest = (id, data) => instance.put(`/api/periodo/actualizar-notificacion-uni/${id}/`,
   data, {
   headers: {
     "Content-Type": "application/json"

@@ -25,6 +25,7 @@ import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 import NotificacionesPage from "../paginas/Periodo/NotificacionesPage";
 import AsistenciaPage from "../paginas/Evaluacion/AsistenciaPage";
 import CrearNotificacionPage from "../paginas/Periodo/CrearNotificacionPage";
+import Gestiones from "../paginas/Periodo/Gestiones";
 
 
 
@@ -70,6 +71,9 @@ export const Homed = () => {
                     <Route path="/participacion" element={<ParticipacionPage />} />
                     <Route path="/notificacion" element={<NotificacionesPage />} />
                     <Route path="/crear-notificacion" element={<CrearNotificacionPage />} />
+  <Route path="/gestiones" element={<Gestiones />} />
+
+
 
 
 

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, Container, NavDropdown, Badge } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { obtenerNotificacionesRequest } from "../../api/auth";
 
 const CustomNavbar = () => {
   const { materiaProfesor, directorOk, user, logout, setMateriaProfesor } = useAuth();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [notificacionesPendientes, setNotificacionesPendientes] = useState(0);
   const navigate = useNavigate();
 
   // Verificación del rol de profesor (con múltiples posibilidades)
@@ -21,6 +23,41 @@ const CustomNavbar = () => {
       // console.log("Materia del profesor en localStorage:", localStorage.getItem('materiaProfesor'));
     }
   }, [user]);
+
+  // Efecto para cargar notificaciones pendientes
+ useEffect(() => {
+  const cargarNotificacionesPendientes = async () => {
+    if (user && user.id) {
+      try {
+        const response = await obtenerNotificacionesRequest(user.id);
+        
+        // Filtrar notificaciones con estado true (no leídas)
+        let pendientes = 0;
+        if (response && response.data) {
+          // Comprobar si es un array o un solo objeto
+          if (Array.isArray(response.data)) {
+            pendientes = response.data.filter(notif => notif.estado === true).length;
+          } else if (response.data.estado === true) {
+            // Si es un solo objeto con estado true
+            pendientes = 1;
+          }
+        }
+        
+        console.log("Notificaciones pendientes:", pendientes);
+        setNotificacionesPendientes(pendientes);
+      } catch (error) {
+        console.error("Error al cargar notificaciones:", error);
+      }
+    }
+  };
+
+  if (user) {
+    cargarNotificacionesPendientes();
+    // Verificar nuevas notificaciones cada minuto
+    const intervalo = setInterval(cargarNotificacionesPendientes, 60000);
+    return () => clearInterval(intervalo);
+  }
+}, [user]);
 
   // Función para cambiar de curso (volver a la selección)
   const handleChangeCourse = () => {
@@ -143,6 +180,10 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
                     Calificaciones
                   </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/dasboard/gestiones">
+                   Gestiones
+                  </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/crear-notificacion">
                     Mandar Notificacion
@@ -160,9 +201,45 @@ const CustomNavbar = () => {
             <Nav.Link as={Link} to="/dasboard/homeda">
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/dasboard/notificacion">
-              <i className="bi bi-bell-fill"></i>
-            </Nav.Link>
+          <Nav.Link as={Link} to="/dasboard/notificacion" className="position-relative">
+  {notificacionesPendientes > 0 ? (
+    <>
+      <i 
+        className="bi bi-bell-fill" 
+        style={{ 
+          color: "#ff0000", // Cambiado a un rojo puro y brillante
+          animation: "bell-ring 2s infinite ease-in-out"
+        }}
+      ></i>
+      <Badge 
+        bg="danger" 
+        pill 
+        className="position-absolute"
+        style={{
+          top: "0", 
+          right: "0",
+          transform: "translate(50%, -50%)", 
+          fontSize: "0.65rem"
+        }}
+      >
+        {notificacionesPendientes}
+      </Badge>
+      <style>
+        {`
+          @keyframes bell-ring {
+            0% { transform: rotate(0); }
+            5% { transform: rotate(15deg); }
+            10% { transform: rotate(-15deg); }
+            15% { transform: rotate(0); }
+            100% { transform: rotate(0); }
+          }
+        `}
+      </style>
+    </>
+  ) : (
+    <i className="bi bi-bell-fill"></i>
+  )}
+</Nav.Link>
             <Nav.Link onClick={handleLogout}>
               <i className="bi bi-box-arrow-right"></i>
             </Nav.Link>

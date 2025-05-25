@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import '../../css/CalificacionesPage.css'
+
 function CalificacionesPage() {
     const [estudiantes, setEstudiantes] = useState([]);
     const [estudianteSeleccionado, setEstudianteSeleccionado] = useState('');
@@ -8,6 +9,11 @@ function CalificacionesPage() {
     const [notasModificadas, setNotasModificadas] = useState({});
     const [guardando, setGuardando] = useState(false);
     const [mensaje, setMensaje] = useState('');
+    
+    // Nuevos estados para el buscador
+    const [busqueda, setBusqueda] = useState('');
+    const [resultadosBusqueda, setResultadosBusqueda] = useState([]);
+    const [mostrarResultados, setMostrarResultados] = useState(false);
 
     // Simulación de datos (reemplazar con llamadas a API reales)
     useEffect(() => {
@@ -16,6 +22,9 @@ function CalificacionesPage() {
             { id: '1', nombre: 'Juan Pérez' },
             { id: '2', nombre: 'María García' },
             { id: '3', nombre: 'Carlos López' },
+            { id: '4', nombre: 'Ana Martínez' },
+            { id: '5', nombre: 'Roberto Jiménez' },
+            { id: '6', nombre: 'Laura Sánchez' },
         ]);
     }, []);
 
@@ -56,10 +65,46 @@ function CalificacionesPage() {
         }
     }, [estudianteSeleccionado]);
 
-    const handleEstudianteChange = (e) => {
-        setEstudianteSeleccionado(e.target.value);
+    // Función para manejar la búsqueda
+    const handleBusquedaChange = (e) => {
+        const valor = e.target.value;
+        setBusqueda(valor);
+        
+        if (valor.trim() === '') {
+            setResultadosBusqueda([]);
+            setMostrarResultados(false);
+            return;
+        }
+        
+        // Filtrar estudiantes que coincidan con la búsqueda
+        const resultados = estudiantes.filter(estudiante => 
+            estudiante.nombre.toLowerCase().includes(valor.toLowerCase())
+        );
+        
+        setResultadosBusqueda(resultados);
+        setMostrarResultados(true);
+    };
+
+    // Seleccionar un estudiante del resultado de búsqueda
+    const seleccionarEstudiante = (estudiante) => {
+        setEstudianteSeleccionado(estudiante.id);
+        setBusqueda(estudiante.nombre);
+        setMostrarResultados(false);
         setMensaje('');
-    }
+    };
+
+    // Enfocar en el campo de búsqueda
+    const mostrarBusqueda = () => {
+        setMostrarResultados(true);
+    };
+
+    // Cerrar resultados cuando se hace clic fuera del área de búsqueda
+    const cerrarResultados = () => {
+        // Usar un pequeño retraso para permitir que el clic en un resultado funcione
+        setTimeout(() => {
+            setMostrarResultados(false);
+        }, 200);
+    };
 
     const handleNotaChange = (tareaId, valor) => {
         // Validar que el valor esté entre 0 y 100
@@ -110,25 +155,65 @@ function CalificacionesPage() {
         }, 1000);
     }
 
+    // Limpiar la búsqueda y el estudiante seleccionado
+    const limpiarBusqueda = () => {
+        setBusqueda('');
+        setEstudianteSeleccionado('');
+        setResultadosBusqueda([]);
+        setMostrarResultados(false);
+    };
+
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <h1>Calificaciones</h1>
                 <div className='contenedor-contenido'>
-                    <div className='contenedor-contenido'>
-                        <label htmlFor="estudiante">Seleccionar Estudiante:</label>
-                        <select 
-                            className='form-select'
-                            value={estudianteSeleccionado} 
-                            onChange={handleEstudianteChange}
-                        >
-                            <option value="">Seleccione un estudiante</option>
-                            {estudiantes.map(estudiante => (
-                                <option key={estudiante.id} value={estudiante.id}>
-                                    {estudiante.nombre}
-                                </option>
-                            ))}
-                        </select>
+                    <div className='contenedor-buscador'>
+                         <div className="buscador-wrapper">
+                            <div className="input-group">
+                                <input 
+                                    type="text"
+                                    id="busqueda-estudiante"
+                                    className="form-control"
+                                    placeholder="Ingrese nombre del estudiante"
+                                    value={busqueda}
+                                    onChange={handleBusquedaChange}
+                                    onFocus={mostrarBusqueda}
+                                    onBlur={cerrarResultados}
+                                />
+                                {busqueda && (
+                                    <button 
+                                        className="btn btn-outline-secondary" 
+                                        type="button"
+                                        onClick={limpiarBusqueda}
+                                    >
+                                        <i className="bi bi-x"></i>
+                                    </button>
+                                )}
+                            </div>
+                            
+                            {mostrarResultados && resultadosBusqueda.length > 0 && (
+                                <div className="resultados-busqueda">
+                                    {resultadosBusqueda.map(estudiante => (
+                                        <div 
+                                            key={estudiante.id} 
+                                            className="resultado-item"
+                                            onClick={() => seleccionarEstudiante(estudiante)}
+                                        >
+                                            {estudiante.nombre}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {mostrarResultados && busqueda && resultadosBusqueda.length === 0 && (
+                                <div className="resultados-busqueda">
+                                    <div className="resultado-item no-resultados">
+                                        No se encontraron estudiantes
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {mensaje && (

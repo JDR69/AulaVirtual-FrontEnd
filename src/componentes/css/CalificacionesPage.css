@@ -49,3 +49,80 @@
     cursor: not-allowed;
     opacity: 0.65;
 }
+/* Estilos existentes */
+
+/* Estilos para el buscador */
+.contenedor-buscador {
+    margin-bottom: 20px;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buscador-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.resultados-busqueda {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.resultado-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.resultado-item:hover {
+    background-color: #f8f9fa;
+}
+
+.resultado-item.no-resultados {
+    color: #6c757d;
+    font-style: italic;
+    cursor: default;
+}
+
+/* Estilo para el botón de limpiar */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    
+}
+
+.btn-outline-secondary {
+    border-left: none;
+}
+
+/* Mensajes de éxito y error */
+.mensaje-exito {
+    padding: 10px 15px;
+    margin: 15px 0;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+}
+
+.mensaje-error {
+    padding: 10px 15px;
+    margin: 15px 0;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}

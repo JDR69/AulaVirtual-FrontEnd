@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { obtenerUsuarioRequest } from '../../../api/auth'
+import { obtenerUsuarioRequest, nuevoNotificacionRequest } from '../../../api/auth'
 
 function CrearNotificacionPage() {
   const [usuarios, setUsuarios] = useState([])
   const [loading, setLoading] = useState(true)
   const [tipoDestinatario, setTipoDestinatario] = useState('')
-  const [usuarioEspecifico, setUsuarioEspecifico] = useState('')
+  const [usuario, setUsuario] = useState('') 
   const [titulo, setTitulo] = useState('')
-  const [contenido, setContenido] = useState('')
+  const [mensaje, setMensaje] = useState('')
   const [fecha, setFecha] = useState('')
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
 
   // Estado siempre será true como se requiere
   const estado = true
@@ -28,29 +30,64 @@ function CrearNotificacionPage() {
     cargarUsuarios()
   }, [])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setError(null)
+    setSuccess(false)
     
-    // Crear objeto con los datos de la notificación
+    // Verificar si se ha seleccionado un usuario específico cuando es necesario
+    if (tipoDestinatario === 'especifico' && !usuario) {
+      setError("Por favor seleccione un usuario específico");
+      return;
+    }
+    
+    // Crear objeto con los datos de la notificación según el formato requerido
     const notificacion = {
-      tipo_destinatario: tipoDestinatario,
-      usuario_especifico: tipoDestinatario === 'especifico' ? usuarioEspecifico : null,
       titulo,
-      contenido,
       fecha,
-      estado
+      estado,
+      // Si es un usuario específico, mandamos su ID, si no, mandamos cadena vacía
+      usuario: tipoDestinatario === 'especifico' ? usuario : '',
+      mensaje
     }
     
     console.log('Datos de notificación a enviar:', notificacion)
-    // Aquí iría la lógica para enviar la notificación al backend
+    
+    try {
+      const response = await nuevoNotificacionRequest(notificacion, parseInt(notificacion.usuario))
+      console.log('Notificación enviada exitosamente:', response)
+      setSuccess(true)
+      // Resetear el formulario
+      setTitulo('')
+      setFecha('')
+      setMensaje('')
+      setUsuario('')
+      setTipoDestinatario('')
+    } catch (error) {
+      console.error("Error al enviar la notificación:", error)
+      setError("Error al enviar la notificación. Por favor, intente nuevamente.")
+    }
   }
 
   return (
     <div className='contenedor-principal'>
       <div className='contenedor-secundario'>
      
-        <div onSubmit={handleSubmit} className='contenedor-notificaciones '>
-               <h1>Crear Notificación</h1>
+        <form onSubmit={handleSubmit} className='contenedor-notificaciones'>
+          <h1>Crear Notificación</h1>
+          
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
+          
+          {success && (
+            <div className="alert alert-success" role="alert">
+              Notificación enviada exitosamente.
+            </div>
+          )}
+          
           {/* Selector de destinatario */}
           <div className='contenedor-contenido'>
             <label htmlFor="tipoDestinatario">Destinatario:</label>
@@ -58,7 +95,11 @@ function CrearNotificacionPage() {
               id="tipoDestinatario" 
               className='form-control'
               value={tipoDestinatario}
-              onChange={(e) => setTipoDestinatario(e.target.value)}
+              onChange={(e) => {
+                setTipoDestinatario(e.target.value);
+                // Resetear el usuario seleccionado cuando cambia el tipo de destinatario
+                setUsuario('');
+              }}
               required
             >
               <option value="">Seleccione un destinatario</option>
@@ -71,21 +112,21 @@ function CrearNotificacionPage() {
           {/* Selector de usuario específico (solo visible si se selecciona "específico") */}
           {tipoDestinatario === 'especifico' && (
             <div className='contenedor-contenido'>
-              <label htmlFor="usuarioEspecifico">Seleccionar Usuario:</label>
+              <label htmlFor="usuario">Seleccionar Usuario:</label>
               <select 
-                id="usuarioEspecifico" 
+                id="usuario" 
                 className='form-control'
-                value={usuarioEspecifico}
-                onChange={(e) => setUsuarioEspecifico(e.target.value)}
+                value={usuario}
+                onChange={(e) => setUsuario(e.target.value)}
                 required
               >
                 <option value="">Seleccione un usuario</option>
                 {loading ? (
                   <option disabled>Cargando usuarios...</option>
                 ) : (
-                  usuarios.map(usuario => (
-                    <option key={usuario.id} value={usuario.id}>
-                      {usuario.nombre} {usuario.apellido} - {usuario.rol_nombre || 'Sin rol'}
+                  usuarios.map(u => (
+                    <option key={u.id} value={u.id}>
+                      {u.nombre} {u.apellido} - {u.rol_nombre || 'Sin rol'}
                     </option>
                   ))
                 )}
@@ -106,7 +147,7 @@ function CrearNotificacionPage() {
             />
           </div>
 
-          {/* Campo de título (ya existente pero ahora con estado controlado) */}
+          {/* Campo de título */}
           <div className='contenedor-contenido'>
             <label htmlFor="titulo">Título:</label>
             <input 
@@ -119,21 +160,21 @@ function CrearNotificacionPage() {
             />
           </div>
 
-          {/* Campo de contenido (ya existente pero ahora con estado controlado) */}
+          {/* Campo de mensaje */}
           <div className='contenedor-contenido'>
-            <label htmlFor="contenido">Contenido:</label>
+            <label htmlFor="mensaje">Mensaje:</label>
             <textarea 
-              id="contenido" 
+              id="mensaje" 
               className='form-control' 
               rows="4"
-              value={contenido}
-              onChange={(e) => setContenido(e.target.value)}
+              value={mensaje}
+              onChange={(e) => setMensaje(e.target.value)}
               required
             ></textarea>
           </div>
 
           <button type="submit" className='btn btn-primary'>Enviar Notificación</button>
-        </div>
+        </form>
       </div>
     </div>
   )
