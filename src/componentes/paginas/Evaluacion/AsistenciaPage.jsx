@@ -61,15 +61,18 @@ function AsistenciaPage() {
 
         {/* Input oculto para el escáner */}
         <input
+          placeholder='Escanear CI'
+          className='form-control'
           type="text"
           ref={inputRef}
           onChange={handleScan}
         />
 
         <div style={{ marginBottom: '10px' }}>
-          <label><strong>Fecha:</strong></label>
+          <label className='form-label'>Fecha:</label>
           <input
             type="date"
+            className="form-control"
             value={fecha}
             onChange={e => setFecha(e.target.value)}
             style={{ padding: '6px', marginLeft: '10px' }}
@@ -80,7 +83,7 @@ function AsistenciaPage() {
           {mensaje}
         </div>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <table className='table-striped'>
           <thead>
             <tr style={{ background: '#005f99', color: '#fff' }}>
               <th>ID</th>
@@ -108,14 +111,9 @@ function AsistenciaPage() {
         </table>
 
         <div style={{ marginTop: '20px', textAlign: 'right' }}>
-          <button onClick={handleGuardar} style={{
-            padding: '10px 20px',
-            backgroundColor: '#005f99',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>
+          <button onClick={handleGuardar} 
+          className='btn btn-primary'
+          >
             Guardar Asistencia
           </button>
         </div>

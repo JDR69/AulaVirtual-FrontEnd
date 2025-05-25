@@ -1,35 +1,89 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-
 const CustomNavbar = () => {
-  const { materiaProfesor , directorOk } = useAuth();
+  const { materiaProfesor, directorOk, user, logout, setMateriaProfesor } = useAuth();
+  const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
+  // Verificación del rol de profesor (con múltiples posibilidades)
+  const isProfesor = user && (user.rol_id === 2 || user.rol === 2 || (user.rol_nombre && user.rol_nombre === "Profesor"));
+  
+  // Verificar si el profesor ya seleccionó un curso
+  const profesorConCursoSeleccionado = isProfesor && materiaProfesor;
 
-  // useEffect(() => {
-  //   console.log("Estado actual del usuario:", user);
-  // }, [user]); 
+  useEffect(() => {
+    if (user) {
+      setIsLoaded(true);
+      console.log("Usuario cargado en navbar:", user);
+      console.log("Materia del profesor en localStorage:", localStorage.getItem('materiaProfesor'));
+    }
+  }, [user]);
 
+  // Función para cambiar de curso (volver a la selección)
+  const handleChangeCourse = () => {
+    setMateriaProfesor(null);
+    navigate('/dasboard/seleccionar-curso');
+  };
+  
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  // Para depuración
+  console.log("Usuario actual:", user);
+  console.log("¿Es profesor?:", isProfesor);
+  console.log("materiaProfesor:", materiaProfesor);
+  console.log("¿Profesor con curso seleccionado?:", profesorConCursoSeleccionado);
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect >
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect>
       <Container style={{ fontWeight: "bold" }}>
         {/* Logo / Marca */}
-        <Navbar.Brand as={Link} to="/">
-          Mi App
+        <Navbar.Brand as={Link} to="/dasboard/homeda">
+          Aula Virtual
         </Navbar.Brand>
 
         {/* Botón para móviles */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-        {/* Contenido colapsable */}
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            {!isLoaded ? (
+              <Nav.Link disabled>Cargando...</Nav.Link>
+            ) : isProfesor && !materiaProfesor ? (
+              // Si es profesor pero NO ha seleccionado curso, mostrar mensaje
+              <Nav.Link disabled>Seleccione un curso para continuar</Nav.Link>
+            ) : isProfesor && materiaProfesor ? (
+              // Si es profesor Y ha seleccionado curso, mostrar menú de profesor
+              <>
+                <Nav.Link as={Link} to="/dasboard/perfil-usuario">
+                  Perfil
+                </Nav.Link>
 
-        {
-          materiaProfesor || directorOk ? (
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="me-auto">
+                <Nav.Link as={Link} to="/profesor/asistencia">
+                  Asistencia
+                </Nav.Link>
+
+                <Nav.Link as={Link} to="/profesor/actividades">
+                  Actividades
+                </Nav.Link>
+
+                <Nav.Link as={Link} to="/profesor/calificaciones">
+                  Calificaciones
+                </Nav.Link>
+
+                <Nav.Link as={Link} to="/profesor/participacion">
+                  Participación
+                </Nav.Link>
+              </>
+            ) : (
+              // Si no es profesor, mostrar menú normal
+              <>
                 <NavDropdown title="Usuarios" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/dasboard/perfil-usuario">
                     Perfil
@@ -51,9 +105,7 @@ const CustomNavbar = () => {
                     Gestion de Usuarios
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-
                 </NavDropdown>
-
 
                 <NavDropdown title="Academico" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/dasboard/detalle-academica">
@@ -69,7 +121,6 @@ const CustomNavbar = () => {
                   </NavDropdown.Item>
                 </NavDropdown>
 
-
                 <NavDropdown title="Evaluaciones" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/dasboard/actividades">
                     Actividades
@@ -84,7 +135,6 @@ const CustomNavbar = () => {
                   </NavDropdown.Item>
                 </NavDropdown>
 
-
                 <NavDropdown title="Periodos" id="basic-nav-dropdown">
                   <NavDropdown.Item as={Link} to="/dasboard/participacion">
                     Participacion
@@ -98,34 +148,28 @@ const CustomNavbar = () => {
                     Ver todas
                   </NavDropdown.Item>
                 </NavDropdown>
-              </Nav>
-              <Nav>
-
-                <Nav.Link as={Link} to="/dasboard/homeda">
-                  Home
-                </Nav.Link>
-                <Nav.Link as={Link} to="/dasboard/notificacion">
-                  <i className="bi bi-bell-fill"></i>
-                </Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-          ) : (
-            <Nav>
-
-              <Nav.Link as={Link} to="/dasboard/homeda">
-                Cerrar Sesion
+              </>
+            )}
+          </Nav>
+          <Nav>
+            {isProfesor && materiaProfesor && (
+              <Nav.Link onClick={handleChangeCourse}>
+                Cambiar Curso
               </Nav.Link>
-              <Nav.Link as={Link} to="/dasboard/notificacion">
-                <i className="bi bi-bell-fill"></i>
-              </Nav.Link>
-            </Nav>
-          )
-        }
-
-
-
-      </Container >
-    </Navbar >
+            )}
+            <Nav.Link as={Link} to="/dasboard/homeda">
+              Home
+            </Nav.Link>
+            <Nav.Link as={Link} to="/dasboard/notificacion">
+              <i className="bi bi-bell-fill"></i>
+            </Nav.Link>
+            <Nav.Link onClick={handleLogout}>
+              <i className="bi bi-box-arrow-right"></i>
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 

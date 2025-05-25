@@ -24,15 +24,34 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
+    // Recuperar materiaProfesor del localStorage al iniciar
+    const [materiaProfesor, setMateriaProfesorState] = useState(() => {
+        const savedMateria = localStorage.getItem('materiaProfesor');
+        return savedMateria ? JSON.parse(savedMateria) : null;
+    });
 
-    //Cargando DATOS
-    const [materiaProfesor,setMateriaProfesor] = useState(null)
-    const [directorOk,setDirectorOK] = useState(null)
-    const [user,setUser] = useState(null)
+    // Función para actualizar materiaProfesor y guardarlo en localStorage
+    const setMateriaProfesor = (materia) => {
+        setMateriaProfesorState(materia);
+        if (materia) {
+            localStorage.setItem('materiaProfesor', JSON.stringify(materia));
+            console.log("Materia guardada en localStorage:", materia);
+        } else {
+            localStorage.removeItem('materiaProfesor');
+        }
+    };
+
+    const [directorOk, setDirectorOK] = useState(null);
+    
+    // Inicializar user desde localStorage si está disponible
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("usuario");
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
 
     //Variables Usuarios
     const [usuarios,setUsuarios] = useState(null);
-    const [permisosDelUsuario, setPermisosDelUsuario] = useState(null)
+    const [permisosDelUsuario, setPermisosDelUsuario] = useState(null);
     const [roles,setRoles]=useState([]);
     const [privilegios,setPrivilegios] =useState([]);
     const [permisos, setPermisos] = useState([]);
@@ -45,26 +64,46 @@ export const AuthProvider = ({ children }) => {
     const [paralelos,setParalelos] = useState([]);
 
     //DETALLE CURSO
-    const [detalleCompleto,setDetalleCompleto] = useState([])
-
+    const [detalleCompleto,setDetalleCompleto] = useState([]);
 
     const signin = async (user) => {
         try {
             const res = await login_request(user);
             console.log(res.data);
-            setUser(res.data.usuario)
-            setPermisosDelUsuario(res.data.permisos)
-            localStorage.setItem("usuario", JSON.stringify(res.data.usuario));
-            return res.data.usuario.rol_nombre
-
+            
+            const userData = res.data.usuario;
+            setUser(userData);
+            setPermisosDelUsuario(res.data.permisos);
+            
+            // Guardamos el usuario en localStorage
+            localStorage.setItem("usuario", JSON.stringify(userData));
+            
+            // Si hay un curso guardado para un usuario diferente, lo eliminamos
+            const savedMateria = localStorage.getItem('materiaProfesor');
+            if (savedMateria) {
+                const materiaData = JSON.parse(savedMateria);
+                if (materiaData && materiaData.profesor_id !== userData.id) {
+                    localStorage.removeItem('materiaProfesor');
+                    setMateriaProfesorState(null);
+                }
+            }
+            
+            return userData.rol_nombre;
         } catch (err) {
             throw err; 
-          }
-    }
+        }
+    };
 
-    const cargarDatos = async () =>{
+    // Función de logout que limpia los estados y localStorage
+    const logout = () => {
+        localStorage.removeItem('materiaProfesor');
+        localStorage.removeItem('usuario');
+        setMateriaProfesorState(null);
+        setUser(null);
+    };
+
+    const cargarDatos = async () => {
         try {
-
             const [
                 resUsuarios,
                 resRoles,
@@ -87,93 +126,74 @@ export const AuthProvider = ({ children }) => {
                 obtenerHorariosRequest(),
                 obtenerNivelesRequest(),
                 obtenerDetalleCompletoPorCurso(),
-            ])
-            console.log(resUsuarios.data)
-            setUsuarios(resUsuarios.data)
-            setRoles(resRoles.data)
-            setPrivilegios(resPrivilegios.data)
-            setPermisos(resPermisos.data)
-            setCursos(resCursos.data)
-            setMaterias(resMaterias.data)
-            setParalelos(resParalelos.data)
-            setHorarios(resHorarios.data)
-            setNiveles(resNiveles.data)
-            console.log(resDetalleCurso.data)
-            setDetalleCompleto(resDetalleCurso.data)
+            ]);
+            
+            setUsuarios(resUsuarios.data);
+            setRoles(resRoles.data);
+            setPrivilegios(resPrivilegios.data);
+            setPermisos(resPermisos.data);
+            setCursos(resCursos.data);
+            setMaterias(resMaterias.data);
+            setParalelos(resParalelos.data);
+            setHorarios(resHorarios.data);
+            setNiveles(resNiveles.data);
+            setDetalleCompleto(resDetalleCurso.data);
         } catch (err) {
+            console.error("Error cargando datos:", err);
             throw err;
         }
-    }
-
-  
+    };
 
     useEffect(() => {
-    async function checklogin() {
-        const token = localStorage.getItem('token');
-        const savedUser = localStorage.getItem("usuario");
-        setUser(JSON.parse(savedUser));
-        cargarDatos();
-        // if (!token) {
-        //     setLoading(false);
-        //     setUser(null);
-        //     return;
-        // }
-        // try {
-        //     setLoading(true);
-        //     cargarDatos();
-        //     cargarChoferes();
-        //     setUser(JSON.parse(savedUser));
-        //     setLoading(false);
-        // } catch (error) {
-        //     console.error(error);
-        //     logout();
-        //     setLoading(false);
-        //     navigate('/login');
-        // }
+        async function checklogin() {
+            const token = localStorage.getItem('token');
+            const savedUser = localStorage.getItem("usuario");
+            
+            if (savedUser) {
+                setUser(JSON.parse(savedUser));
+                await cargarDatos();
+            }
+        }
 
-    }
+        checklogin();
+    }, []);
 
-    checklogin();
-}, []);
+    return (
+        <AuthContext.Provider value={{
+            signin,
+            logout,
+            cursos,
+            setCursos,
+            materias,
+            setMaterias,
+            horarios,
+            setHorarios,
+            niveles,
+            setNiveles,
+            paralelos,
+            setParalelos,
 
-return (
-    <AuthContext.Provider value={{
-        signin,
-        cursos,
-        setCursos,
-        materias,
-        setMaterias,
-        horarios,
-        setHorarios,
-        niveles,
-        setNiveles,
-        paralelos,
-        setParalelos,
+            roles,
+            setRoles,
+            privilegios,
+            setPrivilegios,
+            permisos,
+            setPermisos,
+            usuarios,           
+            setUsuarios,
 
-        roles,
-        setRoles,
-        privilegios,
-        setPrivilegios,
-        permisos,
-        setPermisos,
-        usuarios,           
-        setUsuarios,
+            detalleCompleto,
 
-        detalleCompleto,
+            materiaProfesor,
+            setMateriaProfesor,
 
-        materiaProfesor,
-        setMateriaProfesor,
+            user,
+            setUser,
 
-        user,
-
-        setDirectorOK,
-        directorOk,
-    }}>
-        {children}
-    </AuthContext.Provider>
-
-);
+            setDirectorOK,
+            directorOk,
+        }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
-
-
-
