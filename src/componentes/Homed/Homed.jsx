@@ -24,6 +24,7 @@ import CalificacionesPage from "../paginas/Evaluacion/CalificacionesPage";
 import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 import NotificacionesPage from "../paginas/Periodo/NotificacionesPage";
 import AsistenciaPage from "../paginas/Evaluacion/AsistenciaPage";
+import CrearNotificacionPage from "../paginas/Periodo/CrearNotificacionPage";
 
 
 
@@ -63,11 +64,13 @@ export const Homed = () => {
                     <Route path="/actividades" element={<ActividadesPage />} />
                     <Route path="/calificaciones" element={<CalificacionesPage />} />
                     <Route path="/asistencia" element={<AsistenciaPage />} />
-                   
-                   
+
+
                     {/* Rutas de Periodo */}
                     <Route path="/participacion" element={<ParticipacionPage />} />
                     <Route path="/notificacion" element={<NotificacionesPage />} />
+                    <Route path="/crear-notificacion" element={<CrearNotificacionPage />} />
+
 
 
 

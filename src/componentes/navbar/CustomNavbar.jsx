@@ -144,8 +144,8 @@ const CustomNavbar = () => {
                     Calificaciones
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/categorias">
-                    Ver todas
+                  <NavDropdown.Item as={Link} to="/dasboard/crear-notificacion">
+                    Mandar Notificacion
                   </NavDropdown.Item>
                 </NavDropdown>
               </>
