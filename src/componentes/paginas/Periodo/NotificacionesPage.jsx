@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import '../../css/notificacion.css'
+import '../../css/Notificacion.css'
 import { obtenerNotificacionesRequest, actualizarNotificacionesRequest } from '../../../api/auth'
 import { useAuth } from '../../../context/AuthContext';
 
