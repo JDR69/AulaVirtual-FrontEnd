@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import '../../css/Gestion.css'
-import { crearNuevaGestionRequest ,obtenerGestionRequest , crearNuevoTrimestreRequest} from '../../../api/auth';
+import React, { useState, useEffect } from 'react';
+import '../../css/Gestion.css';
+import { crearNuevaGestionRequest, obtenerGestionRequest, crearNuevoTrimestreRequest } from '../../../api/auth';
 
 function Gestiones() {
   const [gestionData, setGestionData] = useState({
     anio_escolar: '',
-    estado: true
+    estado: true,
   });
 
   const [trimestreData, setTrimestreData] = useState({
@@ -13,23 +13,16 @@ function Gestiones() {
     fecha_inicio: '',
     fecha_fin: '',
     estado: true,
-    gestion_id: ''
+    gestion: '', // ID de la gestión
   });
 
-  // Datos de ejemplo para mostrar en la tabla
   const [gestiones, setGestiones] = useState([]);
-
-  const [trimestres, setTrimestres] = useState([
-    { id: 1, nro: 1, nombre: '1er', fecha_inicio: '2024-02-01', fecha_fin: '2024-05-01', estado: 'habilitado', gestion_id: 1 },
-    { id: 2, nro: 2, nombre: '2do', fecha_inicio: '2024-05-01', fecha_fin: '2024-08-01', estado: 'habilitado', gestion_id: 1 },
-    { id: 3, nro: 3, nombre: '3er', fecha_inicio: '2024-08-01', fecha_fin: '2024-12-01', estado: 'habilitado', gestion_id: 1 },
-  ]);
 
   const handleGestionChange = (e) => {
     const { name, value } = e.target;
     setGestionData({
       ...gestionData,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -37,94 +30,88 @@ function Gestiones() {
     const { name, value } = e.target;
     setTrimestreData({
       ...trimestreData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleGestionSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Simular agregar una nueva gestión
       const newGestion = {
         anio_escolar: parseInt(gestionData.anio_escolar),
-        estado: gestionData.estado
+        estado: gestionData.estado,
       };
-      console.log('Datos de gestión:', newGestion);
-      const res = await crearNuevaGestionRequest(newGestion)
-      console.log(res.data)
-      // setGestiones([...gestiones, newGestion]);
-      // setGestionData({
-      //   anio: '',
-      //   estado: 'habilitado'
-      // });
-
+      const res = await crearNuevaGestionRequest(newGestion);
+      console.log("Gestión creada:", res.data);
+      fetchGestiones();
     } catch (error) {
-      const mensaje = error.response?.data?.error || "Error al crear la gestión";
+      const mensaje = error.response?.data?.error || 'Error al crear la gestión';
       console.error(mensaje);
       alert(mensaje);
-    }
-
-  };
-
-  
-
-  const getNombreTrimestre = (nro) => {
-    switch (nro) {
-      case 1: return '1er';
-      case 2: return '2do';
-      case 3: return '3er';
-      case 4: return '4to';
-      default: return `${nro}º`;
     }
   };
 
   const handleTrimestreSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log('Datos de trimestre:', trimestreData);
-  
-      // Simular agregar un nuevo trimestre
-      const newTrimestre = {
-        id: trimestres.length + 1,
-        nro: parseInt(trimestreData.nro),
-        nombre: getNombreTrimestre(parseInt(trimestreData.nro)),
-        fecha_inicio: trimestreData.fecha_inicio,
-        fecha_fin: trimestreData.fecha_fin,
-        estado: trimestreData.estado,
-        gestion_id: parseInt(trimestreData.gestion_id)
-      };
 
+    // Validaciones
+    if (!trimestreData.gestion) {
+      alert("Debe seleccionar un año académico.");
+      return;
+    }
+    if (!trimestreData.nro || trimestreData.nro < 1 || trimestreData.nro > 4) {
+      alert("El número de trimestre debe estar entre 1 y 4.");
+      return;
+    }
+    if (!trimestreData.fecha_inicio || !trimestreData.fecha_fin) {
+      alert("Debe ingresar las fechas de inicio y fin.");
+      return;
+    }
+    if (new Date(trimestreData.fecha_inicio) >= new Date(trimestreData.fecha_fin)) {
+      alert("La fecha de inicio debe ser anterior a la fecha de fin.");
+      return;
+    }
+
+    try {
       const data = {
-        nro : parseInt(trimestreData.nro),
+        nro: parseInt(trimestreData.nro),
         fecha_inicio: trimestreData.fecha_inicio,
         fecha_final: trimestreData.fecha_fin,
         estado: trimestreData.estado,
-        gestion: parseInt(trimestreData.gestion_id)
+        gestion: parseInt(trimestreData.gestion), // ID de la gestión
+      };
 
-      }
-      const res = await crearNuevoTrimestreRequest(data)
-      console.log(res.data)
-      console.log(data)
-  
-      setTrimestres([...trimestres, newTrimestre]);
-      setTrimestreData({
-        nro: '',
-        fecha_inicio: '',
-        fecha_fin: '',
-        estado: true,
-        gestion_id: ''
-      });  
+      console.log("Datos enviados al backend:", data);
+
+      const res = await crearNuevoTrimestreRequest(data);
+      console.log("Trimestre creado:", res.data);
+      fetchGestiones();
+      alert("Trimestre creado exitosamente.");
     } catch (error) {
-      
+      console.error("Error al crear el trimestre:", error.response?.data || error);
+      alert(error.response?.data?.error || "Error al crear el trimestre.");
     }
   };
 
-  // Función para obtener los trimestres de una gestión específica
-  const getTrimestresByGestion = (gestionId) => {
-    return trimestres.filter(trimestre => trimestre.gestion_id === gestionId);
+  const fetchGestiones = async () => {
+    try {
+      const res = await obtenerGestionRequest();
+      const gestionesConTrimestres = res.data.map((gestion) => ({
+        ...gestion,
+        trimestres: gestion.detalle.map((detalle) => ({
+          id: detalle.trimestre_info.id,
+          nro: detalle.trimestre_info.nro,
+          fecha_inicio: detalle.trimestre_info.fecha_inicio,
+          fecha_fin: detalle.trimestre_info.fecha_final,
+          estado: detalle.trimestre_info.estado ? 'habilitado' : 'deshabilitado',
+        })),
+      }));
+      setGestiones(gestionesConTrimestres);
+    } catch (error) {
+      console.error('Error al obtener las gestiones:', error);
+    }
   };
 
-  // Función para formatear fechas en formato simple
   const formatSimpleDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
@@ -132,38 +119,27 @@ function Gestiones() {
     return `${day}-${month}`;
   };
 
-  useEffect ( () =>{
-      fecthAnio();
-  },[])
-
-  const fecthAnio = async() =>{
-     try {
-        const res = await obtenerGestionRequest();
-        setGestiones(res.data)
-        console.log(res.data)
-     } catch (error) {
-        console.log(error)
-     }
-  }
+  useEffect(() => {
+    fetchGestiones();
+  }, []);
 
   return (
-    <div className='contenedor-principal'>
-      <div className='contenedor-secundario'>
-        <div className='gestion-container'>
-          <div className='gestion-header'>
+    <div className="contenedor-principal">
+      <div className="contenedor-secundario">
+        <div className="gestion-container">
+          <div className="gestion-header">
             <h1>Gestión de Periodos Académicos</h1>
             <p>Administra los años académicos y sus respectivos trimestres</p>
           </div>
 
-          <div className='gestion-forms-container'>
-            {/* Formulario de Gestión */}
-            <div className='gestion-form card'>
-              <div className='card-header'>
+          <div className="gestion-forms-container">
+            <div className="gestion-form card">
+              <div className="card-header">
                 <h2>Agregar Año Académico</h2>
               </div>
-              <div className='card-body'>
+              <div className="card-body">
                 <form onSubmit={handleGestionSubmit}>
-                  <div className='input-group'>
+                  <div className="input-group">
                     <label htmlFor="anio">Año:</label>
                     <input
                       type="number"
@@ -176,7 +152,7 @@ function Gestiones() {
                     />
                   </div>
 
-                  <div className='input-group'>
+                  <div className="input-group">
                     <label htmlFor="estado">Estado:</label>
                     <select
                       id="estado"
@@ -189,8 +165,8 @@ function Gestiones() {
                     </select>
                   </div>
 
-                  <div className='form-actions'>
-                    <button type="submit" className='btn btn-primary'>
+                  <div className="form-actions">
+                    <button type="submit" className="btn btn-primary">
                       <i className="fas fa-save"></i> Guardar Año
                     </button>
                   </div>
@@ -198,32 +174,31 @@ function Gestiones() {
               </div>
             </div>
 
-            {/* Formulario de Trimestre */}
-            <div className='trimestre-form card'>
-              <div className='card-header'>
+            <div className="trimestre-form card">
+              <div className="card-header">
                 <h2>Agregar Trimestre</h2>
               </div>
-              <div className='card-body'>
+              <div className="card-body">
                 <form onSubmit={handleTrimestreSubmit}>
-                  <div className='input-group'>
-                    <label htmlFor="gestion_id">Año Académico:</label>
+                  <div className="input-group">
+                    <label htmlFor="gestion">Año Académico:</label>
                     <select
-                      id="gestion_id"
-                      name="gestion_id"
-                      value={trimestreData.gestion_id}
+                      id="gestion"
+                      name="gestion"
+                      value={trimestreData.gestion}
                       onChange={handleTrimestreChange}
                       required
                     >
                       <option value="">Seleccione un año</option>
                       {gestiones.map((gestion) => (
-                        <option key={gestion.id} value={gestion.id}>
+                        <option key={gestion.gestion} value={gestion.gestion}>
                           {gestion.anio_escolar}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  <div className='input-group'>
+                  <div className="input-group">
                     <label htmlFor="nro">Número:</label>
                     <input
                       type="number"
@@ -238,8 +213,8 @@ function Gestiones() {
                     />
                   </div>
 
-                  <div className='form-row'>
-                    <div className='input-group'>
+                  <div className="form-row">
+                    <div className="input-group">
                       <label htmlFor="fecha_inicio">Fecha Inicio:</label>
                       <input
                         type="date"
@@ -251,7 +226,7 @@ function Gestiones() {
                       />
                     </div>
 
-                    <div className='input-group'>
+                    <div className="input-group">
                       <label htmlFor="fecha_fin">Fecha Fin:</label>
                       <input
                         type="date"
@@ -264,7 +239,7 @@ function Gestiones() {
                     </div>
                   </div>
 
-                  <div className='input-group'>
+                  <div className="input-group">
                     <label htmlFor="estado_trimestre">Estado:</label>
                     <select
                       id="estado_trimestre"
@@ -277,8 +252,8 @@ function Gestiones() {
                     </select>
                   </div>
 
-                  <div className='form-actions'>
-                    <button type="submit" className='btn btn-secondary'>
+                  <div className="form-actions">
+                    <button type="submit" className="btn btn-secondary">
                       <i className="fas fa-calendar-plus"></i> Guardar Trimestre
                     </button>
                   </div>
@@ -287,13 +262,12 @@ function Gestiones() {
             </div>
           </div>
 
-          {/* Tabla de Gestiones y Trimestres */}
-          <div className='gestion-table card'>
-            <div className='card-header'>
+          <div className="gestion-table card">
+            <div className="card-header">
               <h2>Periodos Académicos</h2>
             </div>
-            <div className='card-body'>
-              <div className='table-responsive'>
+            <div className="card-body">
+              <div className="table-responsive">
                 <table>
                   <thead>
                     <tr>
@@ -306,11 +280,9 @@ function Gestiones() {
                   </thead>
                   <tbody>
                     {gestiones.map((gestion) => {
-                      const gestionTrimestres = getTrimestresByGestion(gestion.id);
-
-                      if (gestionTrimestres.length === 0) {
+                      if (gestion.trimestres.length === 0) {
                         return (
-                          <tr key={gestion.id}>
+                          <tr key={gestion.gestion}>
                             <td>{gestion.anio_escolar}</td>
                             <td colSpan={4} className="empty-message">
                               No hay trimestres registrados
@@ -319,14 +291,14 @@ function Gestiones() {
                         );
                       }
 
-                      return gestionTrimestres.map((trimestre, index) => (
+                      return gestion.trimestres.map((trimestre, index) => (
                         <tr key={trimestre.id}>
                           {index === 0 && (
-                            <td rowSpan={gestionTrimestres.length} className="year-cell">
-                              {gestion.anio}
+                            <td rowSpan={gestion.trimestres.length} className="year-cell">
+                              {gestion.anio_escolar}
                             </td>
                           )}
-                          <td>{trimestre.nombre}</td>
+                          <td>{trimestre.nro}</td>
                           <td>{formatSimpleDate(trimestre.fecha_inicio)}</td>
                           <td>{formatSimpleDate(trimestre.fecha_fin)}</td>
                           <td>
@@ -343,10 +315,9 @@ function Gestiones() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
-  )
+  );
 }
 
-export default Gestiones
+export default Gestiones;
