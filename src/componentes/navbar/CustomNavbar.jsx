@@ -17,8 +17,8 @@ const CustomNavbar = () => {
   useEffect(() => {
     if (user) {
       setIsLoaded(true);
-      console.log("Usuario cargado en navbar:", user);
-      console.log("Materia del profesor en localStorage:", localStorage.getItem('materiaProfesor'));
+      // console.log("Usuario cargado en navbar:", user);
+      // console.log("Materia del profesor en localStorage:", localStorage.getItem('materiaProfesor'));
     }
   }, [user]);
 
@@ -35,10 +35,10 @@ const CustomNavbar = () => {
   };
 
   // Para depuración
-  console.log("Usuario actual:", user);
-  console.log("¿Es profesor?:", isProfesor);
-  console.log("materiaProfesor:", materiaProfesor);
-  console.log("¿Profesor con curso seleccionado?:", profesorConCursoSeleccionado);
+  // console.log("Usuario actual:", user);
+  // console.log("¿Es profesor?:", isProfesor);
+  // console.log("materiaProfesor:", materiaProfesor);
+  // console.log("¿Profesor con curso seleccionado?:", profesorConCursoSeleccionado);
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top" collapseOnSelect>
