@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../../context/AuthContext'; // Importar el contexto
 
 function ActividadesPage() {
+    const { cursoSeleccionado } = useAuth(); // Obtener datos del contexto
     const [showModal, setShowModal] = useState(false);
     const [actividades, setActividades] = useState([]);
     const [form, setForm] = useState({
@@ -8,7 +10,10 @@ function ActividadesPage() {
         descripcion: '',
         fechaInicio: '',
         fechaFin: '',
-        estado: ''
+        estado: '',
+        materia: '',
+        curso: '',
+        paralelo: ''
     });
     const [editIndex, setEditIndex] = useState(null);
 
@@ -16,6 +21,30 @@ function ActividadesPage() {
     const [searchDescripcion, setSearchDescripcion] = useState('');
     const [searchFecha, setSearchFecha] = useState('');
     const [searchEstado, setSearchEstado] = useState('');
+
+    // Cargar datos de materia, curso y paralelo al iniciar
+    useEffect(() => {
+        if (cursoSeleccionado) {
+            setForm((prevForm) => ({
+                ...prevForm,
+                materia: cursoSeleccionado.materia,
+                curso: cursoSeleccionado.curso,
+                paralelo: cursoSeleccionado.paralelo
+            }));
+        } else {
+            // Si no está en el contexto, intentar cargar desde localStorage
+            const savedCurso = localStorage.getItem('cursoSeleccionado');
+            if (savedCurso) {
+                const parsedCurso = JSON.parse(savedCurso);
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    materia: parsedCurso.materia,
+                    curso: parsedCurso.curso,
+                    paralelo: parsedCurso.paralelo
+                }));
+            }
+        }
+    }, [cursoSeleccionado]);
 
     const handleOpenModal = () => setShowModal(true);
     const handleCloseModal = () => {
@@ -25,7 +54,10 @@ function ActividadesPage() {
             descripcion: '',
             fechaInicio: '',
             fechaFin: '',
-            estado: ''
+            estado: '',
+            materia: cursoSeleccionado?.materia || '',
+            curso: cursoSeleccionado?.curso || '',
+            paralelo: cursoSeleccionado?.paralelo || ''
         });
         setEditIndex(null);
     };
@@ -34,17 +66,21 @@ function ActividadesPage() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (editIndex !== null) {
-            const nuevasActividades = [...actividades];
-            nuevasActividades[editIndex] = form;
-            setActividades(nuevasActividades);
-        } else {
-            setActividades([...actividades, form]);
-        }
-        handleCloseModal();
-    };
+   const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Mostrar en consola el contenido del formulario
+    console.log("Datos del formulario enviados:", form);
+
+    if (editIndex !== null) {
+        const nuevasActividades = [...actividades];
+        nuevasActividades[editIndex] = form;
+        setActividades(nuevasActividades);
+    } else {
+        setActividades([...actividades, form]);
+    }
+    handleCloseModal();
+};
 
     const handleEditar = (index) => {
         setForm(actividades[index]);
