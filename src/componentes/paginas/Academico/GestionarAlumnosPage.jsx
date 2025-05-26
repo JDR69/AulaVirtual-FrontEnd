@@ -4,6 +4,7 @@ import {
     obtenerGestionRequest,
     obtenerDetalleCompletoPorCurso,
     obtenerUsuarioRequest,
+    obtenerCursosRequest,
     crearLibretaRequest,
 } from '../../../api/auth';
 
@@ -11,6 +12,7 @@ function GestionarAlumnosPage() {
     const [alumnos, setAlumnos] = useState([]);
     const [gestiones, setGestiones] = useState([]);
     const [cursos, setCursos] = useState([]);
+    const [cursoB, setCursosB] = useState([])
     const [paralelos, setParalelos] = useState([]);
 
     const [registroData, setRegistroData] = useState({
@@ -34,7 +36,8 @@ function GestionarAlumnosPage() {
 
         // Si se selecciona un curso, actualizar los paralelos correspondientes
         if (name === 'curso') {
-            const cursoSeleccionado = cursos.find((curso) => curso.id === parseInt(value));
+            console.log(cursos)
+            const cursoSeleccionado = cursos.find((c) => c.nombre === value);
             console.log('Curso seleccionado:', cursoSeleccionado); // Depuración
 
             // Buscar los paralelos del curso seleccionado
@@ -73,10 +76,11 @@ function GestionarAlumnosPage() {
     // Consumir datos de la API
     const fetchData = async () => {
         try {
-            const [gestionesRes, detalleCursosRes, usuariosRes] = await Promise.all([
+            const [gestionesRes, detalleCursosRes, usuariosRes, cursosR] = await Promise.all([
                 obtenerGestionRequest(),
                 obtenerDetalleCompletoPorCurso(),
                 obtenerUsuarioRequest(),
+                obtenerCursosRequest(),
             ]);
 
             setGestiones(gestionesRes.data);
@@ -92,6 +96,9 @@ function GestionarAlumnosPage() {
             // Filtrar solo los usuarios con rol de alumno
             const alumnosFiltrados = usuariosRes.data.filter((usuario) => usuario.rol_nombre === 'Alumno');
             setAlumnos(alumnosFiltrados);
+
+            console.log(cursosR.data)
+            setCursosB(cursosR.data)
         } catch (error) {
             console.error('Error al obtener datos:', error);
         }
@@ -113,35 +120,35 @@ function GestionarAlumnosPage() {
             return;
         }
 
-        console.log('Datos enviados al backend:', {
+        console.log(curso)
+
+        const cursoSeleccionado = cursoB.find((c) => c.nombre === curso);
+        console.log(cursoSeleccionado?.id); // si necesitas el id
+        const data = {
             alumno: alumno_id,
-            curso: parseInt(curso),
+            curso: parseInt(cursoSeleccionado.id),
             gestion: parseInt(gestion_id),
             paralelo: parseInt(paralelo),
-            description,
-        });
+            descripcion: "inscripcion correcta"
+        }
+        console.log(data);
 
         try {
-            const response = await crearLibretaRequest({
-                alumno: alumno_id,
-                curso: parseInt(curso),
-                gestion: parseInt(gestion_id),
-                paralelo: parseInt(paralelo),
-                description,
-            });
+            const response = await crearLibretaRequest(data);
+            console.log(response.data)
 
-            if (response.status === 201) {
-                alert('Alumno registrado exitosamente.');
-                setRegistroData({
-                    alumno_id: '',
-                    curso: '',
-                    gestion_id: '',
-                    paralelo: '',
-                    description: 'Primera inscripción',
-                });
-                setBusquedaAlumno('');
-                setSugerencias([]);
-            }
+            // if (response.status === 201) {
+            //     alert('Alumno registrado exitosamente.');
+            //     setRegistroData({
+            //         alumno_id: '',
+            //         curso: '',
+            //         gestion_id: '',
+            //         paralelo: '',
+            //         description: 'Primera inscripción',
+            //     });
+            //     setBusquedaAlumno('');
+            //     setSugerencias([]);
+            // }
         } catch (error) {
             if (error.response) {
                 console.error('Error al registrar al alumno:', error.response.data);
@@ -208,7 +215,7 @@ function GestionarAlumnosPage() {
                                         >
                                             <option value="">Seleccione el curso</option>
                                             {cursos.map((curso) => (
-                                                <option key={curso.id} value={curso.id}>
+                                                <option key={curso.id} value={curso.nombre}>
                                                     {curso.nombre}
                                                 </option>
                                             ))}
