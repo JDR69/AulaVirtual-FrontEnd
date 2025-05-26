@@ -72,6 +72,42 @@ function Gestiones() {
       return;
     }
 
+    // Obtener la gestión seleccionada
+    const gestionSeleccionada = gestiones.find(
+      (gestion) => gestion.gestion === parseInt(trimestreData.gestion)
+    );
+
+    if (!gestionSeleccionada) {
+      alert("La gestión seleccionada no es válida.");
+      return;
+    }
+
+    // Validar que no tenga más de 3 trimestres
+    if (gestionSeleccionada.trimestres.length >= 3) {
+      alert("La gestión seleccionada ya tiene 3 trimestres registrados.");
+      return;
+    }
+
+    // Validar que las fechas no se solapen con los trimestres existentes
+    const fechaInicioNueva = new Date(trimestreData.fecha_inicio);
+    const fechaFinNueva = new Date(trimestreData.fecha_fin);
+
+    const conflicto = gestionSeleccionada.trimestres.some((trimestre) => {
+      const fechaInicioExistente = new Date(trimestre.fecha_inicio);
+      const fechaFinExistente = new Date(trimestre.fecha_fin);
+
+      return (
+        (fechaInicioNueva >= fechaInicioExistente && fechaInicioNueva <= fechaFinExistente) ||
+        (fechaFinNueva >= fechaInicioExistente && fechaFinNueva <= fechaFinExistente) ||
+        (fechaInicioNueva <= fechaInicioExistente && fechaFinNueva >= fechaFinExistente)
+      );
+    });
+
+    if (conflicto) {
+      alert("El rango de fechas del trimestre no debe interferir con otros trimestres de la misma gestión.");
+      return;
+    }
+
     try {
       const data = {
         nro: parseInt(trimestreData.nro),
