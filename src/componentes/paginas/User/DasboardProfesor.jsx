@@ -63,7 +63,7 @@ const DasboardProfesor = () => {
                             {materiasB.map((mat, index) => (
                                 <div 
                                     key={index} 
-                                    className="card" 
+                                    className="card2" 
                                     onClick={() => handleCourseSelection(mat)}
                                     style={{ cursor: 'pointer' }}
                                 >
