@@ -15,6 +15,7 @@ import DasboardProfesor from "../paginas/User/DasboardProfesor";
 import GestionAcademico from "../paginas/Academico/GestionAcademico";
 import DetalleCursoPage from "../paginas/Academico/DetalleCursoPage";
 import DetalleMateriaPage from "../paginas/Academico/DetalleMateriaPage";
+import GestionarAlumnosPage from "../paginas/Academico/GestionarAlumnosPage";
 
 {/* Rutas de Evaluacion */ }
 import ActividadesPage from "../paginas/Evaluacion/ActividadesPage";
@@ -60,6 +61,7 @@ export const Homed = () => {
                     <Route path="/detalle-academica" element={<GestionAcademico />} />
                     <Route path="/detalle-curso" element={<DetalleCursoPage />} />
                     <Route path="/detalle-materia" element={<DetalleMateriaPage />} />
+                    <Route path="/detalle-alumnos-gestion" element={<GestionarAlumnosPage/>} />
 
                     {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />

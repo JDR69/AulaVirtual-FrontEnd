@@ -223,3 +223,38 @@ table tbody tr:hover {
 
 /* Add Font Awesome Support */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+.acomodar {
+  position: relative; /* Necesario para posicionar el dropdown */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sugerencias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  background: white;
+  position: absolute;
+  top: 100%; /* Justo debajo del input */
+  left: 0;
+  right: 0;
+  z-index: 10;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.sugerencia-item {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.sugerencia-item:hover {
+  background-color: #f0f0f0;
+}
+

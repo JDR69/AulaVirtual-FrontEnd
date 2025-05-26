@@ -156,6 +156,10 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/detalle-materia">
                     Detalle de la Materia
                   </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/dasboard/detalle-alumnos-gestion">
+                    Gestion Del Alumno
+                  </NavDropdown.Item>
                 </NavDropdown>
 
                 <NavDropdown title="Evaluaciones" id="basic-nav-dropdown">
