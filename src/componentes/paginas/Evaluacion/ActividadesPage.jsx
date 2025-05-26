@@ -8,8 +8,7 @@ function ActividadesPage() {
         descripcion: '',
         fechaInicio: '',
         fechaFin: '',
-        horaInicio: '',
-        horaFin: '',
+        materia: '',
         Curso: '',
         estado: ''
     });
@@ -29,8 +28,7 @@ function ActividadesPage() {
             descripcion: '',
             fechaInicio: '',
             fechaFin: '',
-            horaInicio: '',
-            horaFin: '',
+            materia: '',
             Curso: '',
             estado: ''
         });
@@ -72,69 +70,7 @@ function ActividadesPage() {
         const estadoMatch = searchEstado === '' || act.estado === searchEstado;
         return descripcionMatch && fechaMatch && CursoMatch && estadoMatch;
     });
-    const exportarPDF = () => {
-        const doc = new jsPDF();
-        doc.text('Reporte de Actividades', 14, 10);
-        doc.autoTable({
-            head: [['Tipo', 'Descripción', 'Fecha Inicio', 'Fecha Fin', 'Hora Inicio', 'Hora Fin', 'Curso', 'Estado']],
-            body: actividadesFiltradas.map(act => [
-                act.tipo, act.descripcion, act.fechaInicio, act.fechaFin, act.horaInicio, act.horaFin, act.Curso, act.estado
-            ]),
-        });
-        doc.save('actividades.pdf');
-    };
 
-    // Exportar a Excel
-    const exportarExcel = () => {
-        const ws = XLSX.utils.json_to_sheet(actividadesFiltradas);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Actividades');
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-        saveAs(data, 'actividades.xlsx');
-    };
-
-    // Exportar a HTML
-    const exportarHTML = () => {
-        let html = `
-            <html>
-            <head><title>Reporte de Actividades</title></head>
-            <body>
-            <h2>Reporte de Actividades</h2>
-            <table border="1" cellpadding="5" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>Tipo</th>
-                        <th>Descripción</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th>Hora Inicio</th>
-                        <th>Hora Fin</th>
-                        <th>Curso</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${actividadesFiltradas.map(act => `
-                        <tr>
-                            <td>${act.tipo}</td>
-                            <td>${act.descripcion}</td>
-                            <td>${act.fechaInicio}</td>
-                            <td>${act.fechaFin}</td>
-                            <td>${act.horaInicio}</td>
-                            <td>${act.horaFin}</td>
-                            <td>${act.Curso}</td>
-                            <td>${act.estado}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            </body>
-            </html>
-        `;
-        const blob = new Blob([html], { type: 'text/html' });
-        saveAs(blob, 'actividades.html');
-    };
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
@@ -182,20 +118,11 @@ function ActividadesPage() {
                     </div>
                 </div>
                 <div className='contenedor-buttones'>
-                    <button className="btn btn-primary"
-                        onClick={handleOpenModal}
-                    >
-                        <i className="bi bi-plus-circle-fill"></i>
-                        Crear Actividad
+                    <button className="btn btn-primary" onClick={handleOpenModal}>
+                        <i className="bi bi-plus-circle-fill"></i> Crear Actividad
                     </button>
-                    <button className="btn btn-danger" onClick={exportarPDF}>
-                        Exportar PDF
-                    </button>
-                    <button className="btn btn-success" onClick={exportarExcel}>
-                        Exportar Excel
-                    </button>
-                    <button className="btn btn-info" onClick={exportarHTML}>
-                        Exportar HTML
+                    <button className="btn btn-secondary ms-2">
+                        <i className="bi bi-file-earmark-text"></i> Generar Reporte
                     </button>
                 </div>
 
@@ -208,8 +135,7 @@ function ActividadesPage() {
                                 <th>Descripción</th>
                                 <th>Fecha Inicio</th>
                                 <th>Fecha Fin</th>
-                                <th>Hora Inicio</th>
-                                <th>Hora Fin</th>
+                                <th>Materia</th>
                                 <th>Curso</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -222,8 +148,7 @@ function ActividadesPage() {
                                     <td>{act.descripcion}</td>
                                     <td>{act.fechaInicio}</td>
                                     <td>{act.fechaFin}</td>
-                                    <td>{act.horaInicio}</td>
-                                    <td>{act.horaFin}</td>
+                                    <td>{act.materia}</td>
                                     <td>{act.Curso}</td>
                                     <td>{act.estado}</td>
                                     <td>
@@ -234,7 +159,7 @@ function ActividadesPage() {
                             ))}
                             {actividadesFiltradas.length === 0 && (
                                 <tr>
-                                    <td colSpan="9" className="text-center">No hay actividades registradas.</td>
+                                    <td colSpan="8" className="text-center">No hay actividades registradas.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -274,19 +199,20 @@ function ActividadesPage() {
                                     <input type="date" className="form-control" name="fechaFin" value={form.fechaFin} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Hora de Inicio</label>
-                                    <input type="time" className="form-control" name="horaInicio" value={form.horaInicio} onChange={handleChange} required />
+                                    <label className="form-label">Materia</label>
+                                    <select type="text" className="form-select" name="materia" value={form.materia} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Hora de Fin</label>
-                                    <input type="time" className="form-control" name="horaFin" value={form.horaFin} onChange={handleChange} required />
+                                    <label className="form-label">Curso</label>
+                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
+                                </div>
+                                 <div className="mb-3">
+                                    <label className="form-label">Paralelo</label>
+                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Curso + Paralelo</label>
-                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required >
-                                        <option value="">Seleccionar</option>
-                                        <option value="Pendiente">Pendiente</option>
-                                    </select>
+                                    <label className="form-label">Dimension</label>
+                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Estado</label>

@@ -181,8 +181,8 @@ const CustomNavbar = () => {
                     Participacion
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
-                    Calificaciones
+                  <NavDropdown.Item as={Link} to="/dasboard/libreta">
+                    Libreta Alumnos
                   </NavDropdown.Item>
                     <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/gestiones">
