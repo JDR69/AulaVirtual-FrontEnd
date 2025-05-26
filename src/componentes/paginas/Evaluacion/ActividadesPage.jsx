@@ -8,8 +8,6 @@ function ActividadesPage() {
         descripcion: '',
         fechaInicio: '',
         fechaFin: '',
-        materia: '',
-        Curso: '',
         estado: ''
     });
     const [editIndex, setEditIndex] = useState(null);
@@ -17,7 +15,6 @@ function ActividadesPage() {
     // Estados para los buscadores
     const [searchDescripcion, setSearchDescripcion] = useState('');
     const [searchFecha, setSearchFecha] = useState('');
-    const [searchCurso, setSearchCurso] = useState('');
     const [searchEstado, setSearchEstado] = useState('');
 
     const handleOpenModal = () => setShowModal(true);
@@ -28,8 +25,6 @@ function ActividadesPage() {
             descripcion: '',
             fechaInicio: '',
             fechaFin: '',
-            materia: '',
-            Curso: '',
             estado: ''
         });
         setEditIndex(null);
@@ -66,9 +61,8 @@ function ActividadesPage() {
     const actividadesFiltradas = actividades.filter((act) => {
         const descripcionMatch = act.descripcion.toLowerCase().includes(searchDescripcion.toLowerCase());
         const fechaMatch = searchFecha === '' || act.fechaInicio === searchFecha || act.fechaFin === searchFecha;
-        const CursoMatch = act.Curso.toLowerCase().includes(searchCurso.toLowerCase());
         const estadoMatch = searchEstado === '' || act.estado === searchEstado;
-        return descripcionMatch && fechaMatch && CursoMatch && estadoMatch;
+        return descripcionMatch && fechaMatch && estadoMatch;
     });
 
     return (
@@ -77,7 +71,7 @@ function ActividadesPage() {
                 <h1>Actividades</h1>
                 {/* Buscadores */}
                 <div className="row my-3">
-                    <div className="col-md-3 mb-2">
+                    <div className="col-md-4 mb-2">
                         <input
                             type="text"
                             className="form-control"
@@ -86,7 +80,7 @@ function ActividadesPage() {
                             onChange={e => setSearchDescripcion(e.target.value)}
                         />
                     </div>
-                    <div className="col-md-3 mb-2">
+                    <div className="col-md-4 mb-2">
                         <input
                             type="date"
                             className="form-control"
@@ -95,16 +89,7 @@ function ActividadesPage() {
                             onChange={e => setSearchFecha(e.target.value)}
                         />
                     </div>
-                    <div className="col-md-3 mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Buscar por Curso"
-                            value={searchCurso}
-                            onChange={e => setSearchCurso(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-3 mb-2">
+                    <div className="col-md-4 mb-2">
                         <select
                             className="form-select"
                             value={searchEstado}
@@ -135,8 +120,6 @@ function ActividadesPage() {
                                 <th>Descripción</th>
                                 <th>Fecha Inicio</th>
                                 <th>Fecha Fin</th>
-                                <th>Materia</th>
-                                <th>Curso</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
@@ -148,8 +131,6 @@ function ActividadesPage() {
                                     <td>{act.descripcion}</td>
                                     <td>{act.fechaInicio}</td>
                                     <td>{act.fechaFin}</td>
-                                    <td>{act.materia}</td>
-                                    <td>{act.Curso}</td>
                                     <td>{act.estado}</td>
                                     <td>
                                         <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(actividades.indexOf(act))}>Editar</button>
@@ -159,7 +140,7 @@ function ActividadesPage() {
                             ))}
                             {actividadesFiltradas.length === 0 && (
                                 <tr>
-                                    <td colSpan="8" className="text-center">No hay actividades registradas.</td>
+                                    <td colSpan="6" className="text-center">No hay actividades registradas.</td>
                                 </tr>
                             )}
                         </tbody>
@@ -197,22 +178,6 @@ function ActividadesPage() {
                                 <div className="mb-3">
                                     <label className="form-label">Fecha de Fin</label>
                                     <input type="date" className="form-control" name="fechaFin" value={form.fechaFin} onChange={handleChange} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Materia</label>
-                                    <select type="text" className="form-select" name="materia" value={form.materia} onChange={handleChange} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Curso</label>
-                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
-                                </div>
-                                 <div className="mb-3">
-                                    <label className="form-label">Paralelo</label>
-                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label">Dimension</label>
-                                    <select type="text" className="form-select" name="Curso" value={form.Curso} onChange={handleChange} required />
                                 </div>
                                 <div className="mb-3">
                                     <label className="form-label">Estado</label>

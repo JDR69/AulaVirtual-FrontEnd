@@ -5,8 +5,8 @@ import { obtenerDetalleMateriaProfesorRequest } from '../../../api/auth'
 import { useNavigate } from 'react-router-dom'
 
 const DasboardProfesor = () => {
-    const { materiaProfesor, setMateriaProfesor, user } = useAuth();
-    const [materiasB, setMateriasB] = useState([])
+   const { materiaProfesor, setMateriaProfesor, setCursoYParalelo, user } = useAuth();
+  const [materiasB, setMateriasB] = useState([])
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -36,12 +36,24 @@ const DasboardProfesor = () => {
         }
     };
 
-    const handleCourseSelection = (mat) => {
-        console.log("Curso seleccionado:", mat);
-        setMateriaProfesor(mat);
-        navigate('/dasboard/homeda');
-    };
+   const handleCourseSelection = (mat) => {
+    console.log("Curso seleccionado:", mat);
+    setMateriaProfesor(mat);
+    setCursoYParalelo({
+        materia: mat.descripcion.materia_nombre,
+        curso: mat.horarios.nombre_curso,
+        paralelo: mat.horarios.descripcion_paralelo,
+    });
+    navigate('/dasboard/homeda');
+};
+// Ejemplo de uso en otro componente
+const { cursoSeleccionado } = useAuth();
 
+useEffect(() => {
+    if (cursoSeleccionado) {
+        console.log("Datos del curso seleccionado:", cursoSeleccionado);
+    }
+}, [cursoSeleccionado]);
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>

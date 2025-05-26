@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { 
+import {
     login_request,
     obtenerUsuarioRequest,
     obtenerRolesRequest,
@@ -11,7 +11,7 @@ import {
     obtenerNivelesRequest,
     obtenerParalelosRequest,
     obtenerDetalleCompletoPorCurso,
- } from "../api/auth";
+} from "../api/auth";
 
 const AuthContext = createContext();
 
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const [directorOk, setDirectorOK] = useState(null);
-    
+
     // Inicializar user desde localStorage si está disponible
     const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem("usuario");
@@ -50,34 +50,34 @@ export const AuthProvider = ({ children }) => {
     });
 
     //Variables Usuarios
-    const [usuarios,setUsuarios] = useState(null);
+    const [usuarios, setUsuarios] = useState(null);
     const [permisosDelUsuario, setPermisosDelUsuario] = useState(null);
-    const [roles,setRoles]=useState([]);
-    const [privilegios,setPrivilegios] =useState([]);
+    const [roles, setRoles] = useState([]);
+    const [privilegios, setPrivilegios] = useState([]);
     const [permisos, setPermisos] = useState([]);
 
     //Variables Academia
-    const [cursos,setCursos] = useState([]);
-    const [materias,setMaterias] = useState([]);
-    const [horarios,setHorarios] = useState([]);
-    const [niveles,setNiveles] = useState([]);
-    const [paralelos,setParalelos] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [materias, setMaterias] = useState([]);
+    const [horarios, setHorarios] = useState([]);
+    const [niveles, setNiveles] = useState([]);
+    const [paralelos, setParalelos] = useState([]);
 
     //DETALLE CURSO
-    const [detalleCompleto,setDetalleCompleto] = useState([]);
+    const [detalleCompleto, setDetalleCompleto] = useState([]);
 
     const signin = async (user) => {
         try {
             const res = await login_request(user);
             console.log(res.data);
-            
+
             const userData = res.data.usuario;
             setUser(userData);
             setPermisosDelUsuario(res.data.permisos);
-            
+
             // Guardamos el usuario en localStorage
             localStorage.setItem("usuario", JSON.stringify(userData));
-            
+
             // Si hay un curso guardado para un usuario diferente, lo eliminamos
             const savedMateria = localStorage.getItem('materiaProfesor');
             if (savedMateria) {
@@ -87,12 +87,31 @@ export const AuthProvider = ({ children }) => {
                     setMateriaProfesorState(null);
                 }
             }
-            
+
             return userData.rol_nombre;
         } catch (err) {
-            throw err; 
+            throw err;
         }
     };
+
+
+    
+    // Estado para el curso seleccionado
+    const [cursoSeleccionado, setCursoSeleccionado] = useState(() => {
+        const savedCurso = localStorage.getItem('cursoSeleccionado');
+        return savedCurso ? JSON.parse(savedCurso) : null;
+    });
+    const setCursoYParalelo = (curso) => {
+        setCursoSeleccionado(curso);
+        if (curso) {
+            localStorage.setItem('cursoSeleccionado', JSON.stringify(curso));
+            console.log("Curso y paralelo guardados en localStorage:", curso);
+        } else {
+            localStorage.removeItem('cursoSeleccionado');
+        }
+    };
+
+
 
     // Función de logout que limpia los estados y localStorage
     const logout = () => {
@@ -127,7 +146,7 @@ export const AuthProvider = ({ children }) => {
                 obtenerNivelesRequest(),
                 obtenerDetalleCompletoPorCurso(),
             ]);
-            
+
             setUsuarios(resUsuarios.data);
             setRoles(resRoles.data);
             setPrivilegios(resPrivilegios.data);
@@ -148,7 +167,7 @@ export const AuthProvider = ({ children }) => {
         async function checklogin() {
             const token = localStorage.getItem('token');
             const savedUser = localStorage.getItem("usuario");
-            
+
             if (savedUser) {
                 setUser(JSON.parse(savedUser));
                 await cargarDatos();
@@ -179,7 +198,7 @@ export const AuthProvider = ({ children }) => {
             setPrivilegios,
             permisos,
             setPermisos,
-            usuarios,           
+            usuarios,
             setUsuarios,
 
             detalleCompleto,
@@ -192,6 +211,9 @@ export const AuthProvider = ({ children }) => {
 
             setDirectorOK,
             directorOk,
+
+            cursoSeleccionado,
+            setCursoYParalelo,
         }}>
             {children}
         </AuthContext.Provider>
