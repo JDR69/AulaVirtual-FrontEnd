@@ -310,3 +310,11 @@ export const crearNuevoTrimestreRequest = (data) =>  instance.post(`/api/periodo
     }
   }
 )
+
+// LIBRETA
+export const crearLibretaRequest = (data) =>
+    instance.post(`/api/academia/crear-libreta/`, data, {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });

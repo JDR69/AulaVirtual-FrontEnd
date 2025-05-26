@@ -1,116 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import '../../css/Gestion.css';
 import {
-    crearNuevaGestionRequest,
     obtenerGestionRequest,
-    // registrarAlumnoEnGestionRequest,
-    // obtenerAlumnosRequest,
+    obtenerDetalleCompletoPorCurso,
+    obtenerUsuarioRequest,
+    crearLibretaRequest,
 } from '../../../api/auth';
 
 function GestionarAlumnosPage() {
-    const [gestionData, setGestionData] = useState({
-        anio_escolar: '',
-        estado: true,
-    });
+    const [alumnos, setAlumnos] = useState([]);
+    const [gestiones, setGestiones] = useState([]);
+    const [cursos, setCursos] = useState([]);
+    const [paralelos, setParalelos] = useState([]);
 
     const [registroData, setRegistroData] = useState({
         alumno_id: '',
         curso: '',
         gestion_id: '',
+        paralelo: '',
+        description: 'Primera inscripción',
     });
-
-    const [alumnos, setAlumnos] = useState([]);
-    const [gestiones, setGestiones] = useState([]);
 
     const [busquedaAlumno, setBusquedaAlumno] = useState('');
     const [sugerencias, setSugerencias] = useState([]);
 
-    const handleGestionChange = (e) => {
-        const { name, value } = e.target;
-        setGestionData({ ...gestionData, [name]: value });
-    };
-
+    // Manejar cambios en el formulario
     const handleRegistroChange = (e) => {
         const { name, value } = e.target;
+
+        console.log(`Campo cambiado: ${name}, Valor: ${value}`); // Depuración
+
         setRegistroData({ ...registroData, [name]: value });
-    };
 
-    const handleGestionSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const newGestion = {
-                anio_escolar: parseInt(gestionData.anio_escolar),
-                estado: gestionData.estado,
-            };
-            await crearNuevaGestionRequest(newGestion);
-            fetchGestiones();
-        } catch (error) {
-            const mensaje = error.response?.data?.error || 'Error al crear la gestión';
-            alert(mensaje);
+        // Si se selecciona un curso, actualizar los paralelos correspondientes
+        if (name === 'curso') {
+            const cursoSeleccionado = cursos.find((curso) => curso.id === parseInt(value));
+            console.log('Curso seleccionado:', cursoSeleccionado); // Depuración
+
+            // Buscar los paralelos del curso seleccionado
+            if (cursoSeleccionado) {
+                setParalelos(cursoSeleccionado.paralelos || []);
+            } else {
+                setParalelos([]);
+            }
         }
     };
 
-    const handleRegistroSubmit = async (e) => {
-        e.preventDefault();
-        const { alumno_id, gestion_id, curso } = registroData;
-        if (!alumno_id || !gestion_id || !curso) {
-            alert('Debe seleccionar un alumno, una gestión y asignar curso.');
-            return;
-        }
-        try {
-            await registrarAlumnoEnGestionRequest(registroData);
-            alert('Alumno registrado exitosamente en la gestión.');
-            setRegistroData({ alumno_id: '', curso: '', gestion_id: '' });
-            setBusquedaAlumno('');
-        } catch (error) {
-            const mensaje = error.response?.data?.error || 'Error al registrar alumno';
-            alert(mensaje);
-        }
-    };
-
-    const fetchGestiones = async () => {
-        try {
-            const res = await obtenerGestionRequest();
-            setGestiones(res.data);
-        } catch (error) {
-            console.error('Error al obtener gestiones:', error);
-        }
-    };
-
-    const fetchAlumnos = async () => {
-        try {
-            const alumnos = [
-                { id: 1, nombre: 'Juan', apellido: 'Pérez' },
-                { id: 2, nombre: 'María', apellido: 'Gutiérrez' },
-                { id: 3, nombre: 'Carlos', apellido: 'Ramírez' },
-                { id: 4, nombre: 'Ana', apellido: 'Fernández' },
-                { id: 5, nombre: 'Luis', apellido: 'Martínez' },
-                { id: 6, nombre: 'Paola', apellido: 'Gómez' },
-                { id: 7, nombre: 'José', apellido: 'Vargas' },
-                { id: 8, nombre: 'Laura', apellido: 'Morales' },
-                { id: 9, nombre: 'Fernando', apellido: 'Castillo' },
-                { id: 10, nombre: 'Lucía', apellido: 'Ortega' },
-            ];
-
-            setAlumnos(alumnos);
-        } catch (error) {
-            console.error('Error al obtener alumnos:', error);
-        }
-    };
-
-    useEffect(() => {
-        fetchGestiones();
-        fetchAlumnos();
-    }, []);
-
-    // Buscar alumno
+    // Buscar alumnos
     const handleBusquedaChange = (e) => {
         const valor = e.target.value;
         setBusquedaAlumno(valor);
 
         if (valor.trim().length >= 3) {
             const sugeridos = alumnos.filter((a) =>
-                `${a.nombre} ${a.apellido}`.toLowerCase().includes(valor.toLowerCase())
+                `${a.nombre || 'Desconocido'} ${a.apellido || ''}`.toLowerCase().includes(valor.toLowerCase())
             );
             setSugerencias(sugeridos);
         } else {
@@ -118,14 +61,97 @@ function GestionarAlumnosPage() {
         }
     };
 
-
     const seleccionarAlumno = (alumno) => {
         setRegistroData({
             ...registroData,
             alumno_id: alumno.id,
         });
-        setBusquedaAlumno(`${alumno.nombre} ${alumno.apellido}`);
+        setBusquedaAlumno(`${alumno.nombre || 'Desconocido'} ${alumno.apellido || ''}`);
         setSugerencias([]);
+    };
+
+    // Consumir datos de la API
+    const fetchData = async () => {
+        try {
+            const [gestionesRes, detalleCursosRes, usuariosRes] = await Promise.all([
+                obtenerGestionRequest(),
+                obtenerDetalleCompletoPorCurso(),
+                obtenerUsuarioRequest(),
+            ]);
+
+            setGestiones(gestionesRes.data);
+
+            // Procesar los cursos desde la respuesta de obtenerDetalleCompletoPorCurso
+            const cursosProcesados = detalleCursosRes.data.map((detalle, index) => ({
+                id: index + 1, // Generar un ID único si no existe
+                nombre: detalle.curso,
+                paralelos: detalle.paralelos || [], // Asegurarse de que paralelos sea un array
+            }));
+            setCursos(cursosProcesados);
+
+            // Filtrar solo los usuarios con rol de alumno
+            const alumnosFiltrados = usuariosRes.data.filter((usuario) => usuario.rol_nombre === 'Alumno');
+            setAlumnos(alumnosFiltrados);
+        } catch (error) {
+            console.error('Error al obtener datos:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // Manejar el envío del formulario
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const { alumno_id, curso, gestion_id, paralelo, description } = registroData;
+
+        // Validar que todos los campos estén completos
+        if (!alumno_id || !curso || !gestion_id || !paralelo) {
+            alert('Por favor, complete todos los campos antes de registrar.');
+            return;
+        }
+
+        console.log('Datos enviados al backend:', {
+            alumno: alumno_id,
+            curso: parseInt(curso),
+            gestion: parseInt(gestion_id),
+            paralelo: parseInt(paralelo),
+            description,
+        });
+
+        try {
+            const response = await crearLibretaRequest({
+                alumno: alumno_id,
+                curso: parseInt(curso),
+                gestion: parseInt(gestion_id),
+                paralelo: parseInt(paralelo),
+                description,
+            });
+
+            if (response.status === 201) {
+                alert('Alumno registrado exitosamente.');
+                setRegistroData({
+                    alumno_id: '',
+                    curso: '',
+                    gestion_id: '',
+                    paralelo: '',
+                    description: 'Primera inscripción',
+                });
+                setBusquedaAlumno('');
+                setSugerencias([]);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Error al registrar al alumno:', error.response.data);
+                const { message, errores } = error.response.data;
+                alert(`Error: ${message}\n${errores ? errores.map((err) => JSON.stringify(err)).join('\n') : ''}`);
+            } else {
+                console.error('Error al registrar al alumno:', error);
+                alert('Ocurrió un error al registrar al alumno. Intente nuevamente.');
+            }
+        }
     };
 
     return (
@@ -143,9 +169,9 @@ function GestionarAlumnosPage() {
                                 <h2>Registrar Alumno en Gestión</h2>
                             </div>
                             <div className="card-body">
-                                <form onSubmit={handleRegistroSubmit}>
+                                <form onSubmit={handleSubmit}>
                                     <div className="input-group">
-                                        <label >Buscar Alumno:</label>
+                                        <label>Buscar Alumno:</label>
                                         <div className="acomodar">
                                             <input
                                                 type="text"
@@ -156,7 +182,6 @@ function GestionarAlumnosPage() {
                                                 autoComplete="off"
                                                 required
                                             />
-
                                             {busquedaAlumno.trim().length >= 3 && sugerencias.length > 0 && (
                                                 <ul className="sugerencias">
                                                     {sugerencias.map((alumno) => (
@@ -175,38 +200,37 @@ function GestionarAlumnosPage() {
                                     <div className="input-group">
                                         <label htmlFor="curso">Curso:</label>
                                         <select
-                                            id="gestion"
-                                            name="gestion_id"
-                                            value={registroData.gestion_id}
+                                            id="curso"
+                                            name="curso"
+                                            value={registroData.curso}
                                             onChange={handleRegistroChange}
                                             required
                                         >
                                             <option value="">Seleccione el curso</option>
-                                            {gestiones.map((gestion) => (
-                                                <option key={gestion.id} value={gestion.id}>
-                                                    {gestion.anio_escolar}
+                                            {cursos.map((curso) => (
+                                                <option key={curso.id} value={curso.id}>
+                                                    {curso.nombre}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
                                     <div className="input-group">
-                                        <label htmlFor="curso">Paralelo:</label>
+                                        <label htmlFor="paralelo">Paralelo:</label>
                                         <select
-                                            id="gestion"
-                                            name="gestion_id"
-                                            value={registroData.gestion_id}
+                                            id="paralelo"
+                                            name="paralelo"
+                                            value={registroData.paralelo}
                                             onChange={handleRegistroChange}
                                             required
                                         >
                                             <option value="">Seleccione el paralelo</option>
-                                            {gestiones.map((gestion) => (
-                                                <option key={gestion.id} value={gestion.id}>
-                                                    {gestion.anio_escolar}
+                                            {paralelos.map((paralelo) => (
+                                                <option key={paralelo.id} value={paralelo.id}>
+                                                    {paralelo.nombre}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
-
                                     <div className="input-group">
                                         <label htmlFor="gestion">Gestión Académica:</label>
                                         <select
@@ -218,13 +242,12 @@ function GestionarAlumnosPage() {
                                         >
                                             <option value="">Seleccione una gestión</option>
                                             {gestiones.map((gestion) => (
-                                                <option key={gestion.id} value={gestion.id}>
+                                                <option key={gestion.gestion} value={gestion.gestion}>
                                                     {gestion.anio_escolar}
                                                 </option>
                                             ))}
                                         </select>
                                     </div>
-
                                     <div className="form-actions">
                                         <button type="submit" className="btn btn-success">
                                             Registrar Alumno
@@ -251,8 +274,8 @@ function GestionarAlumnosPage() {
                                     </thead>
                                     <tbody>
                                         {gestiones.map((gestion) => (
-                                            <tr key={gestion.id}>
-                                                <td>{gestion.id}</td>
+                                            <tr key={gestion.gestion}>
+                                                <td>{gestion.gestion}</td>
                                                 <td>{gestion.anio_escolar}</td>
                                                 <td>
                                                     <span className={`status-badge ${gestion.estado ? 'habilitado' : 'deshabilitado'}`}>
