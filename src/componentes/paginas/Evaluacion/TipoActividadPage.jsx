@@ -36,7 +36,7 @@ function TipoActividadPage() {
     // Si el campo es "dimension", actualiza también el puntaje
     if (name === 'dimension') {
       const selectedDimension = dimensiones.find(
-        (dimension) => dimension.descripcion === value
+        (dimension) => dimension.id === parseInt(value)
       );
       setFormData({
         ...formData,
@@ -70,6 +70,10 @@ function TipoActividadPage() {
     } catch (error) {
       console.error('Error al crear la actividad:', error);
     }
+
+    console.log(formData)
+    setActividades([...actividades, formData]);
+    setFormData({ nombre: '', estado: '', dimension: '', puntaje: '' });
   };
 
   return (
@@ -114,7 +118,7 @@ function TipoActividadPage() {
               <option value="">Seleccione</option>
               {Array.isArray(dimensiones) &&
                 dimensiones.map((dimension) => (
-                  <option key={dimension.id} value={dimension.descripcion}>
+                  <option key={dimension.id} value={dimension.id}>
                     {dimension.descripcion}
                   </option>
                 ))}
