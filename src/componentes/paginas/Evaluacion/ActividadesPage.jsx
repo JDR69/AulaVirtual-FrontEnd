@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext'; // Importar el contexto
-import { crearNuevoTareaRequest } from '../../../api/auth'; // Importar la función para crear tareas
+import { obtenerActividadesRequest, crearNuevoTareaRequest } from '../../../api/auth'; // Importar las funciones necesarias
 
 function ActividadesPage() {
-    const { cursoSeleccionado, detalleCompleto } = useAuth(); // Obtener datos del contexto
+    const { cursoSeleccionado, detalleCompleto, materiaProfesor } = useAuth(); // Obtener datos del contexto
     const [showModal, setShowModal] = useState(false);
     const [actividades, setActividades] = useState([]);
+    const [tiposActividad, setTiposActividad] = useState([]); // Estado para los tipos de actividad
     const [form, setForm] = useState({
         tipo: '',
         descripcion: '',
@@ -25,10 +26,9 @@ function ActividadesPage() {
 
     // Obtener la gestión y actividad dinámicamente
     const obtenerGestionYActividad = () => {
-        // Lógica para obtener la gestión y actividad del curso seleccionado
-        const gestionActual = detalleCompleto?.gestion || 9; // Valor por defecto si no está definido
-        const actividadActual = detalleCompleto?.actividad || null; // Obtener el ID de la actividad actual
-        return { gestion: gestionActual, actividad: actividadActual };
+        console.log(materiaProfesor)
+       const gestionActual = materiaProfesor?.horarios.id || 9; // Valor por defecto si no está definido
+         return { gestion: gestionActual, actividad: actividadActual };
     };
 
     // Cargar datos de materia, curso y paralelo al iniciar
@@ -41,7 +41,6 @@ function ActividadesPage() {
                 paralelo: cursoSeleccionado.paralelo
             }));
         } else {
-            // Si no está en el contexto, intentar cargar desde localStorage
             const savedCurso = localStorage.getItem('cursoSeleccionado');
             if (savedCurso) {
                 const parsedCurso = JSON.parse(savedCurso);
@@ -54,6 +53,21 @@ function ActividadesPage() {
             }
         }
     }, [cursoSeleccionado]);
+
+    // Obtener los tipos de actividad desde el backend
+    useEffect(() => {
+        const fetchTiposActividad = async () => {
+            try {
+                const response = await obtenerActividadesRequest();
+                // Filtrar solo las actividades con estado: true
+                const actividadesActivas = response.data.filter((actividad) => actividad.estado);
+                setTiposActividad(actividadesActivas); // Guardar los tipos de actividad en el estado
+            } catch (error) {
+                console.error("Error al obtener los tipos de actividad:", error);
+            }
+        };
+        fetchTiposActividad();
+    }, []);
 
     const handleOpenModal = () => setShowModal(true);
     const handleCloseModal = () => {
@@ -78,7 +92,6 @@ function ActividadesPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Obtener gestión y actividad dinámicamente
         const { gestion, actividad } = obtenerGestionYActividad();
 
         if (!actividad) {
@@ -86,32 +99,28 @@ function ActividadesPage() {
             return;
         }
 
-        // Preparar los datos para el backend
         const tareaData = {
-            id_cursoparalelo: cursoSeleccionado?.curso_paralelo, // Tomar del contexto
-            gestion, // Gestión dinámica
+            id_cursoparalelo: cursoSeleccionado?.curso_paralelo,
+            gestion,
             descripcion: form.descripcion,
-            puntaje: 20, // Ajustar según sea necesario
+            puntaje: 20,
             fecha_inicio: form.fechaInicio,
             fecha_entrega: form.fechaFin,
-            estado: form.estado.toLowerCase(), // Convertir a minúsculas si es necesario
-            actividad, // Actividad dinámica
-            horario_materia: cursoSeleccionado?.materia, // Tomar del contexto
+            estado: form.estado.toLowerCase(),
+            actividad,
+            horario_materia: cursoSeleccionado?.materia,
         };
 
-        // Mostrar en consola los datos que se enviarán
         console.log("Datos enviados al backend:", tareaData);
 
         try {
             if (editIndex !== null) {
-                // Actualizar actividad localmente
                 const nuevasActividades = [...actividades];
                 nuevasActividades[editIndex] = form;
                 setActividades(nuevasActividades);
             } else {
-                // Enviar nueva tarea al backend
                 await crearNuevoTareaRequest(tareaData);
-                setActividades([...actividades, form]); // Agregar la nueva actividad localmente
+                setActividades([...actividades, form]);
             }
             handleCloseModal();
         } catch (error) {
@@ -131,7 +140,6 @@ function ActividadesPage() {
         setActividades(nuevasActividades);
     };
 
-    // Filtrado de actividades según los buscadores
     const actividadesFiltradas = actividades.filter((act) => {
         const descripcionMatch = act.descripcion.toLowerCase().includes(searchDescripcion.toLowerCase());
         const fechaMatch = searchFecha === '' || act.fechaInicio === searchFecha || act.fechaFin === searchFecha;
@@ -143,7 +151,6 @@ function ActividadesPage() {
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <h1>Actividades</h1>
-                {/* Buscadores */}
                 <div className="row my-3">
                     <div className="col-md-4 mb-2">
                         <input
@@ -170,9 +177,8 @@ function ActividadesPage() {
                             onChange={e => setSearchEstado(e.target.value)}
                         >
                             <option value="">Todos los estados</option>
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="Entregado">Entregado</option>
-                            <option value="Calificado">Calificado</option>
+                            <option value="habilitado">Habilitado</option>
+                            <option value="deshabilitado">Deshabilitado</option>
                         </select>
                     </div>
                 </div>
@@ -180,12 +186,8 @@ function ActividadesPage() {
                     <button className="btn btn-primary" onClick={handleOpenModal}>
                         <i className="bi bi-plus-circle-fill"></i> Crear Actividad
                     </button>
-                    <button className="btn btn-secondary ms-2">
-                        <i className="bi bi-file-earmark-text"></i> Generar Reporte
-                    </button>
                 </div>
 
-                {/* Tabla de actividades */}
                 <div className="table-responsive mt-4">
                     <table className="table table-striped">
                         <thead>
@@ -205,7 +207,7 @@ function ActividadesPage() {
                                     <td>{act.descripcion}</td>
                                     <td>{act.fechaInicio}</td>
                                     <td>{act.fechaFin}</td>
-                                    <td>{act.estado}</td>
+                                    <td>{act.estado ? 'habilitado' : 'deshabilitado'}</td> {/* Transformación del estado */}
                                     <td>
                                         <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(actividades.indexOf(act))}>Editar</button>
                                         <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(actividades.indexOf(act))}>Eliminar</button>
@@ -221,7 +223,6 @@ function ActividadesPage() {
                     </table>
                 </div>
             </div>
-            {/* Modal */}
             {showModal && (
                 <div className='form-gris'>
                     <div className="form-flotante">
@@ -235,10 +236,9 @@ function ActividadesPage() {
                                     <label className="form-label">Tipo de Actividad</label>
                                     <select className="form-select" name="tipo" value={form.tipo} onChange={handleChange} required>
                                         <option value="">Seleccionar</option>
-                                        <option value="Examen">Examen</option>
-                                        <option value="Tarea">Tarea</option>
-                                        <option value="Proyecto">Proyecto</option>
-                                        <option value="Otro">Otro</option>
+                                        {tiposActividad.map((tipo) => (
+                                            <option key={tipo.id} value={tipo.nombre}>{tipo.nombre}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="mb-3">
@@ -257,9 +257,8 @@ function ActividadesPage() {
                                     <label className="form-label">Estado</label>
                                     <select className="form-select" name="estado" value={form.estado} onChange={handleChange} required>
                                         <option value="">Seleccionar</option>
-                                        <option value="Pendiente">Pendiente</option>
-                                        <option value="Entregado">Entregado</option>
-                                        <option value="Calificado">Calificado</option>
+                                        <option value="habilitado">Habilitado</option>
+                                        <option value="deshabilitado">Deshabilitado</option>
                                     </select>
                                 </div>
                                 <div className="modal-footer">
