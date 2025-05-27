@@ -318,3 +318,8 @@ export const crearLibretaRequest = (data) =>
             "Content-Type": "application/json",
         },
     });
+    
+//DIMENSION
+export const obtenerDimensionRequest = () => {
+  return instance.get('/api/evaluaciones/obtener-dimensiones/');
+};

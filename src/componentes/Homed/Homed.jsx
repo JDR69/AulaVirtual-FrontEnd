@@ -28,6 +28,7 @@ import AsistenciaPage from "../paginas/Evaluacion/AsistenciaPage";
 import CrearNotificacionPage from "../paginas/Periodo/CrearNotificacionPage";
 import Gestiones from "../paginas/Periodo/Gestiones";
 import LibretaPage from "../paginas/Periodo/LibretaPage";
+import TipoActividadPage from "../paginas/Evaluacion/TipoActividadPage";
 
 
 
@@ -66,6 +67,7 @@ export const Homed = () => {
 
                     {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />
+                     <Route path="/tipo-actividad" element={<TipoActividadPage />} />
                     <Route path="/calificaciones" element={<CalificacionesPage />} />
                     <Route path="/asistencia" element={<AsistenciaPage />} />
 
