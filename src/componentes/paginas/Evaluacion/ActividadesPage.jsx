@@ -224,10 +224,20 @@ function ActividadesPage() {
                                     <td>{act.descripcion}</td>
                                     <td>{act.fechaInicio}</td>
                                     <td>{act.fechaFin}</td>
-                                    <td>{act.estado ? 'habilitado' : 'deshabilitado'}</td> {/* Trarnsformación del estado */}
+                                    <td>{act.estado ? 'habilitado' : 'deshabilitado'}</td>
                                     <td>
-                                        <button className="btn btn-warning btn-sm me-2" onClick={() => handleEditar(actividades.indexOf(act))}>Editar</button>
-                                        <button className="btn btn-danger btn-sm" onClick={() => handleEliminar(actividades.indexOf(act))}>Eliminar</button>
+                                        <button
+                                            className="btn btn-warning btn-sm me-2"
+                                            onClick={() => handleEditar(actividades.indexOf(act))}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => handleEliminar(actividades.indexOf(act))}
+                                        >
+                                            Eliminar
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
