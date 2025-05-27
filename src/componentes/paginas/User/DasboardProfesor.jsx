@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import '../../css/DarboardProfesor.css'
 import { useAuth } from '../../../context/AuthContext'
-import { obtenerDetalleMateriaProfesorRequest } from '../../../api/auth'
+import { obtenerDetalleMateriaProfesorRequest, obtenerGestionRequest } from '../../../api/auth'
 import { useNavigate } from 'react-router-dom'
 
 const DasboardProfesor = () => {
-   const { materiaProfesor, setMateriaProfesor, setCursoYParalelo, user } = useAuth();
-  const [materiasB, setMateriasB] = useState([])
+    const { materiaProfesor, setMateriaProfesor, setCursoYParalelo, user, setGestion } = useAuth();
+    const [materiasB, setMateriasB] = useState([])
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -27,7 +27,12 @@ const DasboardProfesor = () => {
             setLoading(true);
             console.log("Obteniendo materias para el profesor:", user.id);
             const res = await obtenerDetalleMateriaProfesorRequest(user.id);
-            console.log("Materias obtenidas:", res.data);
+            const gest = await obtenerGestionRequest();
+            const mayor = gest.data.reduce((max, actual) =>
+                actual.anio_escolar > max.anio_escolar ? actual : max
+            );
+            console.log(mayor);
+            setGestion(mayor)
             setMateriasB(res.data);
             setLoading(false);
         } catch (error) {
@@ -36,30 +41,30 @@ const DasboardProfesor = () => {
         }
     };
 
-   const handleCourseSelection = (mat) => {
-    console.log("Curso seleccionado:", mat);
-    setMateriaProfesor(mat);
-    setCursoYParalelo({
-        materia: mat.descripcion.materia_nombre,
-        curso: mat.horarios.nombre_curso,
-        paralelo: mat.horarios.descripcion_paralelo,
-    });
-    navigate('/dasboard/homeda');
-};
-// Ejemplo de uso en otro componente
-const { cursoSeleccionado } = useAuth();
+    const handleCourseSelection = (mat) => {
+        console.log("Curso seleccionado:", mat);
+        setMateriaProfesor(mat);
+        setCursoYParalelo({
+            materia: mat.descripcion.materia_nombre,
+            curso: mat.horarios.nombre_curso,
+            paralelo: mat.horarios.descripcion_paralelo,
+        });
+        navigate('/dasboard/homeda');
+    };
+    // Ejemplo de uso en otro componente
+    const { cursoSeleccionado } = useAuth();
 
-useEffect(() => {
-    if (cursoSeleccionado) {
-        console.log("Datos del curso seleccionado:", cursoSeleccionado);
-    }
-}, [cursoSeleccionado]);
+    useEffect(() => {
+        if (cursoSeleccionado) {
+            console.log("Datos del curso seleccionado:", cursoSeleccionado);
+        }
+    }, [cursoSeleccionado]);
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <div className="dashboard-container">
                     <h1 className="dashboard-title">Seleccionar el Curso</h1>
-                    
+
                     {loading ? (
                         <div className="d-flex justify-content-center">
                             <div className="spinner-border text-primary" role="status">
@@ -73,9 +78,9 @@ useEffect(() => {
                     ) : (
                         <div className="cards-container">
                             {materiasB.map((mat, index) => (
-                                <div 
-                                    key={index} 
-                                    className="card2" 
+                                <div
+                                    key={index}
+                                    className="card2"
                                     onClick={() => handleCourseSelection(mat)}
                                     style={{ cursor: 'pointer' }}
                                 >

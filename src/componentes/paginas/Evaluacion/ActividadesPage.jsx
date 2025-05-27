@@ -3,7 +3,7 @@ import { useAuth } from '../../../context/AuthContext'; // Importar el contexto
 import { obtenerActividadesRequest, crearNuevoTareaRequest } from '../../../api/auth'; // Importar las funciones necesarias
 
 function ActividadesPage() {
-    const { cursoSeleccionado, detalleCompleto, materiaProfesor } = useAuth(); // Obtener datos del contexto
+    const { cursoSeleccionado, detalleCompleto, materiaProfesor ,gestion} = useAuth(); // Obtener datos del contexto
     const [showModal, setShowModal] = useState(false);
     const [actividades, setActividades] = useState([]);
     const [tiposActividad, setTiposActividad] = useState([]); // Estado para los tipos de actividad
@@ -69,7 +69,10 @@ function ActividadesPage() {
         fetchTiposActividad();
     }, []);
 
-    const handleOpenModal = () => setShowModal(true);
+    const handleOpenModal = () => {
+        console.log(gestion)
+        setShowModal(true);
+    }
     const handleCloseModal = () => {
         setShowModal(false);
         setForm({
@@ -228,6 +231,7 @@ function ActividadesPage() {
                     <div className="form-flotante">
                         <div className="modal-header">
                             <h5 className="modal-title">{editIndex !== null ? 'Editar Actividad' : 'Nueva Actividad'}</h5>
+                            <h5 className="modal-title"> ---Gestion:{gestion.anio_escolar}</h5>
                             <button type="button" className="btn-close" onClick={handleCloseModal}></button>
                         </div>
                         <div className="modal-body">

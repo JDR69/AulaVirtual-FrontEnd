@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
     const [horarios, setHorarios] = useState([]);
     const [niveles, setNiveles] = useState([]);
     const [paralelos, setParalelos] = useState([]);
+    const [gestion, setGestion] = useState([]);
 
     //DETALLE CURSO
     const [detalleCompleto, setDetalleCompleto] = useState([]);
@@ -214,6 +215,9 @@ export const AuthProvider = ({ children }) => {
 
             cursoSeleccionado,
             setCursoYParalelo,
+
+            gestion,
+            setGestion,
         }}>
             {children}
         </AuthContext.Provider>
