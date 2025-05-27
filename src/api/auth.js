@@ -324,7 +324,7 @@ export const obtenerDimensionRequest = () => {
   return instance.get('/api/evaluaciones/obtener-dimensiones/');
 };
 
-//ACTIVIDADES
+//TIPO ACTIVIDADES
 
 export const crearActividadRequest = (data) =>
     instance.post(`/api/evaluaciones/crear-nueva-actividad/`, data, {
@@ -332,3 +332,14 @@ export const crearActividadRequest = (data) =>
             "Content-Type": "application/json",
         },
     });
+
+// TAREA O ACTIVIDAD
+
+export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluaciones/crear-nueva-tarea/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)

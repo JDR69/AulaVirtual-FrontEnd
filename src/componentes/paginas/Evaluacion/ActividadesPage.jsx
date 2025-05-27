@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext'; // Importar el contexto
+import { crearNuevoTareaRequest } from '../../../api/auth'; // Importar la función para crear tareas
 
 function ActividadesPage() {
-    const { cursoSeleccionado } = useAuth(); // Obtener datos del contexto
+    const { cursoSeleccionado, detalleCompleto } = useAuth(); // Obtener datos del contexto
     const [showModal, setShowModal] = useState(false);
     const [actividades, setActividades] = useState([]);
     const [form, setForm] = useState({
@@ -21,6 +22,14 @@ function ActividadesPage() {
     const [searchDescripcion, setSearchDescripcion] = useState('');
     const [searchFecha, setSearchFecha] = useState('');
     const [searchEstado, setSearchEstado] = useState('');
+
+    // Obtener la gestión y actividad dinámicamente
+    const obtenerGestionYActividad = () => {
+        // Lógica para obtener la gestión y actividad del curso seleccionado
+        const gestionActual = detalleCompleto?.gestion || 9; // Valor por defecto si no está definido
+        const actividadActual = detalleCompleto?.actividad || null; // Obtener el ID de la actividad actual
+        return { gestion: gestionActual, actividad: actividadActual };
+    };
 
     // Cargar datos de materia, curso y paralelo al iniciar
     useEffect(() => {
@@ -66,21 +75,50 @@ function ActividadesPage() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-   const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    // Mostrar en consola el contenido del formulario
-    console.log("Datos del formulario enviados:", form);
+        // Obtener gestión y actividad dinámicamente
+        const { gestion, actividad } = obtenerGestionYActividad();
 
-    if (editIndex !== null) {
-        const nuevasActividades = [...actividades];
-        nuevasActividades[editIndex] = form;
-        setActividades(nuevasActividades);
-    } else {
-        setActividades([...actividades, form]);
-    }
-    handleCloseModal();
-};
+        if (!actividad) {
+            alert("No se pudo determinar la actividad actual. Verifica los datos del curso.");
+            return;
+        }
+
+        // Preparar los datos para el backend
+        const tareaData = {
+            id_cursoparalelo: cursoSeleccionado?.curso_paralelo, // Tomar del contexto
+            gestion, // Gestión dinámica
+            descripcion: form.descripcion,
+            puntaje: 20, // Ajustar según sea necesario
+            fecha_inicio: form.fechaInicio,
+            fecha_entrega: form.fechaFin,
+            estado: form.estado.toLowerCase(), // Convertir a minúsculas si es necesario
+            actividad, // Actividad dinámica
+            horario_materia: cursoSeleccionado?.materia, // Tomar del contexto
+        };
+
+        // Mostrar en consola los datos que se enviarán
+        console.log("Datos enviados al backend:", tareaData);
+
+        try {
+            if (editIndex !== null) {
+                // Actualizar actividad localmente
+                const nuevasActividades = [...actividades];
+                nuevasActividades[editIndex] = form;
+                setActividades(nuevasActividades);
+            } else {
+                // Enviar nueva tarea al backend
+                await crearNuevoTareaRequest(tareaData);
+                setActividades([...actividades, form]); // Agregar la nueva actividad localmente
+            }
+            handleCloseModal();
+        } catch (error) {
+            console.error("Error al enviar los datos:", error);
+            alert("Ocurrió un error al guardar la tarea. Inténtalo nuevamente.");
+        }
+    };
 
     const handleEditar = (index) => {
         setForm(actividades[index]);
