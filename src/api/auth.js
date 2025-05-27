@@ -333,6 +333,8 @@ export const crearActividadRequest = (data) =>
         },
     });
 
+export const obtenerActividadesRequest = () => { return instance.get(`/api/evaluaciones/obtener-actividades/`,{timeout:tiempoEspera})}
+
 // TAREA O ACTIVIDAD
 
 export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluaciones/crear-nueva-tarea/`,

@@ -6,7 +6,7 @@ function TipoActividadPage() {
   const [dimensiones, setDimensiones] = useState([]);
   const [formData, setFormData] = useState({
     nombre: '',
-    estado: '',
+    estado: true,
     dimension: '',
     puntaje: '',
   });
@@ -57,16 +57,16 @@ function TipoActividadPage() {
 
       const payload = {
         nombre: formData.nombre,
-        estado: formData.estado === 'Habilitado', // Convertir a booleano
-        dimension: selectedDimension ? selectedDimension.id : null, // Usar el ID de la dimensión
+        estado: formData.estado , // Convertir a booleano
+        dimension: parseInt(formData.dimension), // Usar el ID de la dimensión
       };
-
+      console.log(payload)
       const response = await crearActividadRequest(payload);
       console.log('Actividad creada:', response.data);
 
       // Actualizar la lista de actividades localmente
       setActividades([...actividades, { ...formData, id: response.data.id }]);
-      setFormData({ nombre: '', estado: '', dimension: '', puntaje: '' });
+      setFormData({ nombre: '', estado: true, dimension: '', puntaje: '' });
     } catch (error) {
       console.error('Error al crear la actividad:', error);
     }
@@ -102,8 +102,8 @@ function TipoActividadPage() {
               required
             >
               <option value="">Seleccione</option>
-              <option value="Habilitado">Habilitado</option>
-              <option value="Deshabilitado">Deshabilitado</option>
+              <option value={true}>Habilitado</option>
+              <option value={false}>Deshabilitado</option>
             </select>
           </div>
           <div className="input-group">
