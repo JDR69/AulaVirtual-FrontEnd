@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerDimensionRequest } from '../../../api/auth';
+import { obtenerDimensionRequest, crearActividadRequest } from '../../../api/auth';
 
 function TipoActividadPage() {
   const [actividades, setActividades] = useState([]);
@@ -48,10 +48,28 @@ function TipoActividadPage() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setActividades([...actividades, formData]);
-    setFormData({ nombre: '', estado: '', dimension: '', puntaje: '' });
+    try {
+      const selectedDimension = dimensiones.find(
+        (dimension) => dimension.descripcion === formData.dimension
+      );
+
+      const payload = {
+        nombre: formData.nombre,
+        estado: formData.estado === 'Habilitado', // Convertir a booleano
+        dimension: selectedDimension ? selectedDimension.id : null, // Usar el ID de la dimensión
+      };
+
+      const response = await crearActividadRequest(payload);
+      console.log('Actividad creada:', response.data);
+
+      // Actualizar la lista de actividades localmente
+      setActividades([...actividades, { ...formData, id: response.data.id }]);
+      setFormData({ nombre: '', estado: '', dimension: '', puntaje: '' });
+    } catch (error) {
+      console.error('Error al crear la actividad:', error);
+    }
   };
 
   return (
