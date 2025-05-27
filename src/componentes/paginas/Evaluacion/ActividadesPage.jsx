@@ -28,6 +28,7 @@ function ActividadesPage() {
     const obtenerGestionYActividad = () => {
         const gestionActual = gestion?.gestion; // Obtener la gestión actual
         const cursoParalelo = materiaProfesor?.horarios?.curso_paralelo; // Obtener curso_paralelo
+        const id_horario = materiaProfesor?.horarios?.id;
         const descripcionMateria = materiaProfesor?.horarios?.descripcion_materia; // Obtener descripcion_materia
 
         if (!gestionActual || !cursoParalelo || !descripcionMateria) {
@@ -39,6 +40,7 @@ function ActividadesPage() {
             gestion: gestionActual,
             curso_paralelo: cursoParalelo,
             descripcion_materia: descripcionMateria,
+            horario_id : id_horario,
         };
     };
 
@@ -123,7 +125,7 @@ function ActividadesPage() {
             fecha_entrega: form.fechaFin,
             estado: form.estado.toLowerCase() === 'habilitado',
             actividad: parseInt(form.tipo), // Usar el tipo de actividad seleccionado
-            horario_materia: datosActividad.descripcion_materia,
+            horario_materia: datosActividad.horario_id,
         };
 
         console.log("Datos enviados al backend:", tareaData);
