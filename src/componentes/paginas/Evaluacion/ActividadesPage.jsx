@@ -26,9 +26,20 @@ function ActividadesPage() {
 
     // Obtener la gestión y actividad dinámicamente
     const obtenerGestionYActividad = () => {
-        console.log(materiaProfesor)
-       const gestionActual = materiaProfesor?.horarios.id || 9; // Valor por defecto si no está definido
-         return { gestion: gestionActual, actividad: actividadActual };
+        const gestionActual = gestion?.gestion; // Obtener la gestión actual
+        const cursoParalelo = materiaProfesor?.horarios?.curso_paralelo; // Obtener curso_paralelo
+        const descripcionMateria = materiaProfesor?.horarios?.descripcion_materia; // Obtener descripcion_materia
+
+        if (!gestionActual || !cursoParalelo || !descripcionMateria) {
+            console.error("Faltan datos para crear la tarea.");
+            return null;
+        }
+
+        return {
+            gestion: gestionActual,
+            curso_paralelo: cursoParalelo,
+            descripcion_materia: descripcionMateria,
+        };
     };
 
     // Cargar datos de materia, curso y paralelo al iniciar
@@ -95,23 +106,24 @@ function ActividadesPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { gestion, actividad } = obtenerGestionYActividad();
+        const datosActividad = obtenerGestionYActividad();
 
-        if (!actividad) {
-            alert("No se pudo determinar la actividad actual. Verifica los datos del curso.");
+        if (!datosActividad) {
+            alert("No se pudo determinar los datos necesarios. Verifica los datos del curso.");
             return;
         }
 
         const tareaData = {
-            id_cursoparalelo: cursoSeleccionado?.curso_paralelo,
-            gestion,
+            
+            id_cursoparalelo: datosActividad.curso_paralelo,
+            gestion:9, //datosActividad.gestion,
             descripcion: form.descripcion,
-            puntaje: 20,
+            puntaje: 0,
             fecha_inicio: form.fechaInicio,
             fecha_entrega: form.fechaFin,
-            estado: form.estado.toLowerCase(),
-            actividad,
-            horario_materia: cursoSeleccionado?.materia,
+            estado: form.estado.toLowerCase() === 'habilitado',
+            actividad: parseInt(form.tipo), // Usar el tipo de actividad seleccionado
+            horario_materia: datosActividad.descripcion_materia,
         };
 
         console.log("Datos enviados al backend:", tareaData);
@@ -122,7 +134,7 @@ function ActividadesPage() {
                 nuevasActividades[editIndex] = form;
                 setActividades(nuevasActividades);
             } else {
-                await crearNuevoTareaRequest(tareaData);
+                await crearNuevoTareaRequest(tareaData); // Enviar los datos al backend
                 setActividades([...actividades, form]);
             }
             handleCloseModal();
@@ -241,7 +253,7 @@ function ActividadesPage() {
                                     <select className="form-select" name="tipo" value={form.tipo} onChange={handleChange} required>
                                         <option value="">Seleccionar</option>
                                         {tiposActividad.map((tipo) => (
-                                            <option key={tipo.id} value={tipo.nombre}>{tipo.nombre}</option>
+                                            <option key={tipo.id} value={tipo.id}>{tipo.nombre}</option>
                                         ))}
                                     </select>
                                 </div>

@@ -11,6 +11,7 @@ import {
     obtenerNivelesRequest,
     obtenerParalelosRequest,
     obtenerDetalleCompletoPorCurso,
+    obtenerGestionRequest
 } from "../api/auth";
 
 const AuthContext = createContext();
@@ -164,6 +165,31 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const cargarGestion = async () => {
+        try {
+            // Verificar si ya existe una gestión en localStorage
+            const savedGestion = localStorage.getItem('gestion');
+            if (savedGestion) {
+                setGestion(JSON.parse(savedGestion));
+                console.log("Gestión cargada desde localStorage:", JSON.parse(savedGestion));
+                return;
+            }
+
+            // Si no existe, obtener la gestión más reciente desde la API
+            const gest = await obtenerGestionRequest();
+            const mayor = gest.data.reduce((max, actual) =>
+                actual.anio_escolar > max.anio_escolar ? actual : max
+            );
+            console.log("Gestión más reciente:", mayor);
+
+            // Guardar la gestión en el estado y en localStorage
+            setGestion(mayor);
+            localStorage.setItem('gestion', JSON.stringify(mayor));
+        } catch (error) {
+            console.error("Error al cargar la gestión:", error);
+        }
+    };
+
     useEffect(() => {
         async function checklogin() {
             const token = localStorage.getItem('token');
@@ -176,6 +202,7 @@ export const AuthProvider = ({ children }) => {
         }
 
         checklogin();
+        cargarGestion(); // Cargar la gestión más reciente al iniciar la aplicación
     }, []);
 
     return (
@@ -218,6 +245,7 @@ export const AuthProvider = ({ children }) => {
 
             gestion,
             setGestion,
+            cargarGestion, // Exponer la función para cargar gestión si es necesario
         }}>
             {children}
         </AuthContext.Provider>

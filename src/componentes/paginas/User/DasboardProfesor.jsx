@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import '../../css/DarboardProfesor.css'
-import { useAuth } from '../../../context/AuthContext'
-import { obtenerDetalleMateriaProfesorRequest, obtenerGestionRequest } from '../../../api/auth'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import '../../css/DarboardProfesor.css';
+import { useAuth } from '../../../context/AuthContext';
+import { obtenerDetalleMateriaProfesorRequest } from '../../../api/auth';
+import { useNavigate } from 'react-router-dom';
 
 const DasboardProfesor = () => {
-    const { materiaProfesor, setMateriaProfesor, setCursoYParalelo, user, setGestion } = useAuth();
-    const [materiasB, setMateriasB] = useState([])
+    const { materiaProfesor, setMateriaProfesor, setCursoYParalelo, user, cargarGestion } = useAuth();
+    const [materiasB, setMateriasB] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Si ya tenemos una materia seleccionada, nos dirigimos a la página principal
         if (materiaProfesor && !window.location.pathname.includes('/homeda')) {
             navigate('/dasboard/homeda');
             return;
@@ -27,12 +26,7 @@ const DasboardProfesor = () => {
             setLoading(true);
             console.log("Obteniendo materias para el profesor:", user.id);
             const res = await obtenerDetalleMateriaProfesorRequest(user.id);
-            const gest = await obtenerGestionRequest();
-            const mayor = gest.data.reduce((max, actual) =>
-                actual.anio_escolar > max.anio_escolar ? actual : max
-            );
-            console.log(mayor);
-            setGestion(mayor)
+            await cargarGestion(); // Cargar la gestión más reciente desde el contexto
             setMateriasB(res.data);
             setLoading(false);
         } catch (error) {
@@ -51,14 +45,7 @@ const DasboardProfesor = () => {
         });
         navigate('/dasboard/homeda');
     };
-    // Ejemplo de uso en otro componente
-    const { cursoSeleccionado } = useAuth();
 
-    useEffect(() => {
-        if (cursoSeleccionado) {
-            console.log("Datos del curso seleccionado:", cursoSeleccionado);
-        }
-    }, [cursoSeleccionado]);
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
