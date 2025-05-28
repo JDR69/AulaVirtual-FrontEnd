@@ -1,213 +1,316 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { obtenerDimensionAsignadasRequest, obtenerAlumnosTareasAsiganadasRequest ,actualizarTareasRequest} from '../../../api/auth';
+import React, { useState, useEffect } from 'react';
+import { obtenerDimensionAsignadasRequest, obtenerAlumnosTareasAsiganadasRequest, actualizarTareasRequest } from '../../../api/auth';
 import '../../css/CalificacionesPage.css';
 
 const CalificacionesPage = () => {
-    const [estudiantes, setEstudiantes] = useState([]);
-    const [notas, setNotas] = useState([]);
-    const [dimensionesB, setDimensionesB] = useState([]);
-    const [tareasPorAlumno, setTareasPorAlumno] = useState([]);
-    const [columnasEditables, setColumnasEditables] = useState({});
-    // guarda el ID de la tarea que se puede editar
-
-
-    const dimensiones = useMemo(() => {
-        const resultado = {};
-
-        dimensionesB.forEach(d => {
-            const nombreDimension = d.dimension.descripcion.toUpperCase();
-            resultado[nombreDimension] = [];
-
-            d.actividades.forEach(act => {
-                act.tareas.forEach(tarea => {
-                    resultado[nombreDimension].push(tarea.descripcion);
-                });
-            });
-        });
-        console.log(resultado)
-        return resultado;
-    }, [dimensionesB]);
+    const [datosPorTrimestre, setDatosPorTrimestre] = useState([]);
+    const [columnasEditablesPorTrimestre, setColumnasEditablesPorTrimestre] = useState({});
 
     useEffect(() => {
-        fetchDimension();
+        fetchDimensionesPorTrimestre();
     }, []);
 
-    const fetchDimension = async () => {
+    const fetchDimensionesPorTrimestre = async () => {
         try {
             const materiaProfesor = JSON.parse(localStorage.getItem("materiaProfesor") || "null");
-            const gestion2 = JSON.parse(localStorage.getItem("gestion") || "null");
+            const datosGestion = JSON.parse(localStorage.getItem("gestion") || "null");
+            const trimestres = datosGestion?.detalle?.map(d => d.trimestre_info) || [];
+
             const id_cursoparalelo = materiaProfesor.horarios.curso_paralelo;
-            const gestion = 9;//gestion2.gestion
-            const horario_materia = materiaProfesor.horarios.id
-            console.log(id_cursoparalelo)
-            console.log(gestion)
-            console.log(horario_materia)
+            const gestion = 9;
+            const horario_materia = materiaProfesor.horarios.id;
 
-            const res = await obtenerDimensionAsignadasRequest({ id_cursoparalelo, gestion, horario_materia });
-            const res2 = await obtenerAlumnosTareasAsiganadasRequest({ id_cursoparalelo, gestion, horario_materia });
+            const nuevosDatos = [];
+            const nuevasColumnasEditables = {};
 
-            console.log(res.data)
-            setDimensionesB(res.data)
-            console.log(res2.data)
-            setTareasPorAlumno(res2.data)
+            for (const t of trimestres) {
+                // CORREGIDO: Enviamos las fechas para filtrar por trimestre
+                const fecha_inicio = t.fecha_inicio;
+                const fecha_fin = t.fecha_final;
+
+                const res1 = await obtenerDimensionAsignadasRequest({ 
+                    id_cursoparalelo, 
+                    gestion, 
+                    horario_materia, 
+                    fecha_inicio, 
+                    fecha_fin 
+                });
+                const res2 = await obtenerAlumnosTareasAsiganadasRequest({ 
+                    id_cursoparalelo, 
+                    gestion, 
+                    horario_materia, 
+                    fecha_inicio, 
+                    fecha_fin 
+                });
+
+                const estudiantes = [];
+                const notas = {};
+
+                res2.data.forEach(alumnoObj => {
+                    const nombre = alumnoObj.nombre.toUpperCase();
+                    estudiantes.push(nombre);
+                    notas[nombre] = {};
+                    alumnoObj.tareas.forEach(tarea => {
+                        notas[nombre][tarea.descripcion] = tarea.puntaje;
+                    });
+                });
+
+                // CORREGIDO: Simplificamos la estructura de dimensiones
+                const dimensionesProcesadas = {};
+                res1.data.forEach(d => {
+                    const nombreDim = d.dimension.descripcion.toUpperCase();
+                    dimensionesProcesadas[nombreDim] = [];
+                    
+                    d.actividades.forEach(act => {
+                        act.tareas.forEach(tarea => {
+                            dimensionesProcesadas[nombreDim].push(tarea.descripcion);
+                        });
+                    });
+                });
+
+                // CORREGIDO: Inicializamos columnas editables para cada trimestre
+                nuevasColumnasEditables[t.nro] = {};
+
+                nuevosDatos.push({
+                    trimestre: t.nro,
+                    fechaInicio: t.fecha_inicio,
+                    fechaFinal: t.fecha_final,
+                    dimensiones: res1.data,
+                    tareasPorAlumno: res2.data,
+                    estudiantes,
+                    notas,
+                    dimensionesProcesadas
+                });
+            }
+
+            setDatosPorTrimestre(nuevosDatos);
+            setColumnasEditablesPorTrimestre(nuevasColumnasEditables);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
-    useEffect(() => {
-        if (tareasPorAlumno.length === 0) return;
-
-        const nuevosAlumnos = [];
-        const nuevasNotas = {};
-
-        tareasPorAlumno.forEach((alumnoObj) => {
-            const nombre = alumnoObj.nombre.toUpperCase();
-            nuevosAlumnos.push(nombre);
-
-            if (!nuevasNotas[nombre]) nuevasNotas[nombre] = {};
-
-            alumnoObj.tareas.forEach(tarea => {
-                const tareaId = tarea.descripcion;
-                nuevasNotas[nombre][tareaId] = tarea.puntaje;
-            });
-        });
-
-        setEstudiantes(nuevosAlumnos);
-        setNotas(nuevasNotas);
-    }, [tareasPorAlumno]);
-
-    const handleNotaChange = (alumnoNombre, tareaId, nuevoValor) => {
-        setNotas(prev => ({
+    // CORREGIDO: Toggle por trimestre específico
+    const toggleColumnaEditable = (trimestre, idTarea) => {
+        setColumnasEditablesPorTrimestre(prev => ({
             ...prev,
-            [alumnoNombre]: {
-                ...prev[alumnoNombre],
-                [tareaId]: nuevoValor
+            [trimestre]: {
+                ...prev[trimestre],
+                [idTarea]: !prev[trimestre]?.[idTarea]
             }
         }));
     };
 
-
-    const toggleColumnaEditable = (idTarea) => {
-        setColumnasEditables(prev => ({
-            ...prev,
-            [idTarea]: !prev[idTarea]
-        }));
+    const handleNotaChange = (datosIndex, alumnoNombre, tareaId, nuevoValor) => {
+        const nuevosDatos = [...datosPorTrimestre];
+        nuevosDatos[datosIndex].notas[alumnoNombre][tareaId] = nuevoValor;
+        setDatosPorTrimestre(nuevosDatos);
     };
 
-    const tareaSeleccionadaId = Object.keys(columnasEditables).find(id => columnasEditables[id]);
-
-
-    const enviarCalificacionTareaSeleccionada = async () => {
+    const enviarCalificacionTareaSeleccionada = async (datosIndex) => {
+        const datos = datosPorTrimestre[datosIndex];
+        const columnasEditables = columnasEditablesPorTrimestre[datos.trimestre] || {};
         const tareaSeleccionadaId = Object.keys(columnasEditables).find(id => columnasEditables[id]);
+
         if (!tareaSeleccionadaId) {
-            alert('Primero selecciona una columna con el checkbox');
+            alert(`Primero selecciona una columna del Trimestre ${datos.trimestre} con el checkbox`);
             return;
         }
 
-        console.log(tareaSeleccionadaId)
-
         const payload = [];
-        console.log(tareasPorAlumno)
-        tareasPorAlumno.forEach(alumno => {
+        datos.tareasPorAlumno.forEach(alumno => {
             const nombre = alumno.nombre.toUpperCase();
             const tarea = alumno.tareas.find(t => t.descripcion === tareaSeleccionadaId);
             if (tarea) {
-                const puntajeEditado = notas[nombre]?.[tareaSeleccionadaId];
+                const puntajeEditado = datos.notas[nombre]?.[tareaSeleccionadaId];
                 payload.push({
                     alumno: alumno.alumno_id,
                     id: tarea.id,
                     puntaje: puntajeEditado !== undefined ? parseFloat(puntajeEditado) : tarea.puntaje
                 });
             }
-
         });
 
-        console.log(payload)
-        console.log(notas)
-
         try {
-            const response = await actualizarTareasRequest(payload);
-            console.log(response.data)
-            window.location.reload()
+            await actualizarTareasRequest(payload);
+            alert(`Calificaciones del Trimestre ${datos.trimestre} guardadas exitosamente`);
+            // CORREGIDO: Recargamos datos en lugar de toda la página
+            await fetchDimensionesPorTrimestre();
         } catch (error) {
             console.error(error);
             alert('Hubo un error al guardar');
         }
     };
 
-
-
+    if (datosPorTrimestre.length === 0) {
+        return (
+            <div className="contenedor-principal">
+                <div className='contenedor-secundario'>
+                    <div style={{ textAlign: 'center', marginTop: '50px', fontSize: '18px', color: '#666' }}>
+                        Cargando datos de los trimestres...
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="contenedor-principal">
             <div className='contenedor-secundario'>
-                <h1>TRIMESTRE 1</h1>
-                <button onClick={enviarCalificacionTareaSeleccionada} className='btn btn-success'>
-                    Guardar Cambios
-                </button>
-                <div className="tabla-scroll">
-                    <table className="tabla-calificaciones">
-                        <thead>
-                            <tr>
-                                <th rowSpan={3} className="columna-alumnos">ALUMNOS</th>
-                                {Object.entries(dimensionesB).map(([key, value]) => (
-                                    <th
-                                        key={key}
-                                        colSpan={value.actividades.reduce((total, act) => total + act.tareas.length, 0)}
-                                    >
-                                        {value.dimension.descripcion}
-                                    </th>
-                                ))}
-                            </tr>
-                            <tr>
-                                {Object.values(dimensiones).flat().map((tarea, i) => (
-                                    <th key={i}>
-                                        <label style={{ fontSize: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                            <input
-                                                type="checkbox"
-                                                checked={!!columnasEditables[tarea]}
-                                                onChange={() => toggleColumnaEditable(tarea)}
-                                            />
-                                            Habilitar edición
-                                        </label>
-                                    </th>
-                                ))}
-                            </tr>
-                            <tr>
-                                {Object.values(dimensiones).flat().map((descripcion, i) => (
-                                    <th key={i} className="encabezado-vertical">{descripcion}</th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {estudiantes.map((alumno, i) => (
-                                <tr key={i}>
-                                    <td className="columna-alumnos">{alumno}</td>
-                                    {
-                                        Object.values(dimensiones).flat().map((tarea, j) => (
-                                            <td key={j} className="celda-nota">
-                                                {columnasEditables[tarea] ? (
-                                                    <input
-                                                        type="number"
-                                                        value={notas[alumno]?.[tarea] ?? ''}
-                                                        onChange={(e) => handleNotaChange(alumno, tarea, e.target.value)}
-                                                        style={{ width: '50px', textAlign: 'center' }}
-                                                    />
-                                                ) : (
-                                                    notas[alumno]?.[tarea] ?? ''
+                {datosPorTrimestre.map((datos, index) => {
+                    const dimensiones = datos.dimensionesProcesadas;
+                    const columnasEditables = columnasEditablesPorTrimestre[datos.trimestre] || {};
+
+                    return (
+                        <div key={index} style={{ marginBottom: '50px', border: '2px solid #e5e7eb', borderRadius: '8px', padding: '20px' }}>
+                            {/* CORREGIDO: Header más informativo */}
+                            <h1>
+                                Trimestre {datos.trimestre} 
+                                <small style={{ fontSize: '14px', color: '#666', marginLeft: '10px' }}>
+                                    ({datos.fechaInicio} a {datos.fechaFinal})
+                                </small>
+                            </h1>
+                            
+                            <button 
+                                onClick={() => enviarCalificacionTareaSeleccionada(index)} 
+                                className='btn btn-success'
+                                style={{ marginBottom: '20px' }}
+                            >
+                                Guardar Cambios - Trimestre {datos.trimestre}
+                            </button>
+
+                            {/* Mostrar mensaje si no hay datos */}
+                            {datos.estudiantes.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                                    No hay estudiantes registrados para este trimestre
+                                </div>
+                            ) : (
+                                <div className="tabla-scroll">
+                                    <table className="tabla-calificaciones">
+                                        <thead>
+                                            <tr>
+                                                <th rowSpan={3} className="columna-alumnos">ALUMNOS</th>
+                                                {/* CORREGIDO: Mostramos dimensiones con sus puntajes */}
+                                                {datos.dimensiones.map((dimension, dimIndex) => (
+                                                    <th 
+                                                        key={dimIndex} 
+                                                        colSpan={dimension.actividades.reduce((total, act) => total + act.tareas.length, 0)}
+                                                    >
+                                                        {dimension.dimension.descripcion.toUpperCase()} : {dimension.dimension.puntaje}
+                                                    </th>
+                                                ))}
+                                                <th rowSpan={3} className="columna-alumnos">Nota Final</th>
+                                            </tr>
+                                            <tr>
+                                                {Object.entries(dimensiones).map(([nombreDim, tareas]) =>
+                                                    tareas.length > 0 ? (
+                                                        tareas.map((tarea, i) => (
+                                                            <th key={`${nombreDim}-${i}`}>
+                                                                <label style={{ 
+                                                                    fontSize: '10px', 
+                                                                    display: 'flex', 
+                                                                    flexDirection: 'column', 
+                                                                    alignItems: 'center' 
+                                                                }}>
+                                                                    {/* CORREGIDO: Checkbox por trimestre */}
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={!!columnasEditables[tarea]}
+                                                                        onChange={() => toggleColumnaEditable(datos.trimestre, tarea)}
+                                                                    />
+                                                                    Habilitar edición
+                                                                </label>
+                                                            </th>
+                                                        ))
+                                                    ) : (
+                                                        <th key={`${nombreDim}-empty`}>Sin tareas</th>
+                                                    )
                                                 )}
-                                            </td>
-                                        ))
-                                    }
-                                </tr>
-                            ))}
-                        </tbody>
+                                            </tr>
+                                            <tr>
+                                                {Object.entries(dimensiones).map(([nombreDim, tareas]) =>
+                                                    tareas.length > 0 ? (
+                                                        tareas.map((descripcion, i) => (
+                                                            <th key={`${nombreDim}-desc-${i}`} className="encabezado-vertical">
+                                                                {descripcion}
+                                                            </th>
+                                                        ))
+                                                    ) : (
+                                                        <th key={`${nombreDim}-desc-empty`} className="encabezado-vertical">
+                                                            Sin tareas
+                                                        </th>
+                                                    )
+                                                )}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {datos.estudiantes.map((alumno, i) => {
+                                                // CORREGIDO: Cálculo de promedio más claro
+                                                const calcularPromedio = () => {
+                                                    let total = 0;
+                                                    datos.dimensiones.forEach(dim => {
+                                                        const tareas = dim.actividades.flatMap(a => a.tareas);
+                                                        if (tareas.length > 0) {
+                                                            const suma = tareas.reduce((acc, t) => 
+                                                                acc + parseFloat(datos.notas[alumno]?.[t.descripcion] ?? 0), 0
+                                                            );
+                                                            const promedio = suma / tareas.length;
+                                                            total += promedio * (dim.dimension.puntaje / 100);
+                                                        }
+                                                    });
+                                                    return total;
+                                                };
 
+                                                const promedioFinal = calcularPromedio();
 
-
-                    </table>
-                </div>
+                                                return (
+                                                    <tr key={i}>
+                                                        <td className="columna-alumnos">{alumno}</td>
+                                                        {Object.entries(dimensiones).map(([nombreDim, tareas]) =>
+                                                            tareas.length > 0 ? (
+                                                                tareas.map((tarea, j) => (
+                                                                    <td key={`${alumno}-${nombreDim}-${j}`} className="celda-nota">
+                                                                        {columnasEditables[tarea] ? (
+                                                                            <input
+                                                                                type="number"
+                                                                                value={datos.notas[alumno]?.[tarea] ?? ''}
+                                                                                onChange={(e) => handleNotaChange(index, alumno, tarea, e.target.value)}
+                                                                                style={{ width: '80px', textAlign: 'center' }}
+                                                                                min="0"
+                                                                                max="100"
+                                                                            />
+                                                                        ) : (
+                                                                            datos.notas[alumno]?.[tarea] ?? '-'
+                                                                        )}
+                                                                    </td>
+                                                                ))
+                                                            ) : (
+                                                                <td key={`${alumno}-${nombreDim}-empty`} className="celda-nota">
+                                                                    -
+                                                                </td>
+                                                            )
+                                                        )}
+                                                        <td 
+                                                            className="columna-final" 
+                                                            style={{
+                                                                fontWeight: 'bold',
+                                                                textAlign: 'center',
+                                                                backgroundColor: promedioFinal >= 41 ? '#dcfce7' : '#fee2e2',
+                                                                color: promedioFinal >= 41 ? '#166534' : '#991b1b'
+                                                            }}
+                                                        >
+                                                            {promedioFinal.toFixed(2)}
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

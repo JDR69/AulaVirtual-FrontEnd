@@ -357,22 +357,26 @@ export const actualizarTareasRequest = (data) => instance.put(`/api/evaluaciones
     }
   }
 )
-export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia }) => {
+export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia,fecha_inicio,fecha_fin }) => {
   return instance.get('/api/evaluaciones/obtener-actividades-curso2/', {
     params: {
       id_cursoparalelo,
       gestion,
-      horario_materia
+      horario_materia,
+      fecha_inicio,
+      fecha_fin
     },
     timeout: tiempoEspera
   });
 };
-export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestion, horario_materia }) => {
+export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestion, horario_materia,fecha_inicio,fecha_fin }) => {
   return instance.get('/api/evaluaciones/obtener-actividades-curso/', {
     params: {
       id_cursoparalelo,
       gestion,
-      horario_materia
+      horario_materia,
+      fecha_inicio,
+      fecha_fin
     },
     timeout: tiempoEspera
   });
