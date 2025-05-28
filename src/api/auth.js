@@ -345,3 +345,16 @@ export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluacione
     }
   }
 )
+
+
+//DIMENSION POR ACTIVIDAD
+export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia }) => {
+  return instance.get('/api/evaluaciones/obtener-actividades-curso2/', {
+    params: {
+      id_cursoparalelo,
+      gestion,
+      horario_materia
+    },
+    timeout: tiempoEspera
+  });
+};
