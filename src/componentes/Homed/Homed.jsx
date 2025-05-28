@@ -29,6 +29,7 @@ import CrearNotificacionPage from "../paginas/Periodo/CrearNotificacionPage";
 import Gestiones from "../paginas/Periodo/Gestiones";
 import LibretaPage from "../paginas/Periodo/LibretaPage";
 import TipoActividadPage from "../paginas/Evaluacion/TipoActividadPage";
+import LibretaIA from "../paginas/Periodo/LibretaIA";
 
 
 
@@ -67,7 +68,7 @@ export const Homed = () => {
 
                     {/* Rutas de Evaluacion */}
                     <Route path="/actividades" element={<ActividadesPage />} />
-                     <Route path="/tipo-actividad" element={<TipoActividadPage />} />
+                    <Route path="/tipo-actividad" element={<TipoActividadPage />} />
                     <Route path="/calificaciones" element={<CalificacionesPage />} />
                     <Route path="/asistencia" element={<AsistenciaPage />} />
 
@@ -79,6 +80,7 @@ export const Homed = () => {
                     <Route path="/gestiones" element={<Gestiones />} />
                     <Route path="/libreta" element={<LibretaPage />} />
 
+                    <Route path="/libretaIA" element={<LibretaIA />} />
 
 
 

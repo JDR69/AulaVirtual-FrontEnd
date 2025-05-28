@@ -195,6 +195,10 @@ const CustomNavbar = () => {
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/crear-notificacion">
                     Mandar Notificacion
+                         </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                   <NavDropdown.Item as={Link} to="/dasboard/libretaIA">
+                    Libreta IA
                   </NavDropdown.Item>
                 </NavDropdown>
               </>

@@ -1,0 +1,234 @@
+/* General Container */
+.aa1 {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f5f5, #e8eaf6);
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-in-out;
+  overflow-x: hidden; /* Evita que el contenido se desborde horizontalmente */
+}
+
+/* Header Styling */
+.ab2 h1 {
+  font-size: 3rem;
+  color: #283593;
+  margin-bottom: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.ab2 p {
+  font-size: 1.5rem;
+  color: #5c6bc0;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Input Group Styling */
+.ac1 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ac1 label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #1a237e;
+}
+
+.ac1 input {
+  flex: 1;
+  padding: 1rem;
+  border: 2px solid #c5cae9;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.ac1 input:focus {
+  border-color: #3949ab;
+  box-shadow: 0 0 8px rgba(57, 73, 171, 0.5);
+  outline: none;
+}
+
+.ac1 .btn-primary2 {
+  background-color: #3949ab;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ac1 .btn-primary2:hover {
+  background-color: #1a237e;
+  box-shadow: 0 6px 12px rgba(26, 35, 126, 0.3);
+  transform: scale(1.05);
+}
+
+/* Table Styling */
+.ad1 {
+  overflow-x: auto; /* Activa el desplazamiento horizontal */
+  margin-top: 2rem;
+}
+
+.ad1 table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  background: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 600px; /* Asegura que la tabla tenga un ancho mínimo */
+}
+
+.ad1 table th,
+.ad1 table td {
+  padding: 1.2rem;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.ad1 table th {
+  background-color: #3949ab;
+  color: white;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.ad1 table tbody tr:nth-child(even) {
+  background-color: #e8eaf6;
+}
+
+.ad1 table tbody tr:hover {
+  background-color: rgba(57, 73, 171, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.ad1 table td {
+  color: #424242;
+}
+
+/* Secondary Table Styling */
+.ae1 {
+  overflow-x: auto; /* Activa el desplazamiento horizontal para la tabla secundaria */
+  margin-top: 2rem;
+}
+
+.ae1 table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  background-color: #e3f2fd;
+  border-radius: 10px;
+  overflow: hidden;
+  min-width: 400px; /* Asegura que la tabla secundaria tenga un ancho mínimo */
+}
+
+.ae1 table th {
+  background-color: #1e88e5;
+  color: white;
+  text-align: center;
+}
+
+.ae1 table td {
+  text-align: center;
+  font-weight: bold;
+  color: #1565c0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .aa1 {
+    padding: 1rem;
+  }
+
+  .ab2 h1 {
+    font-size: 2rem;
+  }
+
+  .ab2 p {
+    font-size: 1.2rem;
+  }
+
+  .ac1 {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .ac1 input {
+    width: 100%;
+  }
+
+  .ac1 .btn-primary2 {
+    width: 100%;
+    text-align: center;
+  }
+
+  .ad1 table,
+  .ae1 table {
+    font-size: 0.9rem;
+  }
+
+  .ad1 table th,
+  .ad1 table td,
+  .ae1 table th,
+  .ae1 table td {
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ab2 h1 {
+    font-size: 1.5rem;
+  }
+
+  .ab2 p {
+    font-size: 1rem;
+  }
+
+  .ac1 label {
+    font-size: 1rem;
+  }
+
+  .ac1 input {
+    font-size: 0.9rem;
+  }
+
+  .ac1 .btn-primary2 {
+    font-size: 1rem;
+  }
+
+  .ad1 table,
+  .ae1 table {
+    font-size: 0.8rem;
+  }
+
+  .ad1 table th,
+  .ad1 table td,
+  .ae1 table th,
+  .ae1 table td {
+    padding: 0.6rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
