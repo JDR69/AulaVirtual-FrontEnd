@@ -348,6 +348,15 @@ export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluacione
 
 
 //DIMENSION POR ACTIVIDAD
+
+export const actualizarTareasRequest = (data) => instance.put(`/api/evaluaciones/actualizar-tareas/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)
 export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia }) => {
   return instance.get('/api/evaluaciones/obtener-actividades-curso2/', {
     params: {

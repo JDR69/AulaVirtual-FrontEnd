@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { obtenerDimensionAsignadasRequest, obtenerAlumnosTareasAsiganadasRequest } from '../../../api/auth';
+import { obtenerDimensionAsignadasRequest, obtenerAlumnosTareasAsiganadasRequest ,actualizarTareasRequest} from '../../../api/auth';
 import '../../css/CalificacionesPage.css';
 
 const CalificacionesPage = () => {
@@ -82,7 +82,7 @@ const CalificacionesPage = () => {
             ...prev,
             [alumnoNombre]: {
                 ...prev[alumnoNombre],
-                [tareaId]: parseFloat(nuevoValor) || 0
+                [tareaId]: nuevoValor
             }
         }));
     };
@@ -115,9 +115,9 @@ const CalificacionesPage = () => {
             if (tarea) {
                 const puntajeEditado = notas[nombre]?.[tareaSeleccionadaId];
                 payload.push({
-                    alumno_id: alumno.alumno_id,
-                    tarea_id: tarea.id,
-                    puntaje: puntajeEditado !== undefined ? puntajeEditado : tarea.puntaje
+                    alumno: alumno.alumno_id,
+                    id: tarea.id,
+                    puntaje: puntajeEditado !== undefined ? parseFloat(puntajeEditado) : tarea.puntaje
                 });
             }
 
@@ -126,20 +126,14 @@ const CalificacionesPage = () => {
         console.log(payload)
         console.log(notas)
 
-        // try {
-        //     const response = await fetch('/api/guardar-calificaciones', {
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify(payload)
-        //     });
-
-        //     if (!response.ok) throw new Error('Error al guardar');
-
-        //     alert('Calificaciones de la tarea guardadas correctamente');
-        // } catch (error) {
-        //     console.error(error);
-        //     alert('Hubo un error al guardar');
-        // }
+        try {
+            const response = await actualizarTareasRequest(payload);
+            console.log(response.data)
+            window.location.reload()
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al guardar');
+        }
     };
 
 
