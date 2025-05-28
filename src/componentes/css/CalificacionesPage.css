@@ -1,128 +1,73 @@
-.nota-input {
-    width: 70px;
-    display: inline-block;
-    margin-right: 5px;
+.contenedor-principal {
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  min-height: 100vh;
 }
 
-.mensaje-exito {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1f2937;
 }
 
-.mensaje-error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
+.tabla-scroll {
+  overflow-x: auto;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-height: 75vh;
 }
 
-.btn {
-    padding: 6px 12px;
-    margin: 0;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    cursor: pointer;
-    border: 1px solid transparent;
-    border-radius: 4px;
+.tabla-calificaciones {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: max-content;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #337ab7;
-    border-color: #2e6da4;
+.tabla-calificaciones th,
+.tabla-calificaciones td {
+  border: 1px solid #e5e7eb;
+  padding: 0.6rem;
+  text-align: center;
+  vertical-align: middle;
 }
 
-.btn-primary:hover {
-    background-color: #286090;
-    border-color: #204d74;
+.tabla-calificaciones thead th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #111827;
 }
 
-.btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.65;
-}
-/* Estilos existentes */
-
-/* Estilos para el buscador */
-.contenedor-buscador {
-    margin-bottom: 20px;
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.encabezado-vertical {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  padding: 1rem 0.3rem;
+  background-color: #e5e7eb;
+  font-size: 0.75rem;
 }
 
-.buscador-wrapper {
-    position: relative;
-    width: 100%;
+.columna-alumnos {
+  background-color: #ecfdf5;
+  font-weight: bold;
+  position: sticky;
+  left: 0;
+  z-index: 2;
 }
 
-.resultados-busqueda {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-top: none;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.tabla-calificaciones td {
+  background-color: #fffdf2;
 }
 
-.resultado-item {
-    padding: 10px 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #f0f0f0;
+tbody tr:nth-child(even) td {
+  background-color: #fefce8;
 }
 
-.resultado-item:hover {
-    background-color: #f8f9fa;
-}
-
-.resultado-item.no-resultados {
-    color: #6c757d;
-    font-style: italic;
-    cursor: default;
-}
-
-/* Estilo para el botón de limpiar */
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    
-}
-
-.btn-outline-secondary {
-    border-left: none;
-}
-
-/* Mensajes de éxito y error */
-.mensaje-exito {
-    padding: 10px 15px;
-    margin: 15px 0;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-}
-
-.mensaje-error {
-    padding: 10px 15px;
-    margin: 15px 0;
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 4px;
+@media screen and (max-width: 768px) {
+  .encabezado-vertical {
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
 }
