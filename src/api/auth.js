@@ -358,3 +358,13 @@ export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, ho
     timeout: tiempoEspera
   });
 };
+export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestion, horario_materia }) => {
+  return instance.get('/api/evaluaciones/obtener-actividades-curso/', {
+    params: {
+      id_cursoparalelo,
+      gestion,
+      horario_materia
+    },
+    timeout: tiempoEspera
+  });
+};

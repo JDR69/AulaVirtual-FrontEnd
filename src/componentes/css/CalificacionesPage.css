@@ -1,7 +1,7 @@
 .contenedor-principal {
   padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
+  /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+  /* background: linear-gradient(to bottom, #f0f4f8, #ffffff); */
   min-height: 100vh;
 }
 
@@ -14,9 +14,9 @@ h1 {
 .tabla-scroll {
   overflow-x: auto;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
   max-height: 75vh;
 }
 
@@ -24,20 +24,21 @@ h1 {
   width: 100%;
   border-collapse: collapse;
   min-width: max-content;
+  table-layout: auto;
 }
 
 .tabla-calificaciones th,
 .tabla-calificaciones td {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #e2e8f0;
   padding: 0.6rem;
   text-align: center;
   vertical-align: middle;
 }
 
 .tabla-calificaciones thead th {
-  background-color: #f3f4f6;
+  background-color: #f1f5f9;
   font-weight: 600;
-  color: #111827;
+  color: #1e293b;
 }
 
 .encabezado-vertical {
@@ -45,29 +46,55 @@ h1 {
   transform: rotate(180deg);
   white-space: nowrap;
   padding: 1rem 0.3rem;
-  background-color: #e5e7eb;
+  background-color: #e2e8f0;
   font-size: 0.75rem;
+  color: #1e293b;
+  border-top: 2px solid #cbd5e1;
 }
 
 .columna-alumnos {
-  background-color: #ecfdf5;
+  background-color: #dcfce7;
   font-weight: bold;
   position: sticky;
   left: 0;
   z-index: 2;
+  border-right: 2px solid #6ee7b7;
+  text-align: center;
 }
 
 .tabla-calificaciones td {
-  background-color: #fffdf2;
+  background-color: #fffefc;
+  transition: background-color 0.2s ease;
 }
 
 tbody tr:nth-child(even) td {
-  background-color: #fefce8;
+  background-color: #fdfdea;
 }
 
-@media screen and (max-width: 768px) {
-  .encabezado-vertical {
-    writing-mode: horizontal-tb;
-    transform: none;
-  }
+.celda-nota input[type="number"] {
+  width: 50px;
+  padding: 4px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  text-align: center;
+  transition: box-shadow 0.2s;
+  background-color: #f8fafc;
 }
+
+.celda-nota input[type="number"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #38bdf8;
+  background-color: #ffffff;
+}
+
+thead input[type="checkbox"] {
+  transform: scale(1.2);
+  margin-bottom: 4px;
+  accent-color: #4ade80;
+}
+
+thead label {
+  font-size: 0.65rem;
+  color: #475569;
+}
+
