@@ -381,3 +381,15 @@ export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestio
     timeout: tiempoEspera
   });
 };
+
+
+// ASISTENCIA 
+
+export const crearAsistenciaRequest = (data) =>  instance.post(`/api/evaluaciones/crear-asistencia/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)
