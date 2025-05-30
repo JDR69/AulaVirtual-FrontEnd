@@ -120,16 +120,18 @@ function GestionarAlumnosPage() {
             return;
         }
 
-        console.log(curso)
 
         const cursoSeleccionado = cursoB.find((c) => c.nombre === curso);
+        const gestionSelecion = gestiones.find((g) => g.gestion === parseInt(gestion_id))
+        console.log(gestionSelecion)
         console.log(cursoSeleccionado?.id); // si necesitas el id
         const data = {
             alumno: alumno_id,
             curso: parseInt(cursoSeleccionado.id),
             gestion: parseInt(gestion_id),
             paralelo: parseInt(paralelo),
-            descripcion: "inscripcion correcta"
+            descripcion: "inscripcion correcta",
+            anio_escolar: gestionSelecion.anio_escolar
         }
         console.log(data);
 
