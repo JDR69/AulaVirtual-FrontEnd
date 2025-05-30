@@ -146,6 +146,7 @@ function LibretaPage() {
                             <h3>Seleccionar Gestión</h3>
                             <select
                                 name="gestion"
+                                className='form-select'
                                 value={gestionSeleccionada}
                                 onChange={(e) => setGestionSeleccionada(e.target.value)}
                                 required
@@ -163,6 +164,7 @@ function LibretaPage() {
                             <h3>Buscar Alumno</h3>
                             <input
                                 type="text"
+                                className='form-control'
                                 value={busquedaAlumno}
                                 onChange={handleBusquedaChange}
                                 placeholder="Ej: Juan Pérez"
@@ -188,32 +190,30 @@ function LibretaPage() {
 
                     {alumnoSeleccionado && (
                         <div className="libreta-datos">
-                            <div className="card">
-                                <div className="card-header">
+                            <div className="datos-alumno-card">
+                                <div className="datos-alumno-header">
                                     <h2>Datos del Alumno</h2>
                                 </div>
-                                <div className="card-body">
-                                    <div className="form-row">
-                                        <div className="input-group">
-                                            <label>Nombre Completo:</label>
-                                            <label>{alumnoSeleccionado.alumno?.nombre_usuario || alumnoSeleccionado.nombre}</label>
-                                        </div>
-                                        <div className="input-group">
-                                            <label>CI:</label>
-                                            <label>{alumnoSeleccionado.ci}</label>
-                                        </div>
-                                        <div className="input-group">
-                                            <label>Estado del Curso:</label>
-                                            <p
-                                                className={
-                                                    determinarAprobacion(notasData) === 'Aprobado'
-                                                        ? 'text-green-600'
-                                                        : 'text-red-600'
-                                                }
-                                            >
-                                                {determinarAprobacion(notasData)}
-                                            </p>
-                                        </div>
+                                <div className="datos-alumno-body">
+                                    <div className="alumno-info-item">
+                                        <span className="alumno-info-label">Nombre Completo:</span>
+                                        <span className="alumno-info-value">{alumnoSeleccionado.alumno?.nombre_usuario || alumnoSeleccionado.nombre}</span>
+                                    </div>
+                                    <div className="alumno-info-item">
+                                        <span className="alumno-info-label">CI:</span>
+                                        <span className="alumno-info-value">{alumnoSeleccionado.ci}</span>
+                                    </div>
+                                    <div className="alumno-info-item">
+                                        <span className="alumno-info-label">Estado del Curso:</span>
+                                        <span className={`estado-curso ${
+                                            determinarAprobacion(notasData) === 'Aprobado' 
+                                                ? 'estado-aprobado' 
+                                                : determinarAprobacion(notasData) === 'Reprobado'
+                                                    ? 'estado-reprobado'
+                                                    : 'estado-sin-calificar'
+                                        }`}>
+                                            {determinarAprobacion(notasData)}
+                                        </span>
                                     </div>
                                 </div>
                             </div>

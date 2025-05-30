@@ -53,3 +53,86 @@
     background-color: rgba(63, 81, 181, 0.05);
 }
 
+/* Estilos mejorados para la tarjeta de datos del alumno */
+.datos-alumno-card {
+    background: linear-gradient(145deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+}
+
+.datos-alumno-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.datos-alumno-header {
+    background: linear-gradient(135deg, var(--primary-color), #4a6bda);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.datos-alumno-header h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.datos-alumno-body {
+    padding: 1.8rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.alumno-info-item {
+    padding: 0.8rem 1rem;
+    background-color: rgba(245, 247, 250, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.alumno-info-label {
+    font-weight: 600;
+    color: var(--text-light);
+    margin-right: 10px;
+    min-width: 140px;
+    font-size: 1.05rem;
+}
+
+.alumno-info-value {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.estado-curso {
+    display: inline-block;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.estado-aprobado {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #1e7e34;
+}
+
+.estado-reprobado {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #bd2130;
+}
+
+.estado-sin-calificar {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #5a6268;
+}
+
