@@ -335,8 +335,8 @@ function Gestiones() {
                             </td>
                           )}
                           <td>{trimestre.nro}</td>
-                          <td>{formatSimpleDate(trimestre.fecha_inicio)}</td>
-                          <td>{formatSimpleDate(trimestre.fecha_fin)}</td>
+                          <td>{trimestre.fecha_inicio}</td>
+                          <td>{trimestre.fecha_fin}</td>
                           <td>
                             <span className={`status-badge ${trimestre.estado}`}>
                               {trimestre.estado}

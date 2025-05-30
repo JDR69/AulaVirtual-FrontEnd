@@ -1,288 +1,51 @@
 .libreta-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: var(--text-dark);
-    overflow: hidden; /* Evitar desbordamiento horizontal */
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+  background: #f5f7fa;
 }
 
 .libreta-header {
-    text-align: center;
-    margin-bottom: 2rem;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.libreta-header h1 {
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
+.btn-buscar {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.libreta-header h3 {
-    font-size: 1.2rem;
-    color: var(--text-light);
+.btn-buscar:hover {
+  background-color: #0056b3;
 }
 
-.libreta-datos .card {
-    margin-bottom: 2rem;
+.trimestre-bloque {
+  margin-top: 30px;
 }
 
-/* Estilos mejorados para la tarjeta de datos del alumno */
-.datos-alumno-card {
-    background: linear-gradient(145deg, #f8f9fa, #ffffff);
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    overflow: hidden;
-    margin-bottom: 2.5rem;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin-bottom: 20px;
 }
 
-.datos-alumno-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+th {
+  background-color: #dfe6f1;
+  color: #333;
+  padding: 10px;
 }
 
-.datos-alumno-header {
-    background: linear-gradient(135deg, var(--primary-color), #4a6bda);
-    color: white;
-    padding: 1.2rem 1.5rem;
-    border-radius: 15px 15px 0 0;
-    text-align: center;
+td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ccc;
 }
 
-.datos-alumno-header h2 {
-    font-size: 1.8rem;
-    margin: 0;
-    font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+tr:nth-child(even) {
+  background-color: #f1f4f9;
 }
-
-.datos-alumno-body {
-    padding: 1.8rem;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.alumno-info-item {
-    padding: 0.8rem 1rem;
-    background-color: rgba(245, 247, 250, 0.8);
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-}
-
-.alumno-info-label {
-    font-weight: 600;
-    color: var(--text-light);
-    margin-right: 10px;
-    min-width: 140px;
-    font-size: 1.05rem;
-}
-
-.alumno-info-value {
-    font-size: 1.1rem;
-    color: var(--text-dark);
-    font-weight: 500;
-}
-
-.estado-curso {
-    display: inline-block;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-align: center;
-}
-
-.estado-aprobado {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #1e7e34;
-}
-
-.estado-reprobado {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #bd2130;
-}
-
-.estado-sin-calificar {
-    background-color: rgba(108, 117, 125, 0.2);
-    color: #5a6268;
-}
-
-/* Estilos mejorados para la tabla de calificaciones */
-.materias-card {
-    background: linear-gradient(145deg, #f8f9fa, #ffffff);
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    overflow: hidden;
-    margin-bottom: 2rem;
-}
-
-.materias-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-}
-
-.materias-header {
-    background: linear-gradient(135deg, var(--primary-color), #4a6bda);
-    color: white;
-    padding: 1.2rem 1.5rem;
-    border-radius: 15px 15px 0 0;
-    text-align: center;
-}
-
-.materias-header h2 {
-    font-size: 1.8rem;
-    margin: 0;
-    font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.materias-body {
-    padding: 1.5rem;
-    overflow-x: auto; /* Permitir desplazamiento horizontal cuando sea necesario */
-}
-
-.tabla-calificaciones-wrapper {
-    width: 100%;
-    overflow-x: auto; /* Habilitar scroll horizontal para tablas anchas */
-    -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en dispositivos táctiles */
-}
-
-.tabla-calificaciones {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-}
-
-.tabla-calificaciones th {
-    background: linear-gradient(to right, #f0f2f5, #e9ecef);
-    color: var(--text-dark);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    padding: 1rem;
-    letter-spacing: 1px;
-    border: none;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.tabla-calificaciones td {
-    padding: 1rem;
-    vertical-align: middle;
-    border: none;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-
-.tabla-calificaciones tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.tabla-calificaciones tbody tr {
-    transition: all 0.2s;
-}
-
-.tabla-calificaciones tbody tr:hover {
-    background-color: rgba(63, 81, 181, 0.05);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-.nota-destacada {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.aprobado, .reprobado, .sin-calificar {
-    display: inline-block;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    text-align: center;
-    min-width: 110px;
-}
-
-.aprobado {
-    background-color: rgba(40, 167, 69, 0.2);
-    color: #1e7e34;
-}
-
-.reprobado {
-    background-color: rgba(220, 53, 69, 0.2);
-    color: #bd2130;
-}
-
-.sin-calificar {
-    background-color: rgba(108, 117, 125, 0.2);
-    color: #5a6268;
-}
-
-.mensaje-sin-datos {
-    text-align: center;
-    padding: 2.5rem;
-    color: var(--text-light);
-    font-style: italic;
-    background: rgba(0, 0, 0, 0.02);
-    border-radius: 8px;
-}
-
-/* Media queries para dispositivos móviles */
-@media screen and (max-width: 768px) {
-    .libreta-header {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .datos-alumno-body {
-        padding: 1.2rem;
-        grid-template-columns: 1fr; /* Una sola columna en móviles */
-        gap: 1rem;
-    }
-
-    .alumno-info-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .alumno-info-label {
-        margin-right: 0;
-        margin-bottom: 0.5rem;
-    }
-
-    .aprobado, .reprobado, .sin-calificar {
-        min-width: auto;
-        width: 100%;
-    }
-
-    /* Ajustar tamaño de texto en tablas para móviles */
-    .tabla-calificaciones th,
-    .tabla-calificaciones td {
-        padding: 0.8rem 0.5rem;
-        font-size: 0.9rem;
-    }
-}
-
-/* Para pantallas muy pequeñas */
-@media screen and (max-width: 480px) {
-    .libreta-container {
-        padding: 1rem 0.5rem;
-    }
-    
-    .libreta-header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .datos-alumno-header h2,
-    .materias-header h2 {
-        font-size: 1.5rem;
-    }
-}
-
