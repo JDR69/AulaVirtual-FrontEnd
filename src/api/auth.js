@@ -268,7 +268,7 @@ export const obtenerDetalleMateriaProfesorRequest = (id) => { return instance.ge
 
 
 // NOTIFICACIONES
-export const nuevoNotificacionRequest = (data,id) => instance.post(`/api/periodo/crear-notificacion-uni/${id}/`,
+export const nuevoNotificacionRequest = (data, id) => instance.post(`/api/periodo/crear-notificacion-uni/${id}/`,
   data, {
   headers: {
     "Content-Type": "application/json"
@@ -276,9 +276,12 @@ export const nuevoNotificacionRequest = (data,id) => instance.post(`/api/periodo
   withCredentials: true
 }
 )
-export const obtenerNotificacionesRequest = (id) => { return instance.get(`/api/periodo/obtener-notificacion-uni/${id}/`, 
-  { timeout: tiempoEspera 
-  }) }
+export const obtenerNotificacionesRequest = (id) => {
+  return instance.get(`/api/periodo/obtener-notificacion-uni/${id}/`,
+    {
+      timeout: tiempoEspera
+    })
+}
 
 
 export const actualizarNotificacionesRequest = (id, data) => instance.put(`/api/periodo/actualizar-notificacion-uni/${id}/`,
@@ -293,19 +296,19 @@ export const actualizarNotificacionesRequest = (id, data) => instance.put(`/api/
 export const crearNuevaGestionRequest = (data) => instance.post(`/api/periodo/crear-gestion/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
 )
 
-export const obtenerGestionRequest = () => { return instance.get(`/api/periodo/obtener-gestiones/`,{timeout:tiempoEspera})}
+export const obtenerGestionRequest = () => { return instance.get(`/api/periodo/obtener-gestiones/`, { timeout: tiempoEspera }) }
 
 //TRIMESTRE 
-export const crearNuevoTrimestreRequest = (data) =>  instance.post(`/api/periodo/crear-trimestre/`,
+export const crearNuevoTrimestreRequest = (data) => instance.post(`/api/periodo/crear-trimestre/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
@@ -313,11 +316,11 @@ export const crearNuevoTrimestreRequest = (data) =>  instance.post(`/api/periodo
 
 // LIBRETA
 export const crearLibretaRequest = (data) =>
-    instance.post(`/api/academia/crear-libreta/`, data, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+  instance.post(`/api/academia/crear-libreta/`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
 //DIMENSION
 export const obtenerDimensionRequest = () => {
@@ -327,20 +330,20 @@ export const obtenerDimensionRequest = () => {
 //TIPO ACTIVIDADES
 
 export const crearActividadRequest = (data) =>
-    instance.post(`/api/evaluaciones/crear-nueva-actividad/`, data, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+  instance.post(`/api/evaluaciones/crear-nueva-actividad/`, data, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-export const obtenerActividadesRequest = () => { return instance.get(`/api/evaluaciones/obtener-actividades/`,{timeout:tiempoEspera})}
+export const obtenerActividadesRequest = () => { return instance.get(`/api/evaluaciones/obtener-actividades/`, { timeout: tiempoEspera }) }
 
 // TAREA O ACTIVIDAD
 
-export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluaciones/crear-nueva-tarea/`,
+export const crearNuevoTareaRequest = (data) => instance.post(`/api/evaluaciones/crear-nueva-tarea/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
@@ -352,12 +355,12 @@ export const crearNuevoTareaRequest = (data) =>  instance.post(`/api/evaluacione
 export const actualizarTareasRequest = (data) => instance.put(`/api/evaluaciones/actualizar-tareas/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
 )
-export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia,fecha_inicio,fecha_fin }) => {
+export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, horario_materia, fecha_inicio, fecha_fin }) => {
   return instance.get('/api/evaluaciones/obtener-actividades-curso2/', {
     params: {
       id_cursoparalelo,
@@ -367,9 +370,9 @@ export const obtenerDimensionAsignadasRequest = ({ id_cursoparalelo, gestion, ho
       fecha_fin
     },
     timeout: tiempoEspera
-  });
+  });
 };
-export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestion, horario_materia,fecha_inicio,fecha_fin }) => {
+export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestion, horario_materia, fecha_inicio, fecha_fin }) => {
   return instance.get('/api/evaluaciones/obtener-actividades-curso/', {
     params: {
       id_cursoparalelo,
@@ -379,16 +382,16 @@ export const obtenerAlumnosTareasAsiganadasRequest = ({ id_cursoparalelo, gestio
       fecha_fin
     },
     timeout: tiempoEspera
-  });
+  });
 };
 
 
 // ASISTENCIA 
 
-export const crearAsistenciaRequest = (data) =>  instance.post(`/api/evaluaciones/crear-asistencia/`,
+export const crearAsistenciaRequest = (data) => instance.post(`/api/evaluaciones/crear-asistencia/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
@@ -396,11 +399,27 @@ export const crearAsistenciaRequest = (data) =>  instance.post(`/api/evaluacione
 export const actualizarAsistenciaRequest = (data) => instance.put(`/api/evaluaciones/actualizar-asistencia/`,
   data,
   {
-    headers:{
+    headers: {
       "Content-Type": "application/json"
     }
   }
 )
 
 // obtener notas
-export const obtenerNotaAlumnosGestionRequest = (id,gestion) => {return instance.get(`/api/evaluaciones/obtener-notas/${id}/${gestion}/`,{timeout:tiempoEspera})}
+export const obtenerNotaAlumnosGestionRequest = (id, gestion) => { return instance.get(`/api/evaluaciones/obtener-notas/${id}/${gestion}/`, { timeout: tiempoEspera }) }
+
+// PARTICIPACIONES
+
+export const crearParticipacionesRequest = (data) => instance.post(`/api/periodo/crear-participacion/`,
+  data,
+  {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+)
+export const obtenerParticipacionesRequest = (id, materia) => {
+  return instance.get(`/api/periodo/obtener-participacion/${id}/${materia}/`, {
+    timeout: tiempoEspera
+  });
+};
