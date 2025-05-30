@@ -393,3 +393,11 @@ export const crearAsistenciaRequest = (data) =>  instance.post(`/api/evaluacione
     }
   }
 )
+export const actualizarAsistenciaRequest = (data) => instance.put(`/api/evaluaciones/actualizar-asistencia/`,
+  data,
+  {
+    headers:{
+      "Content-Type": "application/json"
+    }
+  }
+)
