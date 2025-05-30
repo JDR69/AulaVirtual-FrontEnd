@@ -295,7 +295,7 @@ const CalificacionesPage = () => {
                                                             style={{
                                                                 fontWeight: 'bold',
                                                                 textAlign: 'center',
-                                                                backgroundColor: promedioFinal >= 41 ? '#dcfce7' : '#fee2e2',
+                                                                backgroundColor: promedioFinal >= 51 ? '#dcfce7' : '#fee2e2',
                                                                 color: promedioFinal >= 41 ? '#166534' : '#991b1b'
                                                             }}
                                                         >
