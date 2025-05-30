@@ -1,149 +1,296 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/Libreta.css'; // Importar el nuevo archivo CSS
+import { obtenerGestionRequest, obtenerUsuarioRequest, obtenerNotaAlumnosGestionRequest } from '../../../api/auth';
 
 function LibretaPage() {
-    // Datos simulados de alumnos
-    const alumnos = [
-        {
-            id: 1,
-            nombre: 'Juan Pérez',
-            curso: 'Matemáticas Avanzadas',
-            materias: [
-                { nombre: 'Matemáticas', trimestres: [85, 90, 80] },
-                { nombre: 'Historia', trimestres: [70, 75, 65] },
-                { nombre: 'Ciencias', trimestres: [50, 55, 60] },
-                { nombre: 'Inglés', trimestres: [90, 85, 95] },
-            ],
-        },
-        {
-            id: 2,
-            nombre: 'María López',
-            curso: 'Historia del Arte',
-            materias: [
-                { nombre: 'Arte', trimestres: [95, 90, 85] },
-                { nombre: 'Historia', trimestres: [88, 85, 80] },
-                { nombre: 'Filosofía', trimestres: [76, 70, 75] },
-                { nombre: 'Inglés', trimestres: [85, 80, 90] },
-            ],
-        },
-    ];
-
-    // Estado para el alumno seleccionado
+    const [busquedaAlumno, setBusquedaAlumno] = useState('');
+    const [sugerencias, setSugerencias] = useState([]);
     const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+    const [alumnos, setAlumnos] = useState([]);
+    const [gestiones, setGestiones] = useState([]);
+    const [gestionSeleccionada, setGestionSeleccionada] = useState("");
+    const [notasData, setNotasData] = useState([]);
 
-    // Función para calcular la nota final (promedio de los trimestres)
-    const calcularNotaFinal = (trimestres) => {
-        const suma = trimestres.reduce((acc, nota) => acc + nota, 0);
-        return (suma / trimestres.length).toFixed(2); // Promedio con 2 decimales
+    // Función para procesar y estructurar los datos de notas
+    const procesarDatosNotas = (datosOriginales) => {
+        const materiasMap = new Map();
+
+        datosOriginales.forEach(item => {
+            const materiaId = item.materia_id;
+            const trimestre = item.trimestre.nro;
+            const nombreMateria = item.nombre_materia;
+
+            // Calcular promedio de todas las dimensiones para este trimestre
+            const promediosValidos = item.dimensiones
+                .filter(dim => dim.promedio !== null)
+                .map(dim => dim.promedio);
+
+            const promedioTrimestre = promediosValidos.length > 0
+                ? (promediosValidos.reduce((sum, val) => sum + val, 0))
+                : null;
+
+            if (!materiasMap.has(materiaId)) {
+                materiasMap.set(materiaId, {
+                    materia_id: materiaId,
+                    nombre_materia: nombreMateria,
+                    trimestre1: null,
+                    trimestre2: null,
+                    trimestre3: null
+                });
+            }
+
+            const materia = materiasMap.get(materiaId);
+            materia[`trimestre${trimestre}`] = promedioTrimestre;
+        });
+
+        return Array.from(materiasMap.values());
     };
 
-    // Función para determinar si aprobó o no
-    const determinarAprobacion = (materias) => {
-        const promedio = materias.reduce((acc, materia) => acc + parseFloat(calcularNotaFinal(materia.trimestres)), 0) / materias.length;
+    // Calcular promedio con 2 decimales
+    const calcularNotaFinal = (trimestre1, trimestre2, trimestre3) => {
+        const notas = [trimestre1, trimestre2, trimestre3].filter(nota => nota !== null);
+        if (notas.length === 0) return '0.00';
+        const suma = notas.reduce((acc, nota) => acc + nota, 0);
+        return (suma / notas.length).toFixed(2);
+    };
+
+    // Determina si el alumno aprobó en base al promedio general
+    const determinarAprobacion = (materias = []) => {
+        if (materias.length === 0) return 'Sin materias';
+
+        let totalPromedio = 0;
+        let materiasConNotas = 0;
+
+        materias.forEach(materia => {
+            const notaFinal = parseFloat(calcularNotaFinal(materia.trimestre1, materia.trimestre2, materia.trimestre3));
+            if (notaFinal > 0) {
+                totalPromedio += notaFinal;
+                materiasConNotas++;
+            }
+        });
+
+        if (materiasConNotas === 0) return 'Sin calificaciones';
+
+        const promedio = totalPromedio / materiasConNotas;
         return promedio >= 60 ? 'Aprobado' : 'Reprobado';
     };
 
-    // Manejar la selección del alumno
-    const manejarBusqueda = (e) => {
-        const idAlumno = parseInt(e.target.value, 10);
-        const alumno = alumnos.find((a) => a.id === idAlumno);
-        setAlumnoSeleccionado(alumno || null);
+    // Manejar el cambio en el input de búsqueda
+    const handleBusquedaChange = (e) => {
+        const valor = e.target.value;
+        setBusquedaAlumno(valor);
+        if (valor.trim().length >= 3) {
+            const sugeridos = alumnos.filter((a) =>
+                a.nombre.toLowerCase().includes(valor.toLowerCase())
+            );
+            setSugerencias(sugeridos);
+        } else {
+            setSugerencias([]);
+        }
     };
 
+    const seleccionarAlumno = (alumno) => {
+        setBusquedaAlumno(alumno.nombre);
+        setAlumnoSeleccionado(alumno);
+        setSugerencias([]);
+    };
+
+    useEffect(() => {
+        if (alumnoSeleccionado && gestionSeleccionada) {
+            obtenerNotas();
+        }
+    }, [alumnoSeleccionado, gestionSeleccionada]);
+
+    const obtenerNotas = async () => {
+        try {
+            const id = parseInt(alumnoSeleccionado.id);
+            const gestion = parseInt(gestionSeleccionada);
+            const res = await obtenerNotaAlumnosGestionRequest(id, gestion);
+            console.log('Datos originales:', res.data);
+
+            const datosEstructurados = procesarDatosNotas(res.data);
+            console.log('Datos estructurados:', datosEstructurados);
+            setNotasData(datosEstructurados);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchData = async () => {
+        try {
+            const [gestionesRes, usuariosRes] = await Promise.all([
+                obtenerGestionRequest(),
+                obtenerUsuarioRequest(),
+            ]);
+
+            setGestiones(gestionesRes.data);
+            const alumnosFiltrados = usuariosRes.data.filter((usuario) => usuario.rol_nombre === 'Alumno');
+            setAlumnos(alumnosFiltrados);
+        } catch (error) {
+            console.error('Error al obtener datos:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
     return (
-        <div className="libreta-container">
-            <div className="libreta-header">
-                <h1>Libreta de Calificaciones</h1>
-                <h3>Buscar Alumno</h3>
-                <select onChange={manejarBusqueda} defaultValue="" className="form-select">
-                    <option value="" disabled>Seleccione un alumno</option>
-                    {alumnos.map((alumno) => (
-                        <option key={alumno.id} value={alumno.id}>
-                            {alumno.nombre}
-                        </option>
-                    ))}
-                </select>
-            </div>
+        <div className='contenedor-principal'>
+            <div className="contenedor-secundario">
+                <div className="libreta-container">
+                    <div className="libreta-header">
+                        <h1>Libreta de Calificaciones</h1>
 
-            {alumnoSeleccionado && (
-                <div className="libreta-datos">
-                    <div className="card">
-                        <div className="card-header">
-                            <h2>Datos del Alumno</h2>
+                        <div>
+                            <h3>Seleccionar Gestión</h3>
+                            <select
+                                name="gestion"
+                                value={gestionSeleccionada}
+                                onChange={(e) => setGestionSeleccionada(e.target.value)}
+                                required
+                            >
+                                <option value="">Seleccionar la Gestión</option>
+                                {gestiones.map((gestion) => (
+                                    <option key={gestion.gestion} value={gestion.anio_escolar}>
+                                        {gestion.anio_escolar}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
-                        <div className="card-body">
-                            <form className="datos-alumno-form">
-                                <div className="form-row">
-                                    <div className="input-group">
-                                        <label>Nombre Completo:</label>
-                                        <input
-                                            type="text"
-                                            value={alumnoSeleccionado.nombre}
-                                            readOnly
-                                            className="form-control"
-                                        />
-                                    </div>
-                                    <div className="input-group">
-                                        <label>Curso:</label>
-                                        <input
-                                            type="text"
-                                            value={alumnoSeleccionado.curso}
-                                            readOnly
-                                            className="form-control"
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-row">
-                                    <div className="input-group">
-                                        <label>Estado del Curso:</label>
-                                        <input
-                                            type="text"
-                                            value={determinarAprobacion(alumnoSeleccionado.materias)}
-                                            readOnly
-                                            className="form-control"
-                                        />
-                                    </div>
-                                </div>
-                            </form>
+
+                        <div className="acomodar">
+                            <h3>Buscar Alumno</h3>
+                            <input
+                                type="text"
+                                value={busquedaAlumno}
+                                onChange={handleBusquedaChange}
+                                placeholder="Ej: Juan Pérez"
+                                autoComplete="off"
+                                required
+                                id="busqueda"
+                            />
+                            {busquedaAlumno.trim().length >= 3 && sugerencias.length > 0 && (
+                                <ul className="sugerencias">
+                                    {sugerencias.map((alumno) => (
+                                        <li
+                                            key={alumno.id}
+                                            onClick={() => seleccionarAlumno(alumno)}
+                                            className="sugerencia-item"
+                                        >
+                                            {alumno.nombre}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </div>
 
-                    <div className="card">
-                        <div className="card-header">
-                            <h2>Materias y Calificaciones</h2>
-                        </div>
-                        <div className="card-body">
-                            <table className="tabla-calificaciones">
-                                <thead>
-                                    <tr>
-                                        <th>Materia</th>
-                                        <th>1er Trimestre</th>
-                                        <th>2do Trimestre</th>
-                                        <th>3er Trimestre</th>
-                                        <th>Nota Final</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {alumnoSeleccionado.materias.map((materia, index) => {
-                                        const notaFinal = calcularNotaFinal(materia.trimestres);
-                                        return (
-                                            <tr key={index}>
-                                                <td>{materia.nombre}</td>
-                                                <td>{materia.trimestres[0]}</td>
-                                                <td>{materia.trimestres[1]}</td>
-                                                <td>{materia.trimestres[2]}</td>
-                                                <td>{notaFinal}</td>
-                                                <td>{notaFinal >= 60 ? 'Aprobado' : 'Reprobado'}</td>
+                    {alumnoSeleccionado && (
+                        <div className="libreta-datos">
+                            <div className="card">
+                                <div className="card-header">
+                                    <h2>Datos del Alumno</h2>
+                                </div>
+                                <div className="card-body">
+                                    <div className="form-row">
+                                        <div className="input-group">
+                                            <label>Nombre Completo:</label>
+                                            <label>{alumnoSeleccionado.alumno?.nombre_usuario || alumnoSeleccionado.nombre}</label>
+                                        </div>
+                                        <div className="input-group">
+                                            <label>CI:</label>
+                                            <label>{alumnoSeleccionado.ci}</label>
+                                        </div>
+                                        <div className="input-group">
+                                            <label>Estado del Curso:</label>
+                                            <p
+                                                className={
+                                                    determinarAprobacion(notasData) === 'Aprobado'
+                                                        ? 'text-green-600'
+                                                        : 'text-red-600'
+                                                }
+                                            >
+                                                {determinarAprobacion(notasData)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <div className="card-header">
+                                    <h2>Materias y Calificaciones</h2>
+                                </div>
+                                <div className="card-body">
+                                    <table className="tabla-calificaciones">
+                                        <thead>
+                                            <tr>
+                                                <th>Materia</th>
+                                                <th>1er Trimestre</th>
+                                                <th>2do Trimestre</th>
+                                                <th>3er Trimestre</th>
+                                                <th>Nota Final</th>
+                                                <th>Estado</th>
                                             </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            {notasData.length > 0 ? (
+                                                notasData.map((materia) => {
+                                                    const notaFinal = parseFloat(
+                                                        calcularNotaFinal(
+                                                            materia.trimestre1,
+                                                            materia.trimestre2,
+                                                            materia.trimestre3
+                                                        )
+                                                    );
+                                                    const estado =
+                                                        notaFinal >= 60
+                                                            ? 'Aprobado'
+                                                            : notaFinal > 0
+                                                                ? 'Reprobado'
+                                                                : 'Sin calificar';
+
+                                                    return (
+                                                        <tr key={materia.materia_id}>
+                                                            <td>{materia.nombre_materia}</td>
+                                                            <td>{materia.trimestre1 ? materia.trimestre1.toFixed(2) : '-'}</td>
+                                                            <td>{materia.trimestre2 ? materia.trimestre2.toFixed(2) : '-'}</td>
+                                                            <td>{materia.trimestre3 ? materia.trimestre3.toFixed(2) : '-'}</td>
+                                                            <td>{notaFinal > 0 ? notaFinal.toFixed(2) : '-'}</td>
+                                                            <td>
+                                                                <span
+                                                                    className={
+                                                                        estado === 'Aprobado'
+                                                                            ? 'aprobado'
+                                                                            : estado === 'Reprobado'
+                                                                                ? 'reprobado'
+                                                                                : 'sin-calificar'
+                                                                    }
+                                                                >
+                                                                    {estado}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
+                                                        {alumnoSeleccionado && gestionSeleccionada
+                                                            ? 'No se encontraron calificaciones para este alumno en la gestión seleccionada.'
+                                                            : 'Selecciona un alumno y una gestión para ver las calificaciones.'}
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

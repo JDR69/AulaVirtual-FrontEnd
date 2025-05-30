@@ -401,3 +401,6 @@ export const actualizarAsistenciaRequest = (data) => instance.put(`/api/evaluaci
     }
   }
 )
+
+// obtener notas
+export const obtenerNotaAlumnosGestionRequest = (id,gestion) => {return instance.get(`/api/evaluaciones/obtener-notas/${id}/${gestion}/`,{timeout:tiempoEspera})}
