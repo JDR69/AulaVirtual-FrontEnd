@@ -137,11 +137,6 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/bitacora">
                     Detalle Bitacora
                   </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/dasboard/gestion-usuario">
-                    Gestion de Usuarios
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
                 </NavDropdown>
 
                 <NavDropdown title="Academico" id="basic-nav-dropdown">
@@ -173,10 +168,6 @@ const CustomNavbar = () => {
                     <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
                     Calificaciones
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/dasboard/tipo-actividad">
-                    Tipo Activdades
                   </NavDropdown.Item>
                 </NavDropdown>
 
