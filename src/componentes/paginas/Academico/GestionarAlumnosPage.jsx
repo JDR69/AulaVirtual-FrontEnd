@@ -123,37 +123,34 @@ function GestionarAlumnosPage() {
             return;
         }
 
-
         const cursoSeleccionado = cursoB.find((c) => c.nombre === curso);
-        const gestionSelecion = gestiones.find((g) => g.gestion === parseInt(gestion_id))
-        console.log(gestionSelecion)
-        console.log(cursoSeleccionado?.id); // si necesitas el id
+        const gestionSelecion = gestiones.find((g) => g.gestion === parseInt(gestion_id));
         const data = {
             alumno: alumno_id,
             curso: parseInt(cursoSeleccionado.id),
             gestion: parseInt(gestion_id),
             paralelo: parseInt(paralelo),
             descripcion: "inscripcion correcta",
-            anio_escolar: gestionSelecion.anio_escolar
-        }
-        console.log(data);
+            anio_escolar: gestionSelecion.anio_escolar,
+        };
 
         try {
             const response = await crearLibretaRequest(data);
-            console.log(response.data)
+            console.log(response.data);
 
-            // if (response.status === 201) {
-            //     alert('Alumno registrado exitosamente.');
-            //     setRegistroData({
-            //         alumno_id: '',
-            //         curso: '',
-            //         gestion_id: '',
-            //         paralelo: '',
-            //         description: 'Primera inscripción',
-            //     });
-            //     setBusquedaAlumno('');
-            //     setSugerencias([]);
-            // }
+            // Si el registro es exitoso, limpiar los inputs
+            if (response.status === 201) {
+                alert('Alumno registrado exitosamente.');
+                setRegistroData({
+                    alumno_id: '',
+                    curso: '',
+                    gestion_id: '',
+                    paralelo: '',
+                    description: 'Primera inscripción',
+                });
+                setBusquedaAlumno('');
+                setSugerencias([]);
+            }
         } catch (error) {
             if (error.response) {
                 console.error('Error al registrar al alumno:', error.response.data);
