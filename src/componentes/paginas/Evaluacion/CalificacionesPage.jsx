@@ -17,7 +17,7 @@ const CalificacionesPage = () => {
             const trimestres = datosGestion?.detalle?.map(d => d.trimestre_info) || [];
 
             const id_cursoparalelo = materiaProfesor.horarios.curso_paralelo;
-            const gestion = 9;
+            const gestion = datosGestion.gestion;
             const horario_materia = materiaProfesor.horarios.id;
 
             const nuevosDatos = [];

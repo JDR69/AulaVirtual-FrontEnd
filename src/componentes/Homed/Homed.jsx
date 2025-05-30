@@ -31,6 +31,8 @@ import LibretaPage from "../paginas/Periodo/LibretaPage";
 import TipoActividadPage from "../paginas/Evaluacion/TipoActividadPage";
 import LibretaIA from "../paginas/Periodo/LibretaIA";
 
+import SeleccionarGestionPage from "../paginas/Periodo/SeleccionarGestionPage";
+
 
 
 export const Homed = () => {
@@ -81,6 +83,9 @@ export const Homed = () => {
                     <Route path="/libreta" element={<LibretaPage />} />
 
                     <Route path="/libretaIA" element={<LibretaIA />} />
+
+
+                    <Route path="/seleccionar-gestion" element={<SeleccionarGestionPage/>} />
 
 
 

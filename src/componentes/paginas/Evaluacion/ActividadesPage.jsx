@@ -118,7 +118,7 @@ function ActividadesPage() {
         const tareaData = {
             
             id_cursoparalelo: datosActividad.curso_paralelo,
-            gestion:9, //datosActividad.gestion,
+            gestion: datosActividad.gestion,
             descripcion: form.descripcion,
             puntaje: 0,
             fecha_inicio: form.fechaInicio,

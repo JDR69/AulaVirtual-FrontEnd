@@ -119,6 +119,8 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem('materiaProfesor');
         localStorage.removeItem('usuario');
+        localStorage.removeItem('gestion');
+        localStorage.removeItem('cursoSeleccionado');
         setMateriaProfesorState(null);
         setUser(null);
     };
@@ -177,14 +179,9 @@ export const AuthProvider = ({ children }) => {
 
             // Si no existe, obtener la gestión más reciente desde la API
             const gest = await obtenerGestionRequest();
-            const mayor = gest.data.reduce((max, actual) =>
-                actual.anio_escolar > max.anio_escolar ? actual : max
-            );
-            console.log("Gestión más reciente:", mayor);
-
-            // Guardar la gestión en el estado y en localStorage
-            setGestion(mayor);
-            localStorage.setItem('gestion', JSON.stringify(mayor));
+            console.log(gest.data)
+            setGestion(gest.data);
+            // localStorage.setItem('gestion', JSON.stringify(mayor));
         } catch (error) {
             console.error("Error al cargar la gestión:", error);
         }

@@ -55,14 +55,17 @@ function GestionarAlumnosPage() {
         setBusquedaAlumno(valor);
 
         if (valor.trim().length >= 3) {
-            const sugeridos = alumnos.filter((a) =>
-                `${a.nombre || 'Desconocido'} ${a.apellido || ''}`.toLowerCase().includes(valor.toLowerCase())
-            );
+            const sugeridos = alumnos.filter((a) => {
+                const nombreCompleto = `${a.nombre || ''} ${a.apellido || ''}`.toLowerCase();
+                const ci = (a.ci || '').toLowerCase();
+                return nombreCompleto.includes(valor.toLowerCase()) || ci.includes(valor.toLowerCase());
+            });
             setSugerencias(sugeridos);
         } else {
             setSugerencias([]);
         }
     };
+
 
     const seleccionarAlumno = (alumno) => {
         setRegistroData({

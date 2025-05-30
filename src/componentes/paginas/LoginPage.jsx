@@ -20,7 +20,7 @@ const LoginPage = () => {
             const res = await signin(data)
             if(res){
                 if(res === "Profesor"){
-                    navigate('/dasboard/seleccionar-curso')
+                    navigate('/dasboard/seleccionar-gestion')
                 }else{
                     navigate('/dasboard/homeda')
                     setDirectorOK("okis")
