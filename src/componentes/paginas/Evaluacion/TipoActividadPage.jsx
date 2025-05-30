@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerDimensionRequest, crearActividadRequest } from '../../../api/auth';
+import { obtenerDimensionRequest, crearActividadRequest ,obtenerActividadesRequest
+  
+ } from '../../../api/auth';
 
 function TipoActividadPage() {
   const [actividades, setActividades] = useState([]);
@@ -28,6 +30,35 @@ function TipoActividadPage() {
     };
 
     fetchDimensiones();
+  }, []);
+
+  // Cargar actividades al montar el componente
+  useEffect(() => {
+    const fetchActividades = async () => {
+      try {
+        const response = await obtenerActividadesRequest();
+        console.log('Actividades obtenidas:', response.data); // Depuración
+
+        if (Array.isArray(response.data)) {
+          // Procesar las actividades para incluir las dimensiones
+          const actividadesProcesadas = response.data.map((actividad) => ({
+            id: actividad.id,
+            nombre: actividad.nombre,
+            estado: actividad.estado ? 'Habilitado' : 'Deshabilitado',
+            dimension: actividad.dimensiones[0]?.descripcion || 'N/A',
+            puntaje: actividad.dimensiones[0]?.puntaje || 0,
+          }));
+
+          setActividades(actividadesProcesadas);
+        } else {
+          console.error('La respuesta de obtenerActividadesRequest no es un array:', response);
+        }
+      } catch (error) {
+        console.error('Error al obtener actividades:', error);
+      }
+    };
+
+    fetchActividades();
   }, []);
 
   const handleChange = (e) => {
