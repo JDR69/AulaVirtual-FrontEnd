@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerCursosRequest, obtenerUsuarioRequest, obtenerMateriasRequest } from '../../../api/auth';
+import { obtenerCursosRequest, obtenerUsuarioRequest, obtenerMateriasRequest, crearParticipacionesRequest, obtenerParticipacionesRequest } from '../../../api/auth';
 
 function ParticipacionPage() {
     // Estados para datos desde API
@@ -11,32 +11,7 @@ function ParticipacionPage() {
     const [loadingMaterias, setLoadingMaterias] = useState(true);
     const [error, setError] = useState(null);
 
-    const [alumnos, setAlumnos] = useState([
-        {
-            id: 1,
-            nombre: 'Juan Pérez',
-            descripcion: 'Participante activo en clase',
-            fecha: '2025-05-10',
-            curso: 'Matemáticas',
-            materia: 'Álgebra'
-        },
-        {
-            id: 2,
-            nombre: 'Ana López',
-            descripcion: 'Entrega tareas puntualmente',
-            fecha: '2025-05-12',
-            curso: 'Lenguaje',
-            materia: 'Literatura'
-        },
-        {
-            id: 3,
-            nombre: 'Carlos Ruiz',
-            descripcion: 'Participa en debates',
-            fecha: '2025-05-15',
-            curso: 'Historia',
-            materia: 'Historia Universal'
-        }
-    ]);
+    const [alumnos, setAlumnos] = useState([]);
 
     // Estados para los inputs
     const [nombre, setNombre] = useState('');
@@ -44,30 +19,22 @@ function ParticipacionPage() {
     const [fecha, setFecha] = useState('');
     const [curso, setCurso] = useState('');
     const [materia, setMateria] = useState('');
-    const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
     // Cargar datos desde API
     useEffect(() => {
-        // Establecer la fecha actual
         const hoy = new Date();
         const fechaFormateada = hoy.toISOString().split('T')[0];
         setFecha(fechaFormateada);
-        
-        // Cargar alumnos
+
         const fetchAlumnos = async () => {
             try {
                 setLoadingAlumnos(true);
                 const response = await obtenerUsuarioRequest();
-                // Filtrar solo alumnos (aquí deberías ajustar según tu estructura de roles)
-                const soloAlumnos = response.data.filter(usuario => 
-                    usuario.rol && usuario.rol_nombre === "Alumno"
-                );
-                
+                const soloAlumnos = response.data.filter(usuario => usuario.rol_nombre === "Alumno" && usuario.alumno);
                 const alumnosFormateados = soloAlumnos.map(alumno => ({
                     id: alumno.id,
-                    nombre: `${alumno.nombre} ${alumno.apellido || ''}`
+                    nombre: `${alumno.nombre} ${alumno.alumno?.matricula || ''}`
                 }));
-                
                 setListaAlumnos(alumnosFormateados);
                 setLoadingAlumnos(false);
             } catch (error) {
@@ -77,7 +44,6 @@ function ParticipacionPage() {
             }
         };
 
-        // Cargar cursos
         const fetchCursos = async () => {
             try {
                 setLoadingCursos(true);
@@ -91,7 +57,6 @@ function ParticipacionPage() {
             }
         };
 
-        // Cargar materias
         const fetchMaterias = async () => {
             try {
                 setLoadingMaterias(true);
@@ -110,148 +75,201 @@ function ParticipacionPage() {
         fetchMaterias();
     }, []);
 
-    const agregarAlumno = (e) => {
+    const listarParticipaciones = async () => {
+        if (!nombre || !materia) {
+            alert("Por favor, seleccione un alumno y una materia.");
+            return;
+        }
+
+        try {
+            const response = await obtenerParticipacionesRequest(nombre, materia);
+            const participaciones = response.data.map(participacion => ({
+                id: participacion.id,
+                nombre: listaAlumnos.find(a => a.id === participacion.alumno)?.nombre || "Desconocido",
+                descripcion: participacion.descripcion,
+                fecha: participacion.fecha,
+                curso: listaCursos.find(c => c.id === participacion.curso)?.nombre || "Desconocido",
+                materia: listaMaterias.find(m => m.id === participacion.materia)?.nombre || "Desconocido"
+            }));
+            setAlumnos(participaciones);
+        } catch (error) {
+            console.error("Error al cargar participaciones:", error);
+            setError("Error al cargar las participaciones");
+        }
+    };
+
+    const agregarAlumno = async (e) => {
         e.preventDefault();
-        if (!nombre || !descripcion || !curso || !materia) return;
-        
-        // Asegurar que la fecha sea la actual
+        if (!nombre || !descripcion || !curso || !materia) {
+            alert("Por favor, complete todos los campos.");
+            return;
+        }
+
         const hoy = new Date();
         const fechaActual = hoy.toISOString().split('T')[0];
-        
-        // Encontrar el nombre completo del alumno seleccionado
-        const alumnoSeleccionado = listaAlumnos.find(a => a.id.toString() === nombre.toString());
-        const nombreAlumno = alumnoSeleccionado ? alumnoSeleccionado.nombre : nombre;
-        
-        // Encontrar el nombre del curso seleccionado
-        const cursoSeleccionado = listaCursos.find(c => c.id.toString() === curso.toString());
-        const nombreCurso = cursoSeleccionado ? cursoSeleccionado.nombre : curso;
-        
-        // Encontrar el nombre de la materia seleccionada
-        const materiaSeleccionada = listaMaterias.find(m => m.id.toString() === materia.toString());
-        const nombreMateria = materiaSeleccionada ? materiaSeleccionada.nombre : materia;
-        
-        const nuevoAlumno = {
-            id: Date.now(),
-            nombre: nombreAlumno,
-            descripcion,
-            fecha: fechaActual,
-            curso: nombreCurso,
-            materia: nombreMateria
-        };
-        
-        setAlumnos([...alumnos, nuevoAlumno]);
-        setNombre('');
-        setDescripcion('');
-        setCurso('');
-        setMateria('');
-        setMostrarFormulario(false);
+
+        try {
+            const payload = {
+                descripcion,
+                fecha: fechaActual,
+                alumno: parseInt(nombre),
+                curso: parseInt(curso),
+                materia: parseInt(materia)
+            };
+
+            const response = await crearParticipacionesRequest(payload);
+
+            if (response.status === 201) {
+                const nuevoAlumno = {
+                    id: response.data.data.id,
+                    nombre: listaAlumnos.find(a => a.id === parseInt(nombre))?.nombre || "Desconocido",
+                    descripcion: response.data.data.descripcion,
+                    fecha: response.data.data.fecha,
+                    curso: listaCursos.find(c => c.id === parseInt(curso))?.nombre || "Desconocido",
+                    materia: listaMaterias.find(m => m.id === parseInt(materia))?.nombre || "Desconocido"
+                };
+                setAlumnos([...alumnos, nuevoAlumno]);
+                setNombre('');
+                setDescripcion('');
+                setCurso('');
+                setMateria('');
+                alert("Participación creada exitosamente.");
+            } else {
+                alert("Error al crear la participación.");
+            }
+        } catch (error) {
+            console.error("Error al crear la participación:", error);
+            alert("Ocurrió un error al intentar crear la participación.");
+        }
     };
 
     const eliminarAlumno = (id) => {
         setAlumnos(alumnos.filter(a => a.id !== id));
     };
 
-    const toggleFormulario = () => {
-        setMostrarFormulario(!mostrarFormulario);
-    };
-
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <h1 className='titulo'>Participación</h1>
-                
-                <div className='mb-3'>
-                    <button className="btn btn-primary"
-                        onClick={toggleFormulario}>
-                        <i className="bi bi-plus-circle-fill"></i>
-                        {mostrarFormulario ? 'Cancelar' : 'Agregar'}
-                    </button>
-                </div>
-                
+
                 {error && <div className="alert alert-danger">{error}</div>}
-                
-                {mostrarFormulario && (
-                    <div className='contenedor-contenido'>
-                        <div>
-                            <select
-                                className="form-select"
-                                value={nombre}
-                                onChange={e => setNombre(e.target.value)}
-                                required
-                                disabled={loadingAlumnos}
-                            >
-                                <option value="">Seleccione un alumno</option>
-                                {listaAlumnos.map(alumno => (
-                                    <option key={alumno.id} value={alumno.id}>
-                                        {alumno.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            {loadingAlumnos && <small className="text-muted">Cargando alumnos...</small>}
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Descripción"
-                                value={descripcion}
-                                onChange={e => setDescripcion(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <input
-                                className="form-control"
-                                type="date"
-                                value={fecha}
-                                readOnly
-                                required
-                            />
-                        </div>
-                        <div>
-                            <select
-                                className="form-select"
-                                value={curso}
-                                onChange={e => setCurso(e.target.value)}
-                                required
-                                disabled={loadingCursos}
-                            >
-                                <option value="">Seleccione un curso</option>
-                                {listaCursos.map(curso => (
-                                    <option key={curso.id} value={curso.id}>
-                                        {curso.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            {loadingCursos && <small className="text-muted">Cargando cursos...</small>}
-                        </div>
-                        <div>
-                            <select
-                                className="form-select"
-                                value={materia}
-                                onChange={e => setMateria(e.target.value)}
-                                required
-                                disabled={loadingMaterias}
-                            >
-                                <option value="">Seleccione una materia</option>
-                                {listaMaterias.map(materia => (
-                                    <option key={materia.id} value={materia.id}>
-                                        {materia.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                            {loadingMaterias && <small className="text-muted">Cargando materias...</small>}
-                        </div>
-                        <div>
-                            <button className="btn btn-success"
-                                onClick={agregarAlumno}>
-                                Guardar
-                            </button>
-                        </div>
+
+                {/* Formulario para listar participaciones */}
+                <div className='contenedor-contenido'>
+                    <div>
+                        <select
+                            className="form-select"
+                            value={nombre}
+                            onChange={e => setNombre(e.target.value)}
+                            required
+                            disabled={loadingAlumnos}
+                        >
+                            <option value="">Seleccione un alumno</option>
+                            {listaAlumnos.map(alumno => (
+                                <option key={alumno.id} value={alumno.id}>
+                                    {alumno.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingAlumnos && <small className="text-muted">Cargando alumnos...</small>}
                     </div>
-                )}
-                
-                <div className='dimensionTable'>
+                    <div>
+                        <select
+                            className="form-select"
+                            value={materia}
+                            onChange={e => setMateria(e.target.value)}
+                            required
+                            disabled={loadingMaterias}
+                        >
+                            <option value="">Seleccione una materia</option>
+                            {listaMaterias.map(materia => (
+                                <option key={materia.id} value={materia.id}>
+                                    {materia.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingMaterias && <small className="text-muted">Cargando materias...</small>}
+                    </div>
+                    <div>
+                        <button className="btn btn-primary" onClick={listarParticipaciones}>
+                            Listar Participaciones
+                        </button>
+                    </div>
+                </div>
+
+                {/* Formulario para agregar participaciones */}
+                <div className='contenedor-contenido mt-4'>
+                    <h2>Agregar Participación</h2>
+                    <div>
+                        <select
+                            className="form-select"
+                            value={nombre}
+                            onChange={e => setNombre(e.target.value)}
+                            required
+                            disabled={loadingAlumnos}
+                        >
+                            <option value="">Seleccione un alumno</option>
+                            {listaAlumnos.map(alumno => (
+                                <option key={alumno.id} value={alumno.id}>
+                                    {alumno.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingAlumnos && <small className="text-muted">Cargando alumnos...</small>}
+                    </div>
+                    <div>
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder="Descripción"
+                            value={descripcion}
+                            onChange={e => setDescripcion(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <select
+                            className="form-select"
+                            value={curso}
+                            onChange={e => setCurso(e.target.value)}
+                            required
+                            disabled={loadingCursos}
+                        >
+                            <option value="">Seleccione un curso</option>
+                            {listaCursos.map(curso => (
+                                <option key={curso.id} value={curso.id}>
+                                    {curso.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingCursos && <small className="text-muted">Cargando cursos...</small>}
+                    </div>
+                    <div>
+                        <select
+                            className="form-select"
+                            value={materia}
+                            onChange={e => setMateria(e.target.value)}
+                            required
+                            disabled={loadingMaterias}
+                        >
+                            <option value="">Seleccione una materia</option>
+                            {listaMaterias.map(materia => (
+                                <option key={materia.id} value={materia.id}>
+                                    {materia.nombre}
+                                </option>
+                            ))}
+                        </select>
+                        {loadingMaterias && <small className="text-muted">Cargando materias...</small>}
+                    </div>
+                    <div>
+                        <button className="btn btn-success" onClick={agregarAlumno}>
+                            Agregar Participación
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tabla de participaciones */}
+                <div className='dimensionTable mt-4'>
                     <table className='table-striped'>
                         <thead>
                             <tr>
@@ -264,21 +282,21 @@ function ParticipacionPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {alumnos.map(alumno => (
-                                <tr key={alumno.id}>
-                                    <td>{alumno.nombre}</td>
-                                    <td>{alumno.descripcion}</td>
-                                    <td>{alumno.fecha}</td>
-                                    <td>{alumno.curso}</td>
-                                    <td>{alumno.materia}</td>
+                            {alumnos.map(participacion => (
+                                <tr key={participacion.id}>
+                                    <td>{participacion.nombre}</td>
+                                    <td>{participacion.descripcion}</td>
+                                    <td>{participacion.fecha}</td>
+                                    <td>{participacion.curso}</td>
+                                    <td>{participacion.materia}</td>
                                     <td>
-                                        <button className="btn btn-danger" onClick={() => eliminarAlumno(alumno.id)}>Eliminar</button>
+                                        <button className="btn btn-danger" onClick={() => eliminarAlumno(participacion.id)}>Eliminar</button>
                                     </td>
                                 </tr>
                             ))}
                             {alumnos.length === 0 && (
                                 <tr>
-                                    <td colSpan="6">No hay alumnos registrados.</td>
+                                    <td colSpan="6">No hay participaciones registradas.</td>
                                 </tr>
                             )}
                         </tbody>
