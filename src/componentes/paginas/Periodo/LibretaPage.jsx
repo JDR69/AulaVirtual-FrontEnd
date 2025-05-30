@@ -218,73 +218,75 @@ function LibretaPage() {
                                 </div>
                             </div>
 
-                            <div className="card">
-                                <div className="card-header">
+                            <div className="materias-card">
+                                <div className="materias-header">
                                     <h2>Materias y Calificaciones</h2>
                                 </div>
-                                <div className="card-body">
-                                    <table className="tabla-calificaciones">
-                                        <thead>
-                                            <tr>
-                                                <th>Materia</th>
-                                                <th>1er Trimestre</th>
-                                                <th>2do Trimestre</th>
-                                                <th>3er Trimestre</th>
-                                                <th>Nota Final</th>
-                                                <th>Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {notasData.length > 0 ? (
-                                                notasData.map((materia) => {
-                                                    const notaFinal = parseFloat(
-                                                        calcularNotaFinal(
-                                                            materia.trimestre1,
-                                                            materia.trimestre2,
-                                                            materia.trimestre3
-                                                        )
-                                                    );
-                                                    const estado =
-                                                        notaFinal >= 60
-                                                            ? 'Aprobado'
-                                                            : notaFinal > 0
-                                                                ? 'Reprobado'
-                                                                : 'Sin calificar';
-
-                                                    return (
-                                                        <tr key={materia.materia_id}>
-                                                            <td>{materia.nombre_materia}</td>
-                                                            <td>{materia.trimestre1 ? materia.trimestre1.toFixed(2) : '-'}</td>
-                                                            <td>{materia.trimestre2 ? materia.trimestre2.toFixed(2) : '-'}</td>
-                                                            <td>{materia.trimestre3 ? materia.trimestre3.toFixed(2) : '-'}</td>
-                                                            <td>{notaFinal > 0 ? notaFinal.toFixed(2) : '-'}</td>
-                                                            <td>
-                                                                <span
-                                                                    className={
-                                                                        estado === 'Aprobado'
-                                                                            ? 'aprobado'
-                                                                            : estado === 'Reprobado'
-                                                                                ? 'reprobado'
-                                                                                : 'sin-calificar'
-                                                                    }
-                                                                >
-                                                                    {estado}
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })
-                                            ) : (
+                                <div className="materias-body">
+                                    <div className="tabla-calificaciones-wrapper">
+                                        <table className="tabla-calificaciones">
+                                            <thead>
                                                 <tr>
-                                                    <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                                                        {alumnoSeleccionado && gestionSeleccionada
-                                                            ? 'No se encontraron calificaciones para este alumno en la gestión seleccionada.'
-                                                            : 'Selecciona un alumno y una gestión para ver las calificaciones.'}
-                                                    </td>
+                                                    <th>Materia</th>
+                                                    <th>1er Trimestre</th>
+                                                    <th>2do Trimestre</th>
+                                                    <th>3er Trimestre</th>
+                                                    <th>Nota Final</th>
+                                                    <th>Estado</th>
                                                 </tr>
-                                            )}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {notasData.length > 0 ? (
+                                                    notasData.map((materia) => {
+                                                        const notaFinal = parseFloat(
+                                                            calcularNotaFinal(
+                                                                materia.trimestre1,
+                                                                materia.trimestre2,
+                                                                materia.trimestre3
+                                                            )
+                                                        );
+                                                        const estado =
+                                                            notaFinal >= 60
+                                                                ? 'Aprobado'
+                                                                : notaFinal > 0
+                                                                    ? 'Reprobado'
+                                                                    : 'Sin calificar';
+
+                                                        return (
+                                                            <tr key={materia.materia_id}>
+                                                                <td><strong>{materia.nombre_materia}</strong></td>
+                                                                <td className="nota-destacada">{materia.trimestre1 ? materia.trimestre1.toFixed(2) : '-'}</td>
+                                                                <td className="nota-destacada">{materia.trimestre2 ? materia.trimestre2.toFixed(2) : '-'}</td>
+                                                                <td className="nota-destacada">{materia.trimestre3 ? materia.trimestre3.toFixed(2) : '-'}</td>
+                                                                <td className="nota-destacada">{notaFinal > 0 ? notaFinal.toFixed(2) : '-'}</td>
+                                                                <td>
+                                                                    <span
+                                                                        className={
+                                                                            estado === 'Aprobado'
+                                                                                ? 'aprobado'
+                                                                                : estado === 'Reprobado'
+                                                                                    ? 'reprobado'
+                                                                                    : 'sin-calificar'
+                                                                        }
+                                                                    >
+                                                                        {estado}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="6" className="mensaje-sin-datos">
+                                                            {alumnoSeleccionado && gestionSeleccionada
+                                                                ? 'No se encontraron calificaciones para este alumno en la gestión seleccionada.'
+                                                                : 'Selecciona un alumno y una gestión para ver las calificaciones.'}
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>

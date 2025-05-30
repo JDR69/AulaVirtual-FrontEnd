@@ -4,6 +4,7 @@
     padding: 1.5rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-dark);
+    overflow: hidden; /* Evitar desbordamiento horizontal */
 }
 
 .libreta-header {
@@ -24,33 +25,6 @@
 
 .libreta-datos .card {
     margin-bottom: 2rem;
-}
-
-.tabla-calificaciones {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-}
-
-.tabla-calificaciones th,
-.tabla-calificaciones td {
-    padding: 0.8rem;
-    text-align: left;
-    border: 1px solid var(--border-color);
-}
-
-.tabla-calificaciones th {
-    background-color: var(--light-gray);
-    font-weight: bold;
-    text-transform: capitalize;
-}
-
-.tabla-calificaciones tbody tr:nth-child(even) {
-    background-color: rgba(0, 0, 0, 0.02);
-}
-
-.tabla-calificaciones tbody tr:hover {
-    background-color: rgba(63, 81, 181, 0.05);
 }
 
 /* Estilos mejorados para la tarjeta de datos del alumno */
@@ -134,5 +108,181 @@
 .estado-sin-calificar {
     background-color: rgba(108, 117, 125, 0.2);
     color: #5a6268;
+}
+
+/* Estilos mejorados para la tabla de calificaciones */
+.materias-card {
+    background: linear-gradient(145deg, #f8f9fa, #ffffff);
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.materias-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.materias-header {
+    background: linear-gradient(135deg, var(--primary-color), #4a6bda);
+    color: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.materias-header h2 {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.materias-body {
+    padding: 1.5rem;
+    overflow-x: auto; /* Permitir desplazamiento horizontal cuando sea necesario */
+}
+
+.tabla-calificaciones-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Habilitar scroll horizontal para tablas anchas */
+    -webkit-overflow-scrolling: touch; /* Mejora el desplazamiento en dispositivos táctiles */
+}
+
+.tabla-calificaciones {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-calificaciones th {
+    background: linear-gradient(to right, #f0f2f5, #e9ecef);
+    color: var(--text-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    padding: 1rem;
+    letter-spacing: 1px;
+    border: none;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tabla-calificaciones td {
+    padding: 1rem;
+    vertical-align: middle;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.tabla-calificaciones tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabla-calificaciones tbody tr {
+    transition: all 0.2s;
+}
+
+.tabla-calificaciones tbody tr:hover {
+    background-color: rgba(63, 81, 181, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.nota-destacada {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.aprobado, .reprobado, .sin-calificar {
+    display: inline-block;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 110px;
+}
+
+.aprobado {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #1e7e34;
+}
+
+.reprobado {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #bd2130;
+}
+
+.sin-calificar {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #5a6268;
+}
+
+.mensaje-sin-datos {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--text-light);
+    font-style: italic;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+}
+
+/* Media queries para dispositivos móviles */
+@media screen and (max-width: 768px) {
+    .libreta-header {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .datos-alumno-body {
+        padding: 1.2rem;
+        grid-template-columns: 1fr; /* Una sola columna en móviles */
+        gap: 1rem;
+    }
+
+    .alumno-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .alumno-info-label {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .aprobado, .reprobado, .sin-calificar {
+        min-width: auto;
+        width: 100%;
+    }
+
+    /* Ajustar tamaño de texto en tablas para móviles */
+    .tabla-calificaciones th,
+    .tabla-calificaciones td {
+        padding: 0.8rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media screen and (max-width: 480px) {
+    .libreta-container {
+        padding: 1rem 0.5rem;
+    }
+    
+    .libreta-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .datos-alumno-header h2,
+    .materias-header h2 {
+        font-size: 1.5rem;
+    }
 }
 
