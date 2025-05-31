@@ -9,6 +9,7 @@ const SeleccionarGestionPage = () => {
 
     useEffect(() => {
         if (gestion) {
+            console.log(gestion)
             if(Array.isArray(gestion)){
                 setGestion2(gestion);
             }

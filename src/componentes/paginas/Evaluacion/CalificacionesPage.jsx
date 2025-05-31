@@ -17,7 +17,7 @@ const CalificacionesPage = () => {
             const trimestres = datosGestion?.detalle?.map(d => d.trimestre_info) || [];
 
             const id_cursoparalelo = materiaProfesor.horarios.curso_paralelo;
-            const gestion = datosGestion.gestion;
+            const gestion = datosGestion.anio_escolar;
             const horario_materia = materiaProfesor.horarios.id;
 
             const nuevosDatos = [];
@@ -35,6 +35,11 @@ const CalificacionesPage = () => {
                     fecha_inicio, 
                     fecha_fin 
                 });
+                console.log({id_cursoparalelo, 
+                    gestion, 
+                    horario_materia, 
+                    fecha_inicio, 
+                    fecha_fin})
                 const res2 = await obtenerAlumnosTareasAsiganadasRequest({ 
                     id_cursoparalelo, 
                     gestion, 

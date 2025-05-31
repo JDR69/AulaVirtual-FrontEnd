@@ -4,79 +4,1393 @@ import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Target, Brain, Book
 
 // DATOS DE EJEMPLO AMPLIADOS
 const datosJSON = [
-  {
-    nombre_materia: "Matemáticas",
-    trimestre: { nro: 1 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 16 },
-      { descripcion: 'HACER', promedio: 14 }
-    ]
-  },
-  {
-    nombre_materia: "Lenguaje",
-    trimestre: { nro: 1 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 18 },
-      { descripcion: 'HACER', promedio: 17 }
-    ]
-  },
-  {
-    nombre_materia: "Ciencias",
-    trimestre: { nro: 1 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 15 },
-      { descripcion: 'HACER', promedio: 13 }
-    ]
-  },
-  {
-    nombre_materia: "Matemáticas",
-    trimestre: { nro: 2 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 17 },
-      { descripcion: 'HACER', promedio: 16 }
-    ]
-  },
-  {
-    nombre_materia: "Lenguaje",
-    trimestre: { nro: 2 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 19 },
-      { descripcion: 'HACER', promedio: 18 }
-    ]
-  },
-  {
-    nombre_materia: "Ciencias",
-    trimestre: { nro: 2 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 16 },
-      { descripcion: 'HACER', promedio: 15 }
-    ]
-  },
-  {
-    nombre_materia: "Matemáticas",
-    trimestre: { nro: 3 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 18 },
-      { descripcion: 'HACER', promedio: 17 }
-    ]
-  },
-  {
-    nombre_materia: "Lenguaje",
-    trimestre: { nro: 3 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 19 },
-      { descripcion: 'HACER', promedio: 19 }
-    ]
-  },
-  {
-    nombre_materia: "Ciencias",
-    trimestre: { nro: 3 },
-    dimensiones: [
-      { descripcion: 'SABER', promedio: 17 },
-      { descripcion: 'HACER', promedio: 16 }
-    ]
-  }
-];
+    {
+        "materia_id": 9,
+        "nombre_materia": "Matematicas",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 18.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 10,
+        "nombre_materia": "Literatura",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 32.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 11,
+        "nombre_materia": "Quimica",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 12,
+        "nombre_materia": "Fisica",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 45.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 39.6
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 13,
+        "nombre_materia": "Religion",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 18.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 20.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 14,
+        "nombre_materia": "Biologia",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 31.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 15,
+        "nombre_materia": "Historia",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 29.25
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 16,
+        "nombre_materia": "Ingles",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 33.3
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 34.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 17,
+        "nombre_materia": "Artes",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 4.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 24.75
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 38.4
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 3.5
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 18,
+        "nombre_materia": "Deportes",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 9.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 16.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 19,
+        "nombre_materia": "Musica",
+        "trimestre": {
+            "id": 33,
+            "nro": 1,
+            "fecha_inicio": "2022-02-01",
+            "fecha_final": "2022-05-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 9,
+        "nombre_materia": "Matematicas",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 22.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 32.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 10,
+        "nombre_materia": "Literatura",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 11,
+        "nombre_materia": "Quimica",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 9.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 20.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 12,
+        "nombre_materia": "Fisica",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 29.25
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 32.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 13,
+        "nombre_materia": "Religion",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 27.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 20.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 14,
+        "nombre_materia": "Biologia",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 40.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 15,
+        "nombre_materia": "Historia",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 16,
+        "nombre_materia": "Ingles",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 43.2
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 34.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 17,
+        "nombre_materia": "Artes",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 3.75
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 33.75
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 34.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 4.25
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 4.5
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 18,
+        "nombre_materia": "Deportes",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 27.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 6.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 19,
+        "nombre_materia": "Musica",
+        "trimestre": {
+            "id": 34,
+            "nro": 2,
+            "fecha_inicio": "2022-05-02",
+            "fecha_final": "2022-08-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 45.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 9,
+        "nombre_materia": "Matematicas",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 22.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 10,
+        "nombre_materia": "Literatura",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 4.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 10.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 11,
+        "nombre_materia": "Quimica",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 40.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 32.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 12,
+        "nombre_materia": "Fisica",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 29.25
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 24.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 13,
+        "nombre_materia": "Religion",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 22.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 22.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 14,
+        "nombre_materia": "Biologia",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 40.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 15,
+        "nombre_materia": "Historia",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 2.5
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 31.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 40.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 16,
+        "nombre_materia": "Ingles",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 38.25
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 26.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 0.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 17,
+        "nombre_materia": "Artes",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 3.5
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 38.25
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 29.6
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 4.5
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 3.5
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 18,
+        "nombre_materia": "Deportes",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 22.5
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 20.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    },
+    {
+        "materia_id": 19,
+        "nombre_materia": "Musica",
+        "trimestre": {
+            "id": 35,
+            "nro": 3,
+            "fecha_inicio": "2022-08-02",
+            "fecha_final": "2022-11-01"
+        },
+        "dimensiones": [
+            {
+                "dimension_id": 5,
+                "descripcion": "Ser",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 6,
+                "descripcion": "Saber",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 7,
+                "descripcion": "Hacer",
+                "promedio": 36.0
+            },
+            {
+                "dimension_id": 8,
+                "descripcion": "Decidir",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 9,
+                "descripcion": "AutoEvaluacion",
+                "promedio": 5.0
+            },
+            {
+                "dimension_id": 10,
+                "descripcion": "Extras",
+                "promedio": null
+            }
+        ]
+    }
+]
 
 function LibretaIA() {
   const [mostrar, setMostrar] = useState(false);
@@ -85,8 +1399,8 @@ function LibretaIA() {
   const trimestres = [...new Set(datosJSON.map(d => d.trimestre.nro))];
 
   const calcularTotal = (dimensiones) => {
-    const saber = dimensiones.find(d => d.descripcion === 'SABER')?.promedio || 0;
-    const hacer = dimensiones.find(d => d.descripcion === 'HACER')?.promedio || 0;
+    const saber = dimensiones.find(d => d.descripcion === 'Saber')?.promedio || 0;
+    const hacer = dimensiones.find(d => d.descripcion === 'Hacer')?.promedio || 0;
     return (saber + hacer).toFixed(1);
   };
 
@@ -145,8 +1459,8 @@ function LibretaIA() {
     const tendencias = materiaData.map((d, idx) => ({
       trimestre: d.trimestre.nro,
       total: parseFloat(calcularTotal(d.dimensiones)),
-      saber: d.dimensiones.find(dim => dim.descripcion === 'SABER')?.promedio || 0,
-      hacer: d.dimensiones.find(dim => dim.descripcion === 'HACER')?.promedio || 0
+      saber: d.dimensiones.find(dim => dim.descripcion === 'Saber')?.promedio || 0,
+      hacer: d.dimensiones.find(dim => dim.descripcion === 'Hacer')?.promedio || 0
     })).sort((a, b) => a.trimestre - b.trimestre);
 
     const ultimosTres = tendencias.slice(-3);
@@ -323,8 +1637,8 @@ function LibretaIA() {
                   </thead>
                   <tbody>
                     {agruparPorTrimestre(trimestre).map((materia, idx2) => {
-                      const saber = materia.dimensiones.find(d => d.descripcion === 'SABER')?.promedio ?? 0;
-                      const hacer = materia.dimensiones.find(d => d.descripcion === 'HACER')?.promedio ?? 0;
+                      const saber = materia.dimensiones.find(d => d.descripcion === 'Saber')?.promedio ?? 0;
+                      const hacer = materia.dimensiones.find(d => d.descripcion === 'Hacer')?.promedio ?? 0;
                       const total = calcularTotal(materia.dimensiones);
                       const analisis = interpretarAvanzado(saber, hacer, total);
                       const prediccion = predecirRendimiento(materia.nombre_materia);
@@ -427,8 +1741,8 @@ function LibretaIA() {
                   <YAxis domain={[0, 20]} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="saber" fill="#8884d8" name="Saber" />
-                  <Bar dataKey="hacer" fill="#82ca9d" name="Hacer" />
+                  <Bar dataKey="Saber" fill="#8884d8" name="Saber" />
+                  <Bar dataKey="Hacer" fill="#82ca9d" name="Hacer" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

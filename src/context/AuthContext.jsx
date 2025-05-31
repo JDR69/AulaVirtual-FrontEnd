@@ -122,6 +122,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('gestion');
         localStorage.removeItem('cursoSeleccionado');
         setMateriaProfesorState(null);
+        setGestion([])
         setUser(null);
     };
 
@@ -169,15 +170,6 @@ export const AuthProvider = ({ children }) => {
 
     const cargarGestion = async () => {
         try {
-            // Verificar si ya existe una gestión en localStorage
-            const savedGestion = localStorage.getItem('gestion');
-            if (savedGestion) {
-                setGestion(JSON.parse(savedGestion));
-                console.log("Gestión cargada desde localStorage:", JSON.parse(savedGestion));
-                return;
-            }
-
-            // Si no existe, obtener la gestión más reciente desde la API
             const gest = await obtenerGestionRequest();
             console.log(gest.data)
             setGestion(gest.data);
