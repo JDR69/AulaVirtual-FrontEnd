@@ -5,14 +5,16 @@ import { useNavigate } from 'react-router-dom';
 const SeleccionarGestionPage = () => {
     const navigate = useNavigate()
     const { gestion, setGestion } = useAuth();
-    const [gestion2,setGestion2] = useState([])
+    const [gestion2, setGestion2] = useState([])
 
     useEffect(() => {
         if (gestion) {
-            setGestion2(gestion || [])
-            console.log(gestion);
+            if(Array.isArray(gestion)){
+                setGestion2(gestion);
+            }
         }
     }, [gestion]);
+
 
     const handleCambio = (e) => {
         const idSeleccionado = parseInt(e.target.value);
@@ -22,15 +24,15 @@ const SeleccionarGestionPage = () => {
         }
     }
 
-    const hanldeSeguir = () =>{
+    const hanldeSeguir = () => {
         navigate('/dasboard/seleccionar-curso')
     }
 
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
-                <select 
-                    name="gestion" 
+                <select
+                    name="gestion"
                     id="gestion-select"
                     onChange={handleCambio}
                 >
