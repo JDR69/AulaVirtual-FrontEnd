@@ -1,13 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext'
 import { useNavigate } from 'react-router-dom';
 
 const SeleccionarGestionPage = () => {
     const navigate = useNavigate()
     const { gestion, setGestion } = useAuth();
+    const [gestion2,setGestion2] = useState([])
 
     useEffect(() => {
         if (gestion) {
+            setGestion2(gestion || [])
             console.log(gestion);
         }
     }, [gestion]);
@@ -34,7 +36,7 @@ const SeleccionarGestionPage = () => {
                 >
                     <option value="">Seleccionar la gestión</option>
                     {
-                        gestion?.map((g) => (
+                        gestion2.map((g) => (
                             <option key={g.gestion} value={g.gestion}>{g.anio_escolar}</option>
                         ))
                     }
