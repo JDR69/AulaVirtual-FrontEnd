@@ -326,7 +326,7 @@ function LibretaPage() {
                             <h3>Seleccionar Gestión</h3>
                             <select
                                 name="gestion"
-                                className='form-select'
+                                className="form-select"
                                 value={gestionSeleccionada}
                                 onChange={(e) => setGestionSeleccionada(e.target.value)}
                                 required
@@ -344,7 +344,7 @@ function LibretaPage() {
                             <h3>Buscar Alumno</h3>
                             <input
                                 type="text"
-                                className='form-control'
+                                className="form-control"
                                 value={busquedaAlumno}
                                 onChange={handleBusquedaChange}
                                 placeholder="Ej: Juan Pérez"
@@ -369,131 +369,119 @@ function LibretaPage() {
                     </div>
 
                     {alumnoSeleccionado && (
-                        <div className="libreta-datos" ref={reportRef}>
-                            <div className="datos-alumno-card">
-                                <div className="datos-alumno-header">
-                                    <h2>Datos del Alumno</h2>
-                                </div>
-                                <div className="datos-alumno-body">
-                                    <div className="alumno-info-item">
-                                        <span className="alumno-info-label">Nombre Completo:</span>
-                                        <span className="alumno-info-value">{alumnoSeleccionado.alumno?.nombre_usuario || alumnoSeleccionado.nombre}</span>
-                                    </div>
-                                    <div className="alumno-info-item">
-                                        <span className="alumno-info-label">CI:</span>
-                                        <span className="alumno-info-value">{alumnoSeleccionado.ci}</span>
-                                    </div>
-                                    <div className="alumno-info-item">
-                                        <span className="alumno-info-label">Estado del Curso:</span>
-                                        <span className={`estado-curso ${
-                                            determinarAprobacion(notasData) === 'Aprobado' 
-                                                ? 'estado-aprobado' 
-                                                : determinarAprobacion(notasData) === 'Reprobado'
-                                                    ? 'estado-reprobado'
-                                                    : 'estado-sin-calificar'
-                                        }`}>
-                                            {determinarAprobacion(notasData)}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                        <div className="libreta-datos">
+                          {/* Botones de exportación */}
+                          <div className="jdr2-export-buttons">
+                            <button
+                              className="jdr2-export-btn jdr2-pdf-btn"
+                              onClick={exportToPDF}
+                              title="Exportar a PDF"
+                            >
+                              <i className="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button
+                              className="jdr2-export-btn jdr2-excel-btn"
+                              onClick={exportToExcel}
+                              title="Exportar a Excel"
+                            >
+                              <i className="fas fa-file-excel"></i> Excel
+                            </button>
+                            <button
+                              className="jdr2-export-btn jdr2-html-btn"
+                              onClick={exportToHTML}
+                              title="Exportar a HTML"
+                            >
+                              <i className="fas fa-file-code"></i> HTML
+                            </button>
+                          </div>
 
-                            <div className="materias-card">
-                                <div className="materias-header">
-                                    <h2>Materias y Calificaciones</h2>
-                                </div>
-                                <div className="materias-body">
-                                    <div className="tabla-calificaciones-wrapper">
-                                        <table className="tabla-calificaciones">
-                                            <thead>
-                                                <tr>
-                                                    <th>Materia</th>
-                                                    <th>1er Trimestre</th>
-                                                    <th>2do Trimestre</th>
-                                                    <th>3er Trimestre</th>
-                                                    <th>Nota Final</th>
-                                                    <th>Estado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {notasData.length > 0 ? (
-                                                    notasData.map((materia) => {
-                                                        const notaFinal = parseFloat(
-                                                            calcularNotaFinal(
-                                                                materia.trimestre1,
-                                                                materia.trimestre2,
-                                                                materia.trimestre3
-                                                            )
-                                                        );
-                                                        const estado =
-                                                            notaFinal >= 51
-                                                                ? 'Aprobado'
-                                                                : notaFinal > 0
-                                                                    ? 'Reprobado'
-                                                                    : 'Sin calificar';
-
-                                                        return (
-                                                            <tr key={materia.materia_id}>
-                                                                <td><strong>{materia.nombre_materia}</strong></td>
-                                                                <td className="nota-destacada">{materia.trimestre1 ? materia.trimestre1.toFixed(2) : '-'}</td>
-                                                                <td className="nota-destacada">{materia.trimestre2 ? materia.trimestre2.toFixed(2) : '-'}</td>
-                                                                <td className="nota-destacada">{materia.trimestre3 ? materia.trimestre3.toFixed(2) : '-'}</td>
-                                                                <td className="nota-destacada">{notaFinal > 0 ? notaFinal.toFixed(2) : '-'}</td>
-                                                                <td>
-                                                                    <span
-                                                                        className={
-                                                                            estado === 'Aprobado'
-                                                                                ? 'aprobado'
-                                                                                : estado === 'Reprobado'
-                                                                                    ? 'reprobado'
-                                                                                    : 'sin-calificar'
-                                                                        }
-                                                                    >
-                                                                        {estado}
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })
-                                                ) : (
-                                                    <tr>
-                                                        <td colSpan="6" className="mensaje-sin-datos">
-                                                            {alumnoSeleccionado && gestionSeleccionada
-                                                                ? 'No se encontraron calificaciones para este alumno en la gestión seleccionada.'
-                                                                : 'Selecciona un alumno y una gestión para ver las calificaciones.'}
-                                                        </td>
-                                                    </tr>
-                                                )}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    
-                                    {/* Botones de exportación */}
-                                    <div className="export-buttons">
-                                        <button 
-                                            className="export-btn pdf-btn btn btn-danger" 
-                                            onClick={exportToPDF}
-                                            title="Exportar a PDF"
-                                        >
-                                            <i className="fas fa-file-pdf"></i> PDF
-                                        </button>
-                                        <button 
-                                            className="export-btn excel-btn btn btn-success" 
-                                            onClick={exportToExcel}
-                                            title="Exportar a Excel"
-                                        >
-                                            <i className="fas fa-file-excel"></i> Excel
-                                        </button>
-                                        <button 
-                                            className="export-btn html-btn btn btn-info" 
-                                            onClick={exportToHTML}
-                                            title="Exportar a HTML"
-                                        >
-                                            <i className="fas fa-file-code"></i> HTML
-                                        </button>
-                                    </div>
-                                </div>
+                          {/* Datos del Alumno */}
+                          <div className="jdr1-datos-alumno-card">
+                            <div className="jdr1-datos-alumno-header">
+                              <h2>Datos del Alumno</h2>
                             </div>
+                            <div className="jdr1-datos-alumno-body">
+                              <div className="jdr1-alumno-info-item">
+                                <span className="jdr1-alumno-info-label">Nombre Completo:</span>
+                                <span className="jdr1-alumno-info-value">
+                                  {alumnoSeleccionado.alumno?.nombre_usuario || alumnoSeleccionado.nombre}
+                                </span>
+                              </div>
+                              <div className="jdr1-alumno-info-item">
+                                <span className="jdr1-alumno-info-label">CI:</span>
+                                <span className="jdr1-alumno-info-value">{alumnoSeleccionado.ci}</span>
+                              </div>
+                              <div className="jdr1-alumno-info-item">
+                                <span className="jdr1-alumno-info-label">Estado del Curso:</span>
+                                <span
+                                  className={`jdr1-estado-curso ${
+                                    determinarAprobacion(notasData) === "Aprobado"
+                                      ? "jdr1-estado-aprobado"
+                                      : determinarAprobacion(notasData) === "Reprobado"
+                                      ? "jdr1-estado-reprobado"
+                                      : "jdr1-estado-sin-calificar"
+                                  }`}
+                                >
+                                  {determinarAprobacion(notasData)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Tabla de Calificaciones */}
+                          <div className="jdr2-tabla-container">
+                            <h2>Materias y Calificaciones</h2>
+                            <table className="jdr2-tabla-calificaciones">
+                              <thead>
+                                <tr>
+                                  <th>Materia</th>
+                                  <th>1er Trimestre</th>
+                                  <th>2do Trimestre</th>
+                                  <th>3er Trimestre</th>
+                                  <th>Nota Final</th>
+                                  <th>Estado</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {notasData.map((materia, index) => {
+                                  const notaFinal = parseFloat(
+                                    calcularNotaFinal(
+                                      materia.trimestre1,
+                                      materia.trimestre2,
+                                      materia.trimestre3
+                                    )
+                                  );
+                                  const estado =
+                                    notaFinal >= 50
+                                      ? "Aprobado"
+                                      : notaFinal > 0
+                                      ? "Reprobado"
+                                      : "Sin calificar";
+
+                                  return (
+                                    <tr key={index}>
+                                      <td>{materia.nombre_materia}</td>
+                                      <td>{materia.trimestre1 ? materia.trimestre1.toFixed(2) : "-"}</td>
+                                      <td>{materia.trimestre2 ? materia.trimestre2.toFixed(2) : "-"}</td>
+                                      <td>{materia.trimestre3 ? materia.trimestre3.toFixed(2) : "-"}</td>
+                                      <td>{notaFinal > 0 ? notaFinal.toFixed(2) : "-"}</td>
+                                      <td
+                                        className={`jdr2-estado-${
+                                          estado === "Aprobado"
+                                            ? "aprobado"
+                                            : estado === "Reprobado"
+                                            ? "reprobado"
+                                            : "sin-calificar"
+                                        }`}
+                                      >
+                                        {estado}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                     )}
                 </div>
