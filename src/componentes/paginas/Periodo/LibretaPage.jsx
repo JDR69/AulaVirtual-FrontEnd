@@ -423,7 +423,7 @@ function LibretaPage() {
                                                             )
                                                         );
                                                         const estado =
-                                                            notaFinal >= 60
+                                                            notaFinal >= 51
                                                                 ? 'Aprobado'
                                                                 : notaFinal > 0
                                                                     ? 'Reprobado'
