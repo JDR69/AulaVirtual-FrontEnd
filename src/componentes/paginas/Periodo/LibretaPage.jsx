@@ -67,18 +67,21 @@ function LibretaPage() {
         let totalPromedio = 0;
         let materiasConNotas = 0;
 
-        materias.forEach(materia => {
+        for (const materia of materias) {
             const notaFinal = parseFloat(calcularNotaFinal(materia.trimestre1, materia.trimestre2, materia.trimestre3));
             if (notaFinal > 0) {
+                if (notaFinal < 51) {
+                    return 'Reprobado'; // Si hay al menos una materia reprobada, retorna "Reprobado"
+                }
                 totalPromedio += notaFinal;
                 materiasConNotas++;
             }
-        });
+        }
 
         if (materiasConNotas === 0) return 'Sin calificaciones';
 
         const promedio = totalPromedio / materiasConNotas;
-        return promedio >= 60 ? 'Aprobado' : 'Reprobado';
+        return promedio >= 50 ? 'Aprobado' : 'Reprobado';
     };
 
     // Manejar el cambio en el input de búsqueda
