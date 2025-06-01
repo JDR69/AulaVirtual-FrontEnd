@@ -102,7 +102,7 @@ const CustomNavbar = () => {
                   Perfil
                 </Nav.Link>
 
-                <Nav.Link as={Link} to="/profesor/asistencia">
+                <Nav.Link as={Link} to="/profesor/asistencia-profesor">
                   Asistencia
                 </Nav.Link>
 
@@ -168,6 +168,10 @@ const CustomNavbar = () => {
                     <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
                     Calificaciones
+                  </NavDropdown.Item>
+                   <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/dasboard/asistencia">
+                    Asistencia
                   </NavDropdown.Item>
                 </NavDropdown>
 

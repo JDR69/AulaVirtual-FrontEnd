@@ -25,6 +25,7 @@ import CalificacionesPage from "../paginas/Evaluacion/CalificacionesPage";
 import ParticipacionPage from "../paginas/Periodo/ParticipacionPage";
 import NotificacionesPage from "../paginas/Periodo/NotificacionesPage";
 import AsistenciaPage from "../paginas/Evaluacion/AsistenciaPage";
+import AsistenciaDirector from "../paginas/Evaluacion/AsistenciaDirector";
 import CrearNotificacionPage from "../paginas/Periodo/CrearNotificacionPage";
 import Gestiones from "../paginas/Periodo/Gestiones";
 import LibretaPage from "../paginas/Periodo/LibretaPage";
@@ -72,7 +73,7 @@ export const Homed = () => {
                     <Route path="/actividades" element={<ActividadesPage />} />
                     <Route path="/tipo-actividad" element={<TipoActividadPage />} />
                     <Route path="/calificaciones" element={<CalificacionesPage />} />
-                    <Route path="/asistencia" element={<AsistenciaPage />} />
+                    <Route path="/asistencia" element={<AsistenciaDirector />} />
 
 
                     {/* Rutas de Periodo */}
@@ -86,7 +87,8 @@ export const Homed = () => {
 
 
                     <Route path="/seleccionar-gestion" element={<SeleccionarGestionPage/>} />
-
+                    <Route path="/asistencia-profesor" element={<AsistenciaPage/>} />
+                    
 
 
 
