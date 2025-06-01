@@ -169,37 +169,6 @@ function ActividadesPage() {
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
                 <h1>Actividades</h1>
-                <div className="row my-3">
-                    <div className="col-md-4 mb-2">
-                        <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Buscar por descripción"
-                            value={searchDescripcion}
-                            onChange={e => setSearchDescripcion(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-4 mb-2">
-                        <input
-                            type="date"
-                            className="form-control"
-                            placeholder="Buscar por fecha"
-                            value={searchFecha}
-                            onChange={e => setSearchFecha(e.target.value)}
-                        />
-                    </div>
-                    <div className="col-md-4 mb-2">
-                        <select
-                            className="form-select"
-                            value={searchEstado}
-                            onChange={e => setSearchEstado(e.target.value)}
-                        >
-                            <option value="">Todos los estados</option>
-                            <option value="habilitado">Habilitado</option>
-                            <option value="deshabilitado">Deshabilitado</option>
-                        </select>
-                    </div>
-                </div>
                 <div className='contenedor-buttones'>
                     <button className="btn btn-primary" onClick={handleOpenModal}>
                         <i className="bi bi-plus-circle-fill"></i> Crear Actividad
@@ -219,7 +188,7 @@ function ActividadesPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {actividadesFiltradas.map((act, idx) => (
+                            {actividades.map((act, idx) => (
                                 <tr key={idx}>
                                     <td>{act.tipo}</td>
                                     <td>{act.descripcion}</td>
@@ -242,7 +211,7 @@ function ActividadesPage() {
                                     </td>
                                 </tr>
                             ))}
-                            {actividadesFiltradas.length === 0 && (
+                            {actividades.length === 0 && (
                                 <tr>
                                     <td colSpan="6" className="text-center">No hay actividades registradas.</td>
                                 </tr>

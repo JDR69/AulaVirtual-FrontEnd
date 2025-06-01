@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { obtenerCursosRequest, obtenerUsuarioRequest, obtenerMateriasRequest, crearParticipacionesRequest, obtenerParticipacionesRequest } from '../../../api/auth';
+import {
+    obtenerCursosRequest,
+    obtenerUsuarioRequest,
+    obtenerMateriasRequest,
+    crearParticipacionesRequest,
+    obtenerParticipacionesRequest
+} from '../../../api/auth';
 
 function ParticipacionPage() {
     // Estados para datos desde API
@@ -11,8 +17,6 @@ function ParticipacionPage() {
     const [loadingMaterias, setLoadingMaterias] = useState(true);
     const [error, setError] = useState(null);
 
-    const [alumnos, setAlumnos] = useState([]);
-
     // Estados para los inputs
     const [nombre, setNombre] = useState('');
     const [descripcion, setDescripcion] = useState('');
@@ -20,61 +24,67 @@ function ParticipacionPage() {
     const [curso, setCurso] = useState('');
     const [materia, setMateria] = useState('');
 
-    // Cargar datos desde API
+    // Estado para las participaciones
+    const [alumnos, setAlumnos] = useState([]);
+
+    // Cargar datos desde API al montar el componente
     useEffect(() => {
         const hoy = new Date();
-        const fechaFormateada = hoy.toISOString().split('T')[0];
-        setFecha(fechaFormateada);
+        setFecha(hoy.toISOString().split('T')[0]);
 
-        const fetchAlumnos = async () => {
-            try {
-                setLoadingAlumnos(true);
-                const response = await obtenerUsuarioRequest();
-                const soloAlumnos = response.data.filter(usuario => usuario.rol_nombre === "Alumno" && usuario.alumno);
-                const alumnosFormateados = soloAlumnos.map(alumno => ({
-                    id: alumno.id,
-                    nombre: `${alumno.nombre} ${alumno.alumno?.matricula || ''}`
-                }));
-                setListaAlumnos(alumnosFormateados);
-                setLoadingAlumnos(false);
-            } catch (error) {
-                console.error("Error al cargar alumnos:", error);
-                setError("Error al cargar la lista de alumnos");
-                setLoadingAlumnos(false);
-            }
+        const fetchData = async () => {
+            await Promise.all([fetchAlumnos(), fetchCursos(), fetchMaterias()]);
         };
 
-        const fetchCursos = async () => {
-            try {
-                setLoadingCursos(true);
-                const response = await obtenerCursosRequest();
-                setListaCursos(response.data);
-                setLoadingCursos(false);
-            } catch (error) {
-                console.error("Error al cargar cursos:", error);
-                setError("Error al cargar la lista de cursos");
-                setLoadingCursos(false);
-            }
-        };
-
-        const fetchMaterias = async () => {
-            try {
-                setLoadingMaterias(true);
-                const response = await obtenerMateriasRequest();
-                setListaMaterias(response.data);
-                setLoadingMaterias(false);
-            } catch (error) {
-                console.error("Error al cargar materias:", error);
-                setError("Error al cargar la lista de materias");
-                setLoadingMaterias(false);
-            }
-        };
-
-        fetchAlumnos();
-        fetchCursos();
-        fetchMaterias();
+        fetchData();
     }, []);
 
+    // Funciones para cargar datos desde la API
+    const fetchAlumnos = async () => {
+        try {
+            setLoadingAlumnos(true);
+            const response = await obtenerUsuarioRequest();
+            const soloAlumnos = response.data.filter(usuario => usuario.rol_nombre === "Alumno" && usuario.alumno);
+            const alumnosFormateados = soloAlumnos.map(alumno => ({
+                id: alumno.id,
+                nombre: `${alumno.nombre} ${alumno.alumno?.matricula || ''}`
+            }));
+            setListaAlumnos(alumnosFormateados);
+        } catch (error) {
+            console.error("Error al cargar alumnos:", error);
+            setError("Error al cargar la lista de alumnos");
+        } finally {
+            setLoadingAlumnos(false);
+        }
+    };
+
+    const fetchCursos = async () => {
+        try {
+            setLoadingCursos(true);
+            const response = await obtenerCursosRequest();
+            setListaCursos(response.data);
+        } catch (error) {
+            console.error("Error al cargar cursos:", error);
+            setError("Error al cargar la lista de cursos");
+        } finally {
+            setLoadingCursos(false);
+        }
+    };
+
+    const fetchMaterias = async () => {
+        try {
+            setLoadingMaterias(true);
+            const response = await obtenerMateriasRequest();
+            setListaMaterias(response.data);
+        } catch (error) {
+            console.error("Error al cargar materias:", error);
+            setError("Error al cargar la lista de materias");
+        } finally {
+            setLoadingMaterias(false);
+        }
+    };
+
+    // Función para listar participaciones
     const listarParticipaciones = async () => {
         if (!nombre || !materia) {
             alert("Por favor, seleccione un alumno y una materia.");
@@ -98,6 +108,7 @@ function ParticipacionPage() {
         }
     };
 
+    // Función para agregar una nueva participación
     const agregarAlumno = async (e) => {
         e.preventDefault();
         if (!nombre || !descripcion || !curso || !materia) {
@@ -105,13 +116,10 @@ function ParticipacionPage() {
             return;
         }
 
-        const hoy = new Date();
-        const fechaActual = hoy.toISOString().split('T')[0];
-
         try {
             const payload = {
                 descripcion,
-                fecha: fechaActual,
+                fecha,
                 alumno: parseInt(nombre),
                 curso: parseInt(curso),
                 materia: parseInt(materia)
@@ -129,10 +137,7 @@ function ParticipacionPage() {
                     materia: listaMaterias.find(m => m.id === parseInt(materia))?.nombre || "Desconocido"
                 };
                 setAlumnos([...alumnos, nuevoAlumno]);
-                setNombre('');
-                setDescripcion('');
-                setCurso('');
-                setMateria('');
+                limpiarFormulario();
                 alert("Participación creada exitosamente.");
             } else {
                 alert("Error al crear la participación.");
@@ -143,8 +148,17 @@ function ParticipacionPage() {
         }
     };
 
+    // Función para eliminar una participación
     const eliminarAlumno = (id) => {
         setAlumnos(alumnos.filter(a => a.id !== id));
+    };
+
+    // Función para limpiar el formulario
+    const limpiarFormulario = () => {
+        setNombre('');
+        setDescripcion('');
+        setCurso('');
+        setMateria('');
     };
 
     return (
@@ -156,12 +170,12 @@ function ParticipacionPage() {
 
                 {/* Formulario para listar participaciones */}
                 <div className='contenedor-contenido'>
+                    <h2>Listar Participaciones</h2>
                     <div>
                         <select
                             className="form-select"
                             value={nombre}
                             onChange={e => setNombre(e.target.value)}
-                            required
                             disabled={loadingAlumnos}
                         >
                             <option value="">Seleccione un alumno</option>
@@ -178,7 +192,6 @@ function ParticipacionPage() {
                             className="form-select"
                             value={materia}
                             onChange={e => setMateria(e.target.value)}
-                            required
                             disabled={loadingMaterias}
                         >
                             <option value="">Seleccione una materia</option>
@@ -205,7 +218,6 @@ function ParticipacionPage() {
                             className="form-select"
                             value={nombre}
                             onChange={e => setNombre(e.target.value)}
-                            required
                             disabled={loadingAlumnos}
                         >
                             <option value="">Seleccione un alumno</option>
@@ -224,7 +236,6 @@ function ParticipacionPage() {
                             placeholder="Descripción"
                             value={descripcion}
                             onChange={e => setDescripcion(e.target.value)}
-                            required
                         />
                     </div>
                     <div>
@@ -232,7 +243,6 @@ function ParticipacionPage() {
                             className="form-select"
                             value={curso}
                             onChange={e => setCurso(e.target.value)}
-                            required
                             disabled={loadingCursos}
                         >
                             <option value="">Seleccione un curso</option>
@@ -249,7 +259,6 @@ function ParticipacionPage() {
                             className="form-select"
                             value={materia}
                             onChange={e => setMateria(e.target.value)}
-                            required
                             disabled={loadingMaterias}
                         >
                             <option value="">Seleccione una materia</option>
@@ -270,6 +279,7 @@ function ParticipacionPage() {
 
                 {/* Tabla de participaciones */}
                 <div className='dimensionTable mt-4'>
+                    <h2>Participaciones Registradas</h2>
                     <table className='table-striped'>
                         <thead>
                             <tr>
