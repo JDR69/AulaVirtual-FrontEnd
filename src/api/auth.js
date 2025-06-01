@@ -404,6 +404,23 @@ export const actualizarAsistenciaRequest = (data) => instance.put(`/api/evaluaci
     }
   }
 )
+export const obtenerAlumnosRequest = (anio_escolar,id_cursoparalelo) => {
+  return instance.get(`/api/usuario/obtener-alumnos/${anio_escolar}/${id_cursoparalelo}/`, {
+    timeout: tiempoEspera
+  });
+};
+
+
+export const obtenerAsistenciaRequest = (data) => instance.post(`/api/evaluaciones/obtener-asistencia/`,
+  data,
+  {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    timeout: tiempoEspera
+  }
+)
+
 
 // obtener notas
 export const obtenerNotaAlumnosGestionRequest = (id, gestion) => { return instance.get(`/api/evaluaciones/obtener-notas/${id}/${gestion}/`, { timeout: tiempoEspera }) }

@@ -1,48 +1,61 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { obtenerUsuarioRequest, crearAsistenciaRequest } from '../../../api/auth'
+import React, { useState, useRef, useEffect } from 'react';
+import {  crearAsistenciaRequest, obtenerAlumnosRequest, obtenerAsistenciaRequest } from '../../../api/auth';
+import { useAuth } from '../../../context/AuthContext'; // Importar el contexto
 
 function AsistenciaPage() {
+  const { gestion, materiaProfesor } = useAuth(); // Obtener gestión y materiaProfesor desde el contexto
   const fechaActual = new Date().toISOString().split('T')[0];
   const [fecha, setFecha] = useState(fechaActual);
   const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
-  
+
   // Estado para manejar los estudiantes y su asistencia
   const [estudiantes, setEstudiantes] = useState([]);
-  // Agregar un nuevo estado para rastrear asistencias ya registradas
   const [asistenciasRegistradas, setAsistenciasRegistradas] = useState(new Set());
 
   // Cargar los estudiantes desde la API
   useEffect(() => {
+   
     const cargarEstudiantes = async () => {
+    
       try {
         setCargando(true);
-        const response = await obtenerUsuarioRequest();
-        
-        // Filtrar solo los usuarios con rol de Alumno (rol 5)
-        const alumnosData = response.data.filter(user => user.rol === 5);
-        
-        // Formatear los datos para nuestro uso
-        const alumnosFormateados = alumnosData.map(user => ({
-          id: user.id,
-          ci: user.ci,
-          nombre: user.nombre,
+
+        // Validar que anio_escolar y curso_paralelo estén disponibles
+        if (!gestion || !materiaProfesor?.horarios?.curso_paralelo) {
+          setError('Año escolar o curso paralelo no seleccionados. Verifique la configuración.');
+          setCargando(false);
+          return;
+        }
+
+        // Seleccionar la última gestión (o ajusta la lógica según sea necesario)
+       
+        const anioEscolar = JSON.parse(localStorage.getItem('gestion'));
+        console.log("Gestión seleccionada:", anioEscolar.anio_escolar);
+        const cursoParalelo = JSON.parse(localStorage.getItem('materiaProfesor'));
+        console.log("Año Escolar:", cursoParalelo.horarios.curso_paralelo);
+
+        // Llamar a la API con anio_escolar y curso_paralelo
+        const response = await obtenerAlumnosRequest(anioEscolar.anio_escolar,cursoParalelo.horarios.curso_paralelo);
+        console.log("Respuesta de la API:", response.data);
+        const alumnosFormateados = response.data.map(user => ({
+          nombre: user.nombre_usuario,
           estado: false // inicialmente todos ausentes
         }));
-        
+
         setEstudiantes(alumnosFormateados);
         setCargando(false);
       } catch (err) {
-        console.error("Error al cargar los estudiantes:", err);
-        setError("No se pudieron cargar los estudiantes. Intente nuevamente.");
+        console.error('Error al cargar los estudiantes:', err);
+        setError('No se pudieron cargar los estudiantes. Intente nuevamente.');
         setCargando(false);
       }
     };
-    
+
     cargarEstudiantes();
-  }, []);
+  }, [gestion, materiaProfesor]); // Dependencias para recargar si cambian
 
   // Capturar CI escaneado
   const handleScan = (e) => {
@@ -52,12 +65,11 @@ function AsistenciaPage() {
     if (index !== -1) {
       const updated = [...estudiantes];
       updated[index].estado = true; // Marcamos como presente
-      setEstudiantes(sortEstudiantes(updated));
-      
-      // Actualizamos inmediatamente la asistencia de este alumno
+      setEstudiantes(updated);
+
       const alumnoActualizado = updated[index];
       actualizarAsistencia(alumnoActualizado);
-      
+
       setMensaje(`✅ ${alumnoActualizado.nombre} marcado como presente`);
     } else {
       setMensaje('❌ Estudiante no encontrado');
@@ -73,85 +85,69 @@ function AsistenciaPage() {
   // Función para actualizar la asistencia de un alumno individual
   const actualizarAsistencia = async (alumno) => {
     try {
-      // Estructura correcta según el modelo backend
       const asistenciaData = {
-        fecha: fecha,        // Fecha actual
-        estado: alumno.estado, // true o false (presente/ausente)
-        alumno: alumno.id    // ID del alumno (relación ForeignKey)
+        fecha: fecha,
+        estado: alumno.estado,
+        alumno: alumno.id
       };
-      
-      // Al crear una nueva asistencia, no pasamos ID pues el backend lo genera
+
       await crearAsistenciaRequest(asistenciaData);
       console.log(`Asistencia actualizada para ${alumno.nombre}`);
-      
-      // Registrar que este alumno ya tiene su asistencia actualizada
       setAsistenciasRegistradas(prev => new Set([...prev, alumno.id]));
-      
     } catch (error) {
       console.error(`Error al actualizar asistencia de ${alumno.nombre}:`, error);
-      console.error("Detalles:", error.response?.data);
     }
   };
 
-  // Ordenar estudiantes: presentes primero
-  const sortEstudiantes = (list) => {
-    return [...list].sort((a, b) => Number(b.estado) - Number(a.estado));
-  };
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const handleManualToggle = (index) => {
-    const updated = [...estudiantes];
-    updated[index].estado = !updated[index].estado;
-    setEstudiantes(sortEstudiantes(updated));
-    actualizarAsistencia(updated[index]); // Actualizar cuando se cambia manualmente
-  };
-
-  const handleGuardarTodos = async () => {
+  // Nueva función para obtener asistencias según la fecha
+  const obtenerAsistencias = async () => {
     try {
-      let procesados = 0;
-      let errores = 0;
-      
-      // Solo procesar estudiantes que no han sido registrados todavía
-      for (const est of estudiantes) {
-        // Skip estudiantes cuya asistencia ya ha sido registrada
-        if (!asistenciasRegistradas.has(est.id)) {
-          const asistenciaData = {
-            fecha: fecha,        // Fecha actual
-            estado: est.estado,  // Estado de asistencia (true/false)
-            alumno: est.id       // ID del alumno (relación ForeignKey)
-          };
-          
-          try {
-            await crearAsistenciaRequest(asistenciaData);
-            procesados++;
-            
-            // Agregar a la lista de registrados
-            setAsistenciasRegistradas(prev => new Set([...prev, est.id]));
-          } catch (err) {
-            errores++;
-            console.error(`Error al guardar asistencia para ${est.id}:`, err);
-          }
-        }
+      setCargando(true);
+
+      // Validar que la fecha esté seleccionada
+      if (!fecha) {
+        setError('Por favor, seleccione una fecha válida.');
+        setCargando(false);
+        return;
       }
-      
-      const presentes = estudiantes.filter(e => e.estado).length;
-      const ausentes = estudiantes.length - presentes;
-      
-      if (procesados > 0) {
-        setMensaje(`✅ Asistencia guardada. Registros procesados: ${procesados}. Presentes: ${presentes}, Ausentes: ${ausentes}`);
-      } else if (errores > 0) {
-        setMensaje(`⚠️ Hubo ${errores} errores al guardar las asistencias.`);
-      } else {
-        setMensaje(`ℹ️ No hay nuevas asistencias para guardar.`);
+
+      // Validar que anio_escolar y curso_paralelo estén disponibles
+      if (!gestion || !materiaProfesor?.horarios?.curso_paralelo) {
+        setError('Año escolar o curso paralelo no seleccionados. Verifique la configuración.');
+        setCargando(false);
+        return;
       }
-    } catch (error) {
-      console.error("Error al guardar la asistencia:", error);
-      setMensaje('❌ Error al guardar la asistencia');
+
+      const anioEscolar = JSON.parse(localStorage.getItem('gestion'));
+      const cursoParalelo = JSON.parse(localStorage.getItem('materiaProfesor'));
+
+      // Llamar a la API para obtener los alumnos
+      const alumnosResponse = await obtenerAlumnosRequest(anioEscolar.anio_escolar, cursoParalelo.horarios.curso_paralelo);
+      console.log("Alumnos obtenidos:", alumnosResponse.data);
+
+      // Llamar a la API para obtener las asistencias registradas
+      const asistenciasResponse = await obtenerAsistenciaRequest({
+        fecha,
+        alumnos: alumnosResponse.data.map(alumno => ({ id: alumno.alumno }))
+      });
+      console.log("Asistencias registradas:", asistenciasResponse.data);
+
+      // Combinar los datos de los alumnos con las asistencias
+      const asistenciasFormateadas = alumnosResponse.data.map(alumno => {
+        const asistencia = asistenciasResponse.data.find(a => a.id === alumno.alumno); // Cambiar a alumno.alumno si es necesario
+        return {
+          id: alumno.alumno, // Asegúrate de usar el campo correcto para el ID
+          nombre: alumno.nombre_usuario,
+          estado: asistencia ? true : false // Solo marcar como presente si tiene asistencia
+        };
+      });
+
+      setEstudiantes(asistenciasFormateadas);
+      setCargando(false);
+    } catch (err) {
+      console.error('Error al obtener las asistencias:', err);
+      setError('No se pudieron obtener las asistencias. Intente nuevamente.');
+      setCargando(false);
     }
   };
 
@@ -203,8 +199,13 @@ function AsistenciaPage() {
             value={fecha}
             onChange={e => setFecha(e.target.value)}
             style={{ padding: '6px' }}
-            readOnly // La fecha es del día y no se puede cambiar
           />
+        </div>
+
+        <div>
+          <button className='btn btn-primary' onClick={obtenerAsistencias}>
+            Obtener Asistencias
+          </button>
         </div>
 
         <div style={{ marginBottom: '20px', color: 'green', fontWeight: 'bold' }}>
@@ -215,7 +216,7 @@ function AsistenciaPage() {
           <table className='table table-striped'>
             <thead>
               <tr style={{ background: '#005f99', color: '#fff' }}>
-                <th>ID</th>
+              
                 <th>Nombre</th>
                 <th>¿Presente?</th>
               </tr>
@@ -224,14 +225,26 @@ function AsistenciaPage() {
               {estudiantes.length > 0 ? (
                 estudiantes.map((est, index) => (
                   <tr key={est.id} style={{ background: est.estado ? '#e6ffed' : '#fff' }}>
-                    <td>{est.id}</td>
                     <td>{est.nombre}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <input
-                        type="checkbox"
-                        checked={est.estado}
-                        onChange={() => handleManualToggle(index)}
-                      />
+                      {est.estado ? (
+                        <input
+                          type="checkbox"
+                          checked={true} // Marcado si asistió
+                          readOnly
+                        />
+                      ) : (
+                        // Verificar si la fecha seleccionada es anterior, igual o posterior a la fecha actual
+                        fecha === new Date().toISOString().split('T')[0] ? (
+                          <input
+                            type="checkbox"
+                            checked={false} // Desmarcado si es la fecha actual
+                            readOnly
+                          />
+                        ) : (
+                          <span style={{ color: 'red', fontWeight: 'bold' }}>No asistió</span> // Mensaje si no asistió en fechas anteriores
+                        )
+                      )}
                     </td>
                   </tr>
                 ))
@@ -243,19 +256,9 @@ function AsistenciaPage() {
             </tbody>
           </table>
         </div>
-
-        <div style={{ marginTop: '20px', textAlign: 'right' }}>
-          <button 
-            onClick={handleGuardarTodos} 
-            className='btn btn-primary'
-            disabled={estudiantes.length === 0}
-          >
-            Guardar Todas las Asistencias
-          </button>
-        </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default AsistenciaPage
+export default AsistenciaPage;
