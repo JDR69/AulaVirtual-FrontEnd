@@ -1,253 +1,237 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/LibretaIA.css';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer
 } from 'recharts';
+import { AlertCircle, Brain } from 'lucide-react';
 import {
-  AlertCircle, Brain, Search, Award
-} from 'lucide-react';
-
-// Datos simulados más extensos
-const datosJSON = [
-  {
-    nombre_materia: "Matemáticas",
-    trimestre: { id: 1, nro: 1 },
-    dimensiones: [
-      { descripcion: "Saber", promedio: 18 },
-      { descripcion: "Hacer", promedio: 16 }
-    ]
-  },
-  {
-    nombre_materia: "Lenguaje",
-    trimestre: { id: 1, nro: 1 },
-    dimensiones: [
-      { descripcion: "Saber", promedio: 20 },
-      { descripcion: "Hacer", promedio: 18 }
-    ]
-  },
-  {
-    nombre_materia: "Ciencias",
-    trimestre: { id: 1, nro: 1 },
-    dimensiones: [
-      { descripcion: "Saber", promedio: 17 },
-      { descripcion: "Hacer", promedio: 19 }
-    ]
-  }
-];
-
-// Simular múltiples gestiones con tendencias realistas
-const generarDatosHistoricos = (datosBase, numTrimestres = 6) => {
-  const datos = [];
-  for (let t = 1; t <= numTrimestres; t++) {
-    datosBase.forEach(materia => {
-      const factorTendencia = 1 + (Math.sin(t * 0.5) * 0.1) + (Math.random() - 0.5) * 0.15;
-      const factorMejora = 1 + (t - 1) * 0.02;
-      datos.push({
-        ...materia,
-        trimestre: { id: t, nro: t },
-        dimensiones: materia.dimensiones.map(dim => ({
-          ...dim,
-          promedio: Math.max(5, Math.min(20, dim.promedio * factorTendencia * factorMejora))
-        }))
-      });
-    });
-  }
-  return datos;
-};
-
-const gestionesPorAlumno = {
-  "Juan Pérez": generarDatosHistoricos(datosJSON, 6),
-  "María López": generarDatosHistoricos(datosJSON.map(d => ({
-    ...d,
-    dimensiones: d.dimensiones.map(dim => ({
-      ...dim,
-      promedio: dim.promedio * 1.1
-    }))
-  })), 5),
-  "Carlos Mendoza": generarDatosHistoricos(datosJSON.map(d => ({
-    ...d,
-    dimensiones: d.dimensiones.map(dim => ({
-      ...dim,
-      promedio: dim.promedio * 0.85
-    }))
-  })), 7),
-  "Ana Silva": generarDatosHistoricos(datosJSON.map(d => ({
-    ...d,
-    dimensiones: d.dimensiones.map(dim => ({
-      ...dim,
-      promedio: dim.promedio * 1.15
-    }))
-  })), 4)
-};
+  obtenerGestionRequest,
+  obtenerUsuarioRequest,
+  obtenerNotaAlumnosGestionRequest
+} from '../../../api/auth';
 
 function calcularTotal(dimensiones) {
-  const saber = dimensiones.find(d => d.descripcion === 'Saber')?.promedio || 0;
-  const hacer = dimensiones.find(d => d.descripcion === 'Hacer')?.promedio || 0;
-  return parseFloat((saber + hacer).toFixed(2));
+  const promediosValidos = dimensiones
+    .filter(d => d.promedio !== null && d.promedio !== undefined)
+    .map(d => d.promedio);
+
+  if (promediosValidos.length === 0) return 0;
+  
+  const suma = promediosValidos.reduce((a, b) => a + b, 0);
+  return parseFloat((suma).toFixed(2));
 }
 
-function analizarRiesgo(datosAlumno) {
-  const materias = [...new Set(datosAlumno.map(d => d.nombre_materia))];
-  let riesgoTotal = 0;
-  let factores = [];
 
-  materias.forEach(materia => {
-    const materiaData = datosAlumno.filter(d => d.nombre_materia === materia);
-    const ultimaNota = calcularTotal(materiaData[materiaData.length - 1]?.dimensiones || []);
-    if (ultimaNota < 28) {
-      riesgoTotal += 3;
-      factores.push(`${materia}: Nota actual baja (${ultimaNota})`);
-    }
-  });
-
-  const nivelRiesgo = riesgoTotal <= 2 ? 'Bajo' :
-                     riesgoTotal <= 5 ? 'Medio' : 'Alto';
-
-  return { nivel: nivelRiesgo, puntos: riesgoTotal, factores };
+function predecirNota(datos) {
+  if (datos.length < 2) return null;
+  const x = datos.map((_, i) => i + 1);
+  const y = datos.map(d => d.promedio);
+  const n = x.length;
+  const sumX = x.reduce((a, b) => a + b, 0);
+  const sumY = y.reduce((a, b) => a + b, 0);
+  const sumXY = x.reduce((acc, val, i) => acc + val * y[i], 0);
+  const sumXX = x.reduce((acc, val) => acc + val * val, 0);
+  const m = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  const b = (sumY - m * sumX) / n;
+  const nextX = n + 1;
+  return parseFloat((m * nextX + b).toFixed(2));
 }
 
-function generarRecomendacion(nivelRiesgo) {
-  if (nivelRiesgo === 'Bajo') {
-    return "¡Buen trabajo! Continúa con el esfuerzo para mantener tu desempeño.";
-  } else if (nivelRiesgo === 'Medio') {
-    return "Presta atención a las materias con notas bajas. Considera buscar apoyo adicional.";
-  } else if (nivelRiesgo === 'Alto') {
-    return "Es importante tomar medidas inmediatas. Consulta con tus profesores o busca tutorías.";
+function generarComentario(datos) {
+  if (datos.length < 2) return "No hay suficientes datos para analizar la evolución del estudiante.";
+  const inicio = datos[0].promedio;
+  const fin = datos[datos.length - 1].promedio;
+  const tendencia = fin - inicio;
+
+  if (tendencia > 5) {
+    return `El estudiante muestra una mejora notable en su desempeño, subiendo de ${inicio} a ${fin}. Se espera que continúe con buenos resultados si mantiene este ritmo.`;
+  } else if (tendencia > 0) {
+    return `El estudiante presenta una leve mejora, pasando de ${inicio} a ${fin}. Puede reforzar su estudio para acelerar el progreso.`;
+  } else if (tendencia === 0) {
+    return `El promedio del estudiante se ha mantenido constante (${inicio}). Es recomendable implementar nuevas estrategias de aprendizaje.`;
+  } else {
+    return `El rendimiento del estudiante ha disminuido de ${inicio} a ${fin}. Se sugiere intervención pedagógica para mejorar su desempeño.`;
   }
-  return "";
 }
 
 function LibretaIA() {
-  const [nombreAlumno, setNombreAlumno] = useState('');
+  const [busquedaAlumno, setBusquedaAlumno] = useState('');
+  const [sugerencias, setSugerencias] = useState([]);
   const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+  const [datosNotas, setDatosNotas] = useState({});
   const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
-  const [rangoGestiones, setRangoGestiones] = useState(6); // Rango por defecto de 6 gestiones
+  const [alumnos, setAlumnos] = useState([]);
+  const [cantidadGestiones, setCantidadGestiones] = useState('');
+  const [numeroGestiones, setNumeroGestiones] = useState([]);
+  const [gestiones, setGestiones] = useState([]);
 
-  const handleBuscar = () => {
-    if (gestionesPorAlumno[nombreAlumno]) {
-      setAlumnoSeleccionado(gestionesPorAlumno[nombreAlumno]);
-    } else {
-      alert('Alumno no encontrado. Disponibles: ' + Object.keys(gestionesPorAlumno).join(', '));
+  const fetchData = async () => {
+    try {
+      const [gestionesRes, usuariosRes] = await Promise.all([
+        obtenerGestionRequest(),
+        obtenerUsuarioRequest(),
+      ]);
+      if (gestionesRes.data) {
+        const cantidad = Array.from({ length: gestionesRes.data.length }, (_, i) => i + 1);
+        setNumeroGestiones(cantidad);
+        setGestiones(gestionesRes.data);
+      }
+      const alumnosFiltrados = usuariosRes.data.filter(u => u.rol_nombre === 'Alumno');
+      setAlumnos(alumnosFiltrados);
+    } catch (error) {
+      console.error('Error al obtener datos:', error);
     }
   };
 
-  const materias = alumnoSeleccionado ? [...new Set(alumnoSeleccionado.map(d => d.nombre_materia))] : [];
-  const riesgoAnalisis = alumnoSeleccionado ? analizarRiesgo(alumnoSeleccionado) : null;
+  useEffect(() => { fetchData(); }, []);
 
+  const handleBusquedaChange = (e) => {
+    const valor = e.target.value;
+    setBusquedaAlumno(valor);
+    setSugerencias(valor.trim().length >= 3
+      ? alumnos.filter(a => a.nombre.toLowerCase().includes(valor.toLowerCase()))
+      : []);
+  };
+
+  const seleccionarAlumno = (alumno) => {
+    setBusquedaAlumno(alumno.nombre);
+    setAlumnoSeleccionado(alumno);
+    setSugerencias([]);
+    setDatosNotas({});
+    setMateriaSeleccionada('');
+  };
+
+  useEffect(() => {
+    if (alumnoSeleccionado && cantidadGestiones) {
+      obtenerDatosAlumno(alumnoSeleccionado.id, cantidadGestiones);
+    }
+  }, [alumnoSeleccionado, cantidadGestiones]);
+
+  const obtenerDatosAlumno = async (alumnoId, cantidadGestiones) => {
+    try {
+      const seleccionadas = gestiones.slice(0, cantidadGestiones);
+      const promesas = seleccionadas.map(async (g) => {
+        try {
+          const res = await obtenerNotaAlumnosGestionRequest(alumnoId, g.anio_escolar);
+          return { anio: g.anio_escolar, datos: res.data };
+        } catch {
+          return { anio: g.anio_escolar, datos: [] };
+        }
+      });
+      const resultados = await Promise.all(promesas);
+      const agrupado = {};
+      resultados.forEach(({ anio, datos }) => { agrupado[anio] = datos; });
+      setDatosNotas(agrupado);
+    } catch (error) {
+      console.error("Error general al obtener datos del alumno:", error);
+    }
+  };
+
+  const gestionesDisponibles = Object.keys(datosNotas);
   const renderGrafica = () => {
-    if (!alumnoSeleccionado || !materiaSeleccionada) return null;
+    if (!materiaSeleccionada || gestionesDisponibles.length === 0) return null;
+    const datosMateria = gestionesDisponibles.map(anio => {
+      const notas = datosNotas[anio].filter(d => d.nombre_materia === materiaSeleccionada);
+      const promedio = notas.length > 0
+        ? calcularTotal(notas[notas.length - 1].dimensiones)
+        : null;
+      return { anio, promedio };
+    }).filter(d => d.promedio !== null);
 
-    const datosMateria = alumnoSeleccionado
-      .filter(d => d.nombre_materia === materiaSeleccionada && d.trimestre.nro <= rangoGestiones)
-      .map(d => ({
-        trimestre: d.trimestre.nro,
-        promedio: calcularTotal(d.dimensiones)
-      }));
+    const prediccion = predecirNota(datosMateria);
+    if (prediccion !== null) {
+      const proximoAnio = (parseInt(gestionesDisponibles[gestionesDisponibles.length - 1]) + 1).toString();
+      datosMateria.push({ anio: proximoAnio, promedio: prediccion });
+    }
+
+    const comentario = generarComentario(datosMateria);
 
     return (
-      <div className="grafica-container">
-        <h3>Gráfica de Desempeño: {materiaSeleccionada}</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={datosMateria}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="trimestre" label={{ value: "Trimestre", position: "insideBottomRight", offset: -5 }} />
-            <YAxis label={{ value: "Promedio", angle: -90, position: "insideLeft" }} />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="promedio" stroke="#8884d8" activeDot={{ r: 8 }} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <>
+        <div className="grafica-container">
+          <h3>Desempeño en {materiaSeleccionada} por gestión</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={datosMateria}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="anio" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="promedio" stroke="#8884d8" activeDot={{ r: 8 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="comentario-desempeno">
+          <p><strong>Interpretación:</strong> {comentario}</p>
+        </div>
+      </>
     );
   };
 
-  const renderRiesgo = () => {
-    if (!riesgoAnalisis) return null;
-
-    return (
-      <div className={`tarjeta-riesgo ${riesgoAnalisis.nivel.toLowerCase()}`}>
-        <div className="header-riesgo">
-          <AlertCircle className="icono-riesgo" />
-          <h3>Análisis de Riesgo</h3>
-        </div>
-        <div className="contenido-riesgo">
-          <div>
-            <span>Nivel de Riesgo:</span>
-            <span>{riesgoAnalisis.nivel}</span>
-          </div>
-          <div>
-            <span>Factores:</span>
-            <ul>
-              {riesgoAnalisis.factores.map((factor, index) => (
-                <li key={index}>{factor}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <span>Recomendación:</span>
-            <p>{generarRecomendacion(riesgoAnalisis.nivel)}</p>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  const materiasDisponibles = gestionesDisponibles.length > 0
+    ? [...new Set(
+        gestionesDisponibles.flatMap(anio =>
+          datosNotas[anio].map(n => n.nombre_materia)
+        )
+      )]
+    : [];
 
   return (
     <div className="libreta-ia">
       <div className="header">
-        <h1>
-          <Brain className="icono-header" />
-          LibretaIA Predictiva
-        </h1>
-        <p>Sistema Inteligente de Análisis Académico con IA</p>
+        <h1><Brain className="icono-header" /> LibretaIA Predictiva</h1>
+        <p>Predicción académica anual basada en datos reales</p>
       </div>
-      <div className="buscador">
+
+      <div className="gestiones-selector">
+        <label htmlFor="gestiones">Cantidad de gestiones a considerar:</label>
+        <select id="gestiones" value={cantidadGestiones} onChange={(e) => setCantidadGestiones(Number(e.target.value))}>
+          <option value="">Sin selección</option>
+          {numeroGestiones.map((g, i) => (
+            <option key={i} value={g}>{g}</option>
+          ))}
+        </select>
+      </div>
+
+      <div className="acomodar">
+        <h3>Buscar Alumno</h3>
         <input
           type="text"
-          value={nombreAlumno}
-          onChange={(e) => setNombreAlumno(e.target.value)}
-          placeholder="Ingrese el nombre del estudiante..."
+          className="form-control"
+          value={busquedaAlumno}
+          onChange={handleBusquedaChange}
+          placeholder="Ej: Juan Pérez"
+          autoComplete="off"
         />
-        <button onClick={handleBuscar}>
-          <Search />
-          Buscar
-        </button>
+        {busquedaAlumno.trim().length >= 3 && sugerencias.length > 0 && (
+          <ul className="sugerencias">
+            {sugerencias.map((alumno) => (
+              <li key={alumno.id} onClick={() => seleccionarAlumno(alumno)} className="sugerencia-item">
+                {alumno.nombre}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      {alumnoSeleccionado && (
-        <>
-          <div className="materias-gestiones-selector">
-            <div className="materias-selector">
-              <label htmlFor="materias">Seleccione una materia:</label>
-              <select
-                id="materias"
-                value={materiaSeleccionada}
-                onChange={(e) => setMateriaSeleccionada(e.target.value)}
-              >
-                <option value="">-- Seleccione --</option>
-                {materias.map((materia, index) => (
-                  <option key={index} value={materia}>
-                    {materia}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="gestiones-selector">
-              <label htmlFor="gestiones">Seleccione rango de gestiones:</label>
-              <input
-                id="gestiones"
-                type="number"
-                min="1"
-                max="10"
-                value={rangoGestiones}
-                onChange={(e) => setRangoGestiones(Number(e.target.value))}
-              />
-            </div>
-          </div>
-          {renderGrafica()}
-          {renderRiesgo()}
-        </>
+
+      {materiasDisponibles.length > 0 && (
+        <div className="materias-selector">
+          <label htmlFor="materias">Seleccione una materia:</label>
+          <select
+            id="materias"
+            value={materiaSeleccionada}
+            onChange={(e) => setMateriaSeleccionada(e.target.value)}
+          >
+            <option value="">-- Seleccione --</option>
+            {materiasDisponibles.map((materia, index) => (
+              <option key={index} value={materia}>{materia}</option>
+            ))}
+          </select>
+        </div>
       )}
+
+      {renderGrafica()}
     </div>
   );
 }
