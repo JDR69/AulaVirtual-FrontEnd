@@ -26,7 +26,8 @@ function ActividadesPage() {
 
     // Obtener la gestión y actividad dinámicamente
     const obtenerGestionYActividad = () => {
-        const gestionActual = gestion?.gestion; // Obtener la gestión actual
+        const datosGestion = JSON.parse(localStorage.getItem("gestion") || "null");
+        const gestionActual = datosGestion.gestion; // Obtener la gestión actual
         const cursoParalelo = materiaProfesor?.horarios?.curso_paralelo; // Obtener curso_paralelo
         const id_horario = materiaProfesor?.horarios?.id;
         const descripcionMateria = materiaProfesor?.horarios?.descripcion_materia; // Obtener descripcion_materia
