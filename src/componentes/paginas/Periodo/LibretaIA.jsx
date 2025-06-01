@@ -131,41 +131,49 @@ function LibretaIA() {
   const gestionesDisponibles = Object.keys(datosNotas);
   const renderGrafica = () => {
     if (!materiaSeleccionada || gestionesDisponibles.length === 0) return null;
+
+   
     const datosMateria = gestionesDisponibles.map(anio => {
-      const notas = datosNotas[anio].filter(d => d.nombre_materia === materiaSeleccionada);
-      const promedio = notas.length > 0
-        ? calcularTotal(notas[notas.length - 1].dimensiones)
-        : null;
-      return { anio, promedio };
+        const notas = datosNotas[anio].filter(d => d.nombre_materia === materiaSeleccionada);
+        const totalNotas = notas.flatMap(n => n.dimensiones).reduce((acc, dim) => acc + (dim.promedio || 0), 0);
+        const cantidadTrimestres = notas.length > 0 ? notas.length : 1; 
+        const promedioFinal = cantidadTrimestres > 0 ? totalNotas / cantidadTrimestres : null;
+
+        return { anio, promedio: promedioFinal ? parseFloat(promedioFinal.toFixed(2)) : null };
     }).filter(d => d.promedio !== null);
 
+   
     const prediccion = predecirNota(datosMateria);
     if (prediccion !== null) {
-      const proximoAnio = (parseInt(gestionesDisponibles[gestionesDisponibles.length - 1]) + 1).toString();
-      datosMateria.push({ anio: proximoAnio, promedio: prediccion });
+        const proximoAnio = (parseInt(gestionesDisponibles[gestionesDisponibles.length - 1]) + 1).toString();
+        datosMateria.push({ anio: proximoAnio, promedio: prediccion });
     }
 
+    // Generar un comentario más dinámico y atractivo
     const comentario = generarComentario(datosMateria);
 
     return (
-      <>
-        <div className="grafica-container">
-          <h3>Desempeño en {materiaSeleccionada} por gestión</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={datosMateria}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="anio" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="promedio" stroke="#8884d8" activeDot={{ r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="comentario-desempeno">
-          <p><strong>Interpretación:</strong> {comentario}</p>
-        </div>
-      </>
+        <>
+            <div className="grafica-container">
+                <h3>Desempeño en {materiaSeleccionada} por gestión</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={datosMateria}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="anio" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="promedio" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+            <div className="comentario-desempeno">
+                <div className="comentario-card">
+                    <h4>📊 Interpretación del Desempeño</h4>
+                    <p>{comentario}</p>
+                </div>
+            </div>
+        </>
     );
   };
 
@@ -186,7 +194,7 @@ function LibretaIA() {
 
       <div className="gestiones-selector">
         <label htmlFor="gestiones">Cantidad de gestiones a considerar:</label>
-        <select id="gestiones" value={cantidadGestiones} onChange={(e) => setCantidadGestiones(Number(e.target.value))}>
+        <select id="gestiones" className='form-select' value={cantidadGestiones} onChange={(e) => setCantidadGestiones(Number(e.target.value))}>
           <option value="">Sin selección</option>
           {numeroGestiones.map((g, i) => (
             <option key={i} value={g}>{g}</option>
