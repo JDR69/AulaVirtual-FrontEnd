@@ -1,1775 +1,520 @@
-import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, AlertCircle, CheckCircle, Target, Brain, BookOpen, Activity } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer, BarChart, Bar, RadarChart, PolarGrid,
+  PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area
+} from 'recharts';
+import {
+  TrendingUp, TrendingDown, AlertCircle, CheckCircle,
+  Target, Brain, BookOpen, Activity, Search, Award,
+  Users, Calendar, BarChart3, PieChart, Lightbulb
+} from 'lucide-react';
 
-// DATOS DE EJEMPLO AMPLIADOS
+// Datos simulados más extensos
 const datosJSON = [
-    {
-        "materia_id": 9,
-        "nombre_materia": "Matematicas",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 18.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 10,
-        "nombre_materia": "Literatura",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 32.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 11,
-        "nombre_materia": "Quimica",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 12,
-        "nombre_materia": "Fisica",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 45.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 39.6
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 13,
-        "nombre_materia": "Religion",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 18.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 20.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 14,
-        "nombre_materia": "Biologia",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 31.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 15,
-        "nombre_materia": "Historia",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 29.25
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 16,
-        "nombre_materia": "Ingles",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 33.3
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 34.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 17,
-        "nombre_materia": "Artes",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 4.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 24.75
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 38.4
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 3.5
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 18,
-        "nombre_materia": "Deportes",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 9.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 16.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 19,
-        "nombre_materia": "Musica",
-        "trimestre": {
-            "id": 33,
-            "nro": 1,
-            "fecha_inicio": "2022-02-01",
-            "fecha_final": "2022-05-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 9,
-        "nombre_materia": "Matematicas",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 22.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 32.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 10,
-        "nombre_materia": "Literatura",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 11,
-        "nombre_materia": "Quimica",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 9.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 20.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 12,
-        "nombre_materia": "Fisica",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 29.25
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 32.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 13,
-        "nombre_materia": "Religion",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 27.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 20.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 14,
-        "nombre_materia": "Biologia",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 40.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 15,
-        "nombre_materia": "Historia",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 16,
-        "nombre_materia": "Ingles",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 43.2
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 34.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 17,
-        "nombre_materia": "Artes",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 3.75
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 33.75
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 34.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 4.25
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 4.5
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 18,
-        "nombre_materia": "Deportes",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 27.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 6.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 19,
-        "nombre_materia": "Musica",
-        "trimestre": {
-            "id": 34,
-            "nro": 2,
-            "fecha_inicio": "2022-05-02",
-            "fecha_final": "2022-08-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 45.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 9,
-        "nombre_materia": "Matematicas",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 22.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 10,
-        "nombre_materia": "Literatura",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 4.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 10.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 11,
-        "nombre_materia": "Quimica",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 40.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 32.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 12,
-        "nombre_materia": "Fisica",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 29.25
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 24.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 13,
-        "nombre_materia": "Religion",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 22.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 22.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 14,
-        "nombre_materia": "Biologia",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 40.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 15,
-        "nombre_materia": "Historia",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 2.5
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 31.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 40.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 16,
-        "nombre_materia": "Ingles",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 38.25
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 26.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 0.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 17,
-        "nombre_materia": "Artes",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 3.5
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 38.25
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 29.6
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 4.5
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 3.5
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 18,
-        "nombre_materia": "Deportes",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 22.5
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 20.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
-    },
-    {
-        "materia_id": 19,
-        "nombre_materia": "Musica",
-        "trimestre": {
-            "id": 35,
-            "nro": 3,
-            "fecha_inicio": "2022-08-02",
-            "fecha_final": "2022-11-01"
-        },
-        "dimensiones": [
-            {
-                "dimension_id": 5,
-                "descripcion": "Ser",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 6,
-                "descripcion": "Saber",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 7,
-                "descripcion": "Hacer",
-                "promedio": 36.0
-            },
-            {
-                "dimension_id": 8,
-                "descripcion": "Decidir",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 9,
-                "descripcion": "AutoEvaluacion",
-                "promedio": 5.0
-            },
-            {
-                "dimension_id": 10,
-                "descripcion": "Extras",
-                "promedio": null
-            }
-        ]
+  {
+    nombre_materia: "Matemáticas",
+    trimestre: { id: 1, nro: 1 },
+    dimensiones: [
+      { descripcion: "Saber", promedio: 18 },
+      { descripcion: "Hacer", promedio: 16 }
+    ]
+  },
+  {
+    nombre_materia: "Lenguaje",
+    trimestre: { id: 1, nro: 1 },
+    dimensiones: [
+      { descripcion: "Saber", promedio: 20 },
+      { descripcion: "Hacer", promedio: 18 }
+    ]
+  },
+  {
+    nombre_materia: "Ciencias",
+    trimestre: { id: 1, nro: 1 },
+    dimensiones: [
+      { descripcion: "Saber", promedio: 17 },
+      { descripcion: "Hacer", promedio: 19 }
+    ]
+  }
+];
+
+// Simular múltiples gestiones con tendencias realistas
+const generarDatosHistoricos = (datosBase, numTrimestres = 6) => {
+  const datos = [];
+  
+  for (let t = 1; t <= numTrimestres; t++) {
+    datosBase.forEach(materia => {
+      // Simular variaciones realistas en el rendimiento
+      const factorTendencia = 1 + (Math.sin(t * 0.5) * 0.1) + (Math.random() - 0.5) * 0.15;
+      const factorMejora = 1 + (t - 1) * 0.02; // Ligera mejora progresiva
+      
+      datos.push({
+        ...materia,
+        trimestre: { id: t, nro: t },
+        dimensiones: materia.dimensiones.map(dim => ({
+          ...dim,
+          promedio: Math.max(5, Math.min(20, 
+            dim.promedio * factorTendencia * factorMejora
+          ))
+        }))
+      });
+    });
+  }
+  
+  return datos;
+};
+
+const gestionesPorAlumno = {
+  "Juan Pérez": generarDatosHistoricos(datosJSON, 6),
+  "María López": generarDatosHistoricos(datosJSON.map(d => ({
+    ...d,
+    dimensiones: d.dimensiones.map(dim => ({
+      ...dim,
+      promedio: dim.promedio * 1.1
+    }))
+  })), 5),
+  "Carlos Mendoza": generarDatosHistoricos(datosJSON.map(d => ({
+    ...d,
+    dimensiones: d.dimensiones.map(dim => ({
+      ...dim,
+      promedio: dim.promedio * 0.85
+    }))
+  })), 7),
+  "Ana Silva": generarDatosHistoricos(datosJSON.map(d => ({
+    ...d,
+    dimensiones: d.dimensiones.map(dim => ({
+      ...dim,
+      promedio: dim.promedio * 1.15
+    }))
+  })), 4)
+};
+
+function calcularTotal(dimensiones) {
+  const saber = dimensiones.find(d => d.descripcion === 'Saber')?.promedio || 0;
+  const hacer = dimensiones.find(d => d.descripcion === 'Hacer')?.promedio || 0;
+  return parseFloat((saber + hacer).toFixed(2));
+}
+
+// Regresión lineal mejorada con métricas de calidad
+function regresionLinealAvanzada(puntos) {
+  const n = puntos.length;
+  if (n < 2) return null;
+  
+  const sumX = puntos.reduce((a, p) => a + p.x, 0);
+  const sumY = puntos.reduce((a, p) => a + p.y, 0);
+  const sumXY = puntos.reduce((a, p) => a + p.x * p.y, 0);
+  const sumX2 = puntos.reduce((a, p) => a + p.x * p.x, 0);
+  const sumY2 = puntos.reduce((a, p) => a + p.y * p.y, 0);
+
+  const m = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+  const b = (sumY - m * sumX) / n;
+  
+  // Calcular R² (coeficiente de determinación)
+  const yMean = sumY / n;
+  const ssRes = puntos.reduce((a, p) => a + Math.pow(p.y - (m * p.x + b), 2), 0);
+  const ssTot = puntos.reduce((a, p) => a + Math.pow(p.y - yMean, 2), 0);
+  const r2 = 1 - (ssRes / ssTot);
+  
+  return { m, b, r2: Math.max(0, r2) };
+}
+
+// Predicción avanzada con múltiples algoritmos
+function predecirNotasAvanzado(datosMateria) {
+  const puntos = datosMateria.map(d => ({
+    x: d.trimestre.nro,
+    y: calcularTotal(d.dimensiones)
+  }));
+  
+  if (puntos.length < 2) return null;
+
+  const regresion = regresionLinealAvanzada(puntos);
+  if (!regresion) return null;
+  
+  const siguienteTrimestre = Math.max(...puntos.map(p => p.x)) + 1;
+  const prediccionLineal = regresion.m * siguienteTrimestre + regresion.b;
+  
+  // Promedio móvil simple para suavizar
+  const ultimos3 = puntos.slice(-3);
+  const promedioMovil = ultimos3.reduce((a, p) => a + p.y, 0) / ultimos3.length;
+  
+  // Predicción combinada (70% regresión, 30% promedio móvil)
+  const prediccionCombinada = (prediccionLineal * 0.7) + (promedioMovil * 0.3);
+  
+  // Calcular tendencia
+  const tendencia = regresion.m > 0.5 ? 'ascendente' : 
+                   regresion.m < -0.5 ? 'descendente' : 'estable';
+  
+  // Calcular volatilidad
+  const varianza = puntos.reduce((a, p, i) => {
+    if (i === 0) return 0;
+    return a + Math.pow(p.y - puntos[i-1].y, 2);
+  }, 0) / (puntos.length - 1);
+  
+  const volatilidad = Math.sqrt(varianza);
+  
+  return {
+    prediccion: Math.max(0, Math.min(40, prediccionCombinada)),
+    confianza: regresion.r2,
+    tendencia,
+    volatilidad,
+    puntos: puntos.length
+  };
+}
+
+// Análisis de riesgo académico
+function analizarRiesgo(datosAlumno) {
+  const materias = [...new Set(datosAlumno.map(d => d.nombre_materia))];
+  let riesgoTotal = 0;
+  let factores = [];
+  
+  materias.forEach(materia => {
+    const materiaData = datosAlumno.filter(d => d.nombre_materia === materia);
+    const ultimaNota = calcularTotal(materiaData[materiaData.length - 1]?.dimensiones || []);
+    const prediccion = predecirNotasAvanzado(materiaData);
+    
+    if (ultimaNota < 28) {
+      riesgoTotal += 3;
+      factores.push(`${materia}: Nota actual baja (${ultimaNota})`);
     }
-]
+    
+    if (prediccion && prediccion.tendencia === 'descendente') {
+      riesgoTotal += 2;
+      factores.push(`${materia}: Tendencia descendente`);
+    }
+    
+    if (prediccion && prediccion.volatilidad > 3) {
+      riesgoTotal += 1;
+      factores.push(`${materia}: Alto nivel de variabilidad`);
+    }
+  });
+  
+  const nivelRiesgo = riesgoTotal <= 2 ? 'Bajo' : 
+                     riesgoTotal <= 5 ? 'Medio' : 'Alto';
+  
+  return { nivel: nivelRiesgo, puntos: riesgoTotal, factores };
+}
 
 function LibretaIA() {
-  const [mostrar, setMostrar] = useState(false);
-  const [vistaActual, setVistaActual] = useState('tabla');
+  const [nombreAlumno, setNombreAlumno] = useState('');
+  const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null);
+  const [materiaSeleccionada, setMateriaSeleccionada] = useState('');
+  const [vistaActual, setVistaActual] = useState('resumen');
 
-  const trimestres = [...new Set(datosJSON.map(d => d.trimestre.nro))];
-
-  const calcularTotal = (dimensiones) => {
-    const saber = dimensiones.find(d => d.descripcion === 'Saber')?.promedio || 0;
-    const hacer = dimensiones.find(d => d.descripcion === 'Hacer')?.promedio || 0;
-    return (saber + hacer).toFixed(1);
+  const handleBuscar = () => {
+    if (gestionesPorAlumno[nombreAlumno]) {
+      setAlumnoSeleccionado(gestionesPorAlumno[nombreAlumno]);
+      setVistaActual('resumen');
+    } else {
+      alert('Alumno no encontrado. Disponibles: ' + Object.keys(gestionesPorAlumno).join(', '));
+    }
   };
 
-  // INTERPRETACIÓN MEJORADA CON IA
-  const interpretarAvanzado = (saber, hacer, total) => {
-    const equilibrio = Math.abs(saber - hacer);
-    const nivel = parseFloat(total);
+  const materias = alumnoSeleccionado ? [...new Set(alumnoSeleccionado.map(d => d.nombre_materia))] : [];
+  const riesgoAnalisis = alumnoSeleccionado ? analizarRiesgo(alumnoSeleccionado) : null;
+
+  const renderResumenGeneral = () => {
+    if (!alumnoSeleccionado) return null;
     
-    let interpretacion = {
-      nivel: '',
-      fortalezas: [],
-      debilidades: [],
-      recomendaciones: [],
-      color: '',
-      icono: null
-    };
+    const promedioGeneral = materias.reduce((acc, materia) => {
+      const materiaData = alumnoSeleccionado.filter(d => d.nombre_materia === materia);
+      const ultimaNota = calcularTotal(materiaData[materiaData.length - 1]?.dimensiones || []);
+      return acc + ultimaNota;
+    }, 0) / materias.length;
 
-    if (nivel >= 35) {
-      interpretacion.nivel = "Excelencia Académica";
-      interpretacion.color = "#10B981";
-      interpretacion.icono = <CheckCircle className="w-5 h-5" />;
-      interpretacion.fortalezas = ["Dominio completo de contenidos", "Aplicación práctica excelente"];
-      interpretacion.recomendaciones = ["Explorar contenidos avanzados", "Mentorear a otros estudiantes"];
-    } else if (nivel >= 30) {
-      interpretacion.nivel = "Desempeño Sobresaliente";
-      interpretacion.color = "#059669";
-      interpretacion.icono = <TrendingUp className="w-5 h-5" />;
-      interpretacion.fortalezas = ["Buen dominio teórico y práctico"];
-      if (equilibrio > 3) {
-        interpretacion.debilidades = saber > hacer ? ["Aplicación práctica por mejorar"] : ["Fundamentos teóricos por reforzar"];
-      }
-      interpretacion.recomendaciones = ["Mantener el nivel actual", "Buscar desafíos adicionales"];
-    } else if (nivel >= 24) {
-      interpretacion.nivel = "Progreso Satisfactorio";
-      interpretacion.color = "#F59E0B";
-      interpretacion.icono = <Target className="w-5 h-5" />;
-      interpretacion.fortalezas = ["Base sólida establecida"];
-      interpretacion.debilidades = ["Necesita consolidar conocimientos"];
-      interpretacion.recomendaciones = ["Práctica adicional", "Refuerzo en áreas específicas"];
-    } else {
-      interpretacion.nivel = "Requiere Atención Inmediata";
-      interpretacion.color = "#EF4444";
-      interpretacion.icono = <AlertCircle className="w-5 h-5" />;
-      interpretacion.debilidades = ["Fundamentos por construir", "Aplicación limitada"];
-      interpretacion.recomendaciones = ["Plan de recuperación", "Apoyo pedagógico especializado"];
-    }
-
-    return interpretacion;
-  };
-
-  // PREDICCIÓN AVANZADA CON TENDENCIAS
-  const predecirRendimiento = (materia) => {
-    const materiaData = datosJSON.filter(d => d.nombre_materia === materia);
-    if (materiaData.length < 2) return "Datos insuficientes para predicción";
-
-    const tendencias = materiaData.map((d, idx) => ({
-      trimestre: d.trimestre.nro,
-      total: parseFloat(calcularTotal(d.dimensiones)),
-      saber: d.dimensiones.find(dim => dim.descripcion === 'Saber')?.promedio || 0,
-      hacer: d.dimensiones.find(dim => dim.descripcion === 'Hacer')?.promedio || 0
-    })).sort((a, b) => a.trimestre - b.trimestre);
-
-    const ultimosTres = tendencias.slice(-3);
-    const promedioTendencia = ultimosTres.reduce((acc, curr, idx, arr) => {
-      if (idx === 0) return 0;
-      return acc + (curr.total - arr[idx-1].total);
-    }, 0) / (ultimosTres.length - 1);
-
-    const ultimoTotal = ultimosTres[ultimosTres.length - 1].total;
-    const prediccionProximoTrimestre = ultimoTotal + promedioTendencia;
-
-    let estado = {
-      tendencia: '',
-      prediccion: prediccionProximoTrimestre.toFixed(1),
-      probabilidadExito: 0,
-      recomendaciones: [],
-      color: '',
-      icono: null
-    };
-
-    if (promedioTendencia > 1) {
-      estado.tendencia = "Tendencia Ascendente";
-      estado.color = "#10B981";
-      estado.icono = <TrendingUp className="w-5 h-5" />;
-      estado.probabilidadExito = Math.min(95, 70 + (promedioTendencia * 10));
-      estado.recomendaciones = ["Mantener estrategias actuales", "Incrementar desafíos"];
-    } else if (promedioTendencia > -1) {
-      estado.tendencia = "Estabilidad";
-      estado.color = "#F59E0B";
-      estado.icono = <Activity className="w-5 h-5" />;
-      estado.probabilidadExito = Math.min(80, 60 + (ultimoTotal * 2));
-      estado.recomendaciones = ["Diversificar métodos de estudio", "Buscar motivación adicional"];
-    } else {
-      estado.tendencia = "Riesgo de Declive";
-      estado.color = "#EF4444";
-      estado.icono = <TrendingDown className="w-5 h-5" />;
-      estado.probabilidadExito = Math.max(20, 40 + (promedioTendencia * 5));
-      estado.recomendaciones = ["Intervención inmediata", "Revisar métodos de enseñanza"];
-    }
-
-    return estado;
-  };
-
-  const agruparPorTrimestre = (nroTrimestre) => {
-    return datosJSON.filter(m => m.trimestre.nro === nroTrimestre);
-  };
-
-  // Preparar datos para gráficos
-  const prepararDatosEvolucion = () => {
-    const materias = [...new Set(datosJSON.map(d => d.nombre_materia))];
-    const datosEvolucion = trimestres.map(trimestre => {
-      const punto = { trimestre: `T${trimestre}` };
-      materias.forEach(materia => {
-        const materiaData = datosJSON.find(d => d.nombre_materia === materia && d.trimestre.nro === trimestre);
-        if (materiaData) {
-          punto[materia] = parseFloat(calcularTotal(materiaData.dimensiones));
-        }
-      });
-      return punto;
+    const prediccionesGenerales = materias.map(materia => {
+      const materiaData = alumnoSeleccionado.filter(d => d.nombre_materia === materia);
+      const prediccion = predecirNotasAvanzado(materiaData);
+      return { materia, ...prediccion };
     });
-    return datosEvolucion;
-  };
 
-  const prepararDatosRadar = () => {
-    const ultimoTrimestre = Math.max(...trimestres);
-    return agruparPorTrimestre(ultimoTrimestre).map(materia => ({
-      materia: materia.nombre_materia,
-      saber: materia.dimensiones.find(d => d.descripcion === 'SABER')?.promedio || 0,
-      hacer: materia.dimensiones.find(d => d.descripcion === 'HACER')?.promedio || 0,
-      total: parseFloat(calcularTotal(materia.dimensiones))
-    }));
-  };
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Tarjeta de Resumen */}
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 p-6 rounded-xl shadow-lg">
+          <div className="flex items-center mb-4">
+            <Award className="w-8 h-8 text-indigo-600 mr-3" />
+            <h3 className="text-xl font-bold text-gray-800">Resumen Académico</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-between">
+              <span className="text-gray-600">Promedio General:</span>
+              <span className="font-bold text-2xl text-indigo-600">{promedioGeneral.toFixed(1)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Materias:</span>
+              <span className="font-semibold">{materias.length}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-600">Trimestres registrados:</span>
+              <span className="font-semibold">{Math.max(...alumnoSeleccionado.map(d => d.trimestre.nro))}</span>
+            </div>
+          </div>
+        </div>
 
-  const colores = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff00'];
-
-  return (
-    <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ 
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
-        color: 'white', 
-        padding: '30px', 
-        borderRadius: '15px', 
-        marginBottom: '30px',
-        textAlign: 'center'
-      }}>
-        <h1 style={{ margin: '0 0 10px 0', fontSize: '2.5rem', fontWeight: 'bold' }}>
-          <Brain className="inline w-8 h-8 mr-3" />
-          Libreta IA - Sistema Avanzado de Evaluación
-        </h1>
-        <p style={{ margin: '0 0 20px 0', fontSize: '1.1rem', opacity: '0.9' }}>
-          Análisis predictivo e interpretación inteligente del rendimiento académico
-        </p>
-        
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button 
-            onClick={() => setMostrar(true)}
-            style={{
-              background: 'rgba(255,255,255,0.2)',
-              border: 'none',
-              color: 'white',
-              padding: '12px 24px',
-              borderRadius: '25px',
-              cursor: 'pointer',
-              fontSize: '1rem',
-              transition: 'all 0.3s'
-            }}
-            onMouseOver={(e) => e.target.style.background = 'rgba(255,255,255,0.3)'}
-            onMouseOut={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
-          >
-            <BookOpen className="inline w-4 h-4 mr-2" />
-            Mostrar Análisis
-          </button>
+        {/* Tarjeta de Riesgo */}
+        <div className={`p-6 rounded-xl shadow-lg ${
+          riesgoAnalisis.nivel === 'Bajo' ? 'bg-gradient-to-br from-green-50 to-emerald-100' :
+          riesgoAnalisis.nivel === 'Medio' ? 'bg-gradient-to-br from-yellow-50 to-amber-100' :
+          'bg-gradient-to-br from-red-50 to-rose-100'
+        }`}>
+          <div className="flex items-center mb-4">
+            <AlertCircle className={`w-8 h-8 mr-3 ${
+              riesgoAnalisis.nivel === 'Bajo' ? 'text-green-600' :
+              riesgoAnalisis.nivel === 'Medio' ? 'text-yellow-600' : 'text-red-600'
+            }`} />
+            <h3 className="text-xl font-bold text-gray-800">Análisis de Riesgo</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600">Nivel de Riesgo:</span>
+              <span className={`px-3 py-1 rounded-full text-sm font-bold ${
+                riesgoAnalisis.nivel === 'Bajo' ? 'bg-green-200 text-green-800' :
+                riesgoAnalisis.nivel === 'Medio' ? 'bg-yellow-200 text-yellow-800' :
+                'bg-red-200 text-red-800'
+              }`}>
+                {riesgoAnalisis.nivel}
+              </span>
+            </div>
+            <div className="text-sm text-gray-600">
+              <strong>Factores identificados:</strong>
+              <ul className="mt-2 space-y-1">
+                {riesgoAnalisis.factores.slice(0, 3).map((factor, i) => (
+                  <li key={i} className="text-xs">• {factor}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
+    );
+  };
 
-      {mostrar && (
-        <>
-          <div style={{ 
-            display: 'flex', 
-            gap: '10px', 
-            marginBottom: '30px', 
-            flexWrap: 'wrap',
-            justifyContent: 'center'
-          }}>
-            {['tabla', 'evolucion', 'comparativo', 'radar'].map(vista => (
-              <button
-                key={vista}
-                onClick={() => setVistaActual(vista)}
-                style={{
-                  padding: '10px 20px',
-                  border: vistaActual === vista ? '2px solid #667eea' : '1px solid #ddd',
-                  background: vistaActual === vista ? '#667eea' : 'white',
-                  color: vistaActual === vista ? 'white' : '#333',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem',
-                  transition: 'all 0.3s'
-                }}
-              >
-                {vista.charAt(0).toUpperCase() + vista.slice(1)}
-              </button>
-            ))}
+  const renderAnalisisDetallado = () => {
+    if (!materiaSeleccionada) return null;
+    
+    const materiaData = alumnoSeleccionado.filter(d => d.nombre_materia === materiaSeleccionada);
+    const prediccion = predecirNotasAvanzado(materiaData);
+    
+    const datosGrafico = materiaData.map(d => ({
+      trimestre: `T${d.trimestre.nro}`,
+      nota: calcularTotal(d.dimensiones),
+      saber: d.dimensiones.find(dim => dim.descripcion === 'Saber')?.promedio || 0,
+      hacer: d.dimensiones.find(dim => dim.descripcion === 'Hacer')?.promedio || 0
+    }));
+
+    // Agregar predicción al gráfico
+    if (prediccion) {
+      const siguienteTrimestre = Math.max(...materiaData.map(d => d.trimestre.nro)) + 1;
+      datosGrafico.push({
+        trimestre: `T${siguienteTrimestre} (Pred.)`,
+        nota: prediccion.prediccion,
+        prediccion: true
+      });
+    }
+
+    return (
+      <div className="space-y-6">
+        <div className="bg-white p-6 rounded-xl shadow-lg">
+          <h3 className="text-2xl font-bold mb-4 text-gray-800">{materiaSeleccionada}</h3>
+          
+          {/* Métricas de Predicción */}
+          {prediccion && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg text-center">
+                <div className="text-2xl font-bold text-blue-600">{prediccion.prediccion.toFixed(1)}</div>
+                <div className="text-sm text-gray-600">Predicción</div>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg text-center">
+                <div className="text-2xl font-bold text-green-600">{(prediccion.confianza * 100).toFixed(0)}%</div>
+                <div className="text-sm text-gray-600">Confianza</div>
+              </div>
+              <div className="bg-purple-50 p-4 rounded-lg text-center">
+                <div className="text-lg font-bold text-purple-600 capitalize">{prediccion.tendencia}</div>
+                <div className="text-sm text-gray-600">Tendencia</div>
+              </div>
+              <div className="bg-orange-50 p-4 rounded-lg text-center">
+                <div className="text-2xl font-bold text-orange-600">{prediccion.volatilidad.toFixed(1)}</div>
+                <div className="text-sm text-gray-600">Volatilidad</div>
+              </div>
+            </div>
+          )}
+
+          {/* Gráfico Principal */}
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={datosGrafico}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="trimestre" />
+              <YAxis domain={[0, 40]} />
+              <Tooltip 
+                formatter={(value, name) => [
+                  typeof value === 'number' ? value.toFixed(1) : value, 
+                  name
+                ]}
+              />
+              <Legend />
+              <Line 
+                type="monotone" 
+                dataKey="nota" 
+                stroke="#3B82F6" 
+                strokeWidth={3}
+                dot={{ r: 6 }}
+                name="Nota Total"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="saber" 
+                stroke="#10B981" 
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                name="Saber"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="hacer" 
+                stroke="#F59E0B" 
+                strokeWidth={2}
+                dot={{ r: 4 }}
+                name="Hacer"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+
+          {/* Interpretación */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-bold text-gray-800 mb-2 flex items-center">
+              <Lightbulb className="w-5 h-5 mr-2 text-yellow-500" />
+              Interpretación Inteligente
+            </h4>
+            <div className="text-sm text-gray-700 space-y-2">
+              {prediccion && (
+                <>
+                  <p>
+                    <strong>Rendimiento proyectado:</strong> 
+                    {prediccion.prediccion >= 35 ? ' Excelente. El estudiante mantiene un alto nivel académico.' :
+                     prediccion.prediccion >= 28 ? ' Satisfactorio. El progreso es adecuado pero puede mejorar.' :
+                     ' Requiere atención. Posible riesgo de bajo rendimiento.'}
+                  </p>
+                  <p>
+                    <strong>Tendencia:</strong> La materia muestra una tendencia {prediccion.tendencia}.
+                    {prediccion.tendencia === 'ascendente' && ' ¡Felicitaciones por la mejora continua!'}
+                    {prediccion.tendencia === 'descendente' && ' Se recomienda implementar estrategias de refuerzo.'}
+                  </p>
+                  <p>
+                    <strong>Estabilidad:</strong> 
+                    {prediccion.volatilidad < 2 ? ' Rendimiento muy estable y predecible.' :
+                     prediccion.volatilidad < 4 ? ' Rendimiento moderadamente variable.' :
+                     ' Alto nivel de variabilidad. Revisar factores externos.'}
+                  </p>
+                </>
+              )}
+            </div>
           </div>
+        </div>
+      </div>
+    );
+  };
 
-          {vistaActual === 'tabla' && trimestres.map((trimestre, idx) => (
-            <div key={idx} style={{ 
-              marginBottom: '40px', 
-              background: 'white', 
-              borderRadius: '15px', 
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-              overflow: 'hidden'
-            }}>
-              <div style={{ 
-                background: '#f8f9fa', 
-                padding: '20px', 
-                borderBottom: '1px solid #eee' 
-              }}>
-                <h2 style={{ margin: 0, color: '#333', fontSize: '1.5rem' }}>
-                  📚 Trimestre {trimestre}
-                </h2>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+            <Brain className="w-10 h-10 mr-3 text-blue-600" />
+            LibretaIA Predictiva
+          </h1>
+          <p className="text-gray-600">Sistema Inteligente de Análisis Académico con IA</p>
+        </div>
+
+        {/* Buscador */}
+        <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+          <div className="flex flex-col sm:flex-row gap-4 items-end">
+            <div className="flex-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Buscar Estudiante
+              </label>
+              <input
+                type="text"
+                value={nombreAlumno}
+                onChange={(e) => setNombreAlumno(e.target.value)}
+                placeholder="Ingrese el nombre del estudiante..."
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
+                onKeyPress={(e) => e.key === 'Enter' && handleBuscar()}
+              />
+              <div className="text-xs text-gray-500 mt-1">
+                Disponibles: {Object.keys(gestionesPorAlumno).join(', ')}
               </div>
+            </div>
+            <button
+              onClick={handleBuscar}
+              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center"
+            >
+              <Search className="w-5 h-5 mr-2" />
+              Buscar
+            </button>
+          </div>
+        </div>
+
+        {alumnoSeleccionado && (
+          <>
+            {/* Navegación */}
+            <div className="bg-white p-4 rounded-xl shadow-lg mb-8">
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setVistaActual('resumen')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    vistaActual === 'resumen' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  <BarChart3 className="w-4 h-4 inline mr-2" />
+                  Resumen
+                </button>
+                {materias.map(materia => (
+                  <button
+                    key={materia}
+                    onClick={() => {
+                      setMateriaSeleccionada(materia);
+                      setVistaActual('detalle');
+                    }}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                      vistaActual === 'detalle' && materiaSeleccionada === materia
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    <BookOpen className="w-4 h-4 inline mr-2" />
+                    {materia}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Contenido Principal */}
+            <div className="space-y-6">
+              <h2 className="text-3xl font-bold text-gray-800 mb-6">
+                Análisis para: <span className="text-blue-600">{nombreAlumno}</span>
+              </h2>
               
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr style={{ background: '#667eea', color: 'white' }}>
-                      <th style={{ padding: '15px', textAlign: 'left' }}>Materia</th>
-                      <th style={{ padding: '15px', textAlign: 'center' }}>Saber</th>
-                      <th style={{ padding: '15px', textAlign: 'center' }}>Hacer</th>
-                      <th style={{ padding: '15px', textAlign: 'center' }}>Total</th>
-                      <th style={{ padding: '15px', textAlign: 'left' }}>Análisis IA</th>
-                      <th style={{ padding: '15px', textAlign: 'left' }}>Predicción</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {agruparPorTrimestre(trimestre).map((materia, idx2) => {
-                      const saber = materia.dimensiones.find(d => d.descripcion === 'Saber')?.promedio ?? 0;
-                      const hacer = materia.dimensiones.find(d => d.descripcion === 'Hacer')?.promedio ?? 0;
-                      const total = calcularTotal(materia.dimensiones);
-                      const analisis = interpretarAvanzado(saber, hacer, total);
-                      const prediccion = predecirRendimiento(materia.nombre_materia);
-                      
-                      return (
-                        <tr key={idx2} style={{ borderBottom: '1px solid #eee' }}>
-                          <td style={{ padding: '15px', fontWeight: 'bold' }}>{materia.nombre_materia}</td>
-                          <td style={{ padding: '15px', textAlign: 'center' }}>{saber}</td>
-                          <td style={{ padding: '15px', textAlign: 'center' }}>{hacer}</td>
-                          <td style={{ 
-                            padding: '15px', 
-                            textAlign: 'center', 
-                            fontWeight: 'bold',
-                            color: analisis.color 
-                          }}>
-                            {total}
-                          </td>
-                          <td style={{ padding: '15px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                              {analisis.icono}
-                              <span style={{ color: analisis.color, fontWeight: 'bold' }}>
-                                {analisis.nivel}
-                              </span>
-                            </div>
-                            <div style={{ fontSize: '0.85rem', color: '#666' }}>
-                              {analisis.recomendaciones.slice(0, 2).join(', ')}
-                            </div>
-                          </td>
-                          <td style={{ padding: '15px' }}>
-                            {typeof prediccion === 'object' ? (
-                              <div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                                  {prediccion.icono}
-                                  <span style={{ color: prediccion.color, fontWeight: 'bold' }}>
-                                    {prediccion.tendencia}
-                                  </span>
-                                </div>
-                                <div style={{ fontSize: '0.85rem', color: '#666' }}>
-                                  Próx. trimestre: {prediccion.prediccion}
-                                </div>
-                                <div style={{ fontSize: '0.8rem', color: '#888' }}>
-                                  Prob. éxito: {prediccion.probabilidadExito.toFixed(0)}%
-                                </div>
-                              </div>
-                            ) : (
-                              <span style={{ color: '#888', fontSize: '0.85rem' }}>{prediccion}</span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              {vistaActual === 'resumen' && renderResumenGeneral()}
+              {vistaActual === 'detalle' && renderAnalisisDetallado()}
             </div>
-          ))}
+          </>
+        )}
 
-          {vistaActual === 'evolucion' && (
-            <div style={{ 
-              background: 'white', 
-              padding: '30px', 
-              borderRadius: '15px', 
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)' 
-            }}>
-              <h3 style={{ marginBottom: '20px', color: '#333' }}>📈 Evolución del Rendimiento por Trimestre</h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={prepararDatosEvolucion()}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="trimestre" />
-                  <YAxis domain={[0, 40]} />
-                  <Tooltip />
-                  <Legend />
-                  {[...new Set(datosJSON.map(d => d.nombre_materia))].map((materia, idx) => (
-                    <Line 
-                      key={materia}
-                      type="monotone" 
-                      dataKey={materia} 
-                      stroke={colores[idx % colores.length]}
-                      strokeWidth={3}
-                      dot={{ r: 6 }}
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-
-          {vistaActual === 'comparativo' && (
-            <div style={{ 
-              background: 'white', 
-              padding: '30px', 
-              borderRadius: '15px', 
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)' 
-            }}>
-              <h3 style={{ marginBottom: '20px', color: '#333' }}>📊 Comparativo Saber vs Hacer (Último Trimestre)</h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={prepararDatosRadar()}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="materia" />
-                  <YAxis domain={[0, 20]} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="Saber" fill="#8884d8" name="Saber" />
-                  <Bar dataKey="Hacer" fill="#82ca9d" name="Hacer" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-
-          {vistaActual === 'radar' && (
-            <div style={{ 
-              background: 'white', 
-              padding: '30px', 
-              borderRadius: '15px', 
-              boxShadow: '0 4px 20px rgba(0,0,0,0.1)' 
-            }}>
-              <h3 style={{ marginBottom: '20px', color: '#333' }}>🎯 Análisis Multidimensional (Último Trimestre)</h3>
-              <ResponsiveContainer width="100%" height={400}>
-                <RadarChart data={prepararDatosRadar()}>
-                  <PolarGrid />
-                  <PolarAngleAxis dataKey="materia" />
-                  <PolarRadiusAxis domain={[0, 20]} />
-                  <Radar name="Saber" dataKey="saber" stroke="#8884d8" fill="#8884d8" fillOpacity={0.3} />
-                  <Radar name="Hacer" dataKey="hacer" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} />
-                  <Legend />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-        </>
-      )}
+        {!alumnoSeleccionado && (
+          <div className="text-center py-12">
+            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-medium text-gray-600 mb-2">
+              Busque un estudiante para comenzar el análisis
+            </h3>
+            <p className="text-gray-500">
+              Ingrese el nombre de un estudiante en el campo de búsqueda para ver su análisis predictivo completo.
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
