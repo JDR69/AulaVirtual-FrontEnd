@@ -134,11 +134,11 @@ function AsistenciaPage() {
 
       // Combinar los datos de los alumnos con las asistencias
       const asistenciasFormateadas = alumnosResponse.data.map(alumno => {
-        const asistencia = asistenciasResponse.data.find(a => a.id === alumno.alumno); // Cambiar a alumno.alumno si es necesario
+        const asistencia = asistenciasResponse.data.find(a => a.alumno_id === alumno.alumno);
         return {
-          id: alumno.alumno, // Asegúrate de usar el campo correcto para el ID
+          id: alumno.alumno,
           nombre: alumno.nombre_usuario,
-          estado: asistencia ? true : false // Solo marcar como presente si tiene asistencia
+          estado: asistencia && asistencia.estado === true // Solo marcar como presente si el estado es true
         };
       });
 
@@ -238,7 +238,7 @@ function AsistenciaPage() {
                         fecha === new Date().toISOString().split('T')[0] ? (
                           <input
                             type="checkbox"
-                            checked={false} // Desmarcado si es la fecha actual
+                            checked={false} // Desmarcado si es la fecha actual y no asistió
                             readOnly
                           />
                         ) : (
