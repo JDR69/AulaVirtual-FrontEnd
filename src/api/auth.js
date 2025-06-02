@@ -440,3 +440,7 @@ export const obtenerParticipacionesRequest = (id, materia) => {
     timeout: tiempoEspera
   });
 };
+
+//DASBOARD
+
+export const obtenerDasboard = () => { return instance.get(`/api/usuario/api/dashboard-stats/`, {timeout:tiempoEspera})}
