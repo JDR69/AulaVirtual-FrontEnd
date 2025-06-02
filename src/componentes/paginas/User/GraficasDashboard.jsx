@@ -120,7 +120,7 @@ const cargarDatos = async () => {
 
       {/* Gráfica Estado de Alumnos */}
       <section>
-        <h4>🎯 Estado de Alumnos</h4>
+        <h4> Estado de Alumnos</h4>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie data={alumnosActivosInactivos} cx="50%" cy="50%" outerRadius={80} label dataKey="value">
@@ -174,7 +174,7 @@ const cargarDatos = async () => {
 
       {/* Gráfica Distribución de Edades */}
       <section>
-        <h4>👶 Distribución de Edades</h4>
+        <h4> Distribución de Edades</h4>
         <ResponsiveContainer width="100%" height={250}>
           <PieChart>
             <Pie data={edadesData} cx="50%" cy="50%" outerRadius={80} label dataKey="value">
