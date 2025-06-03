@@ -1,0 +1,89 @@
+.sap-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px;
+  background: linear-gradient(to bottom right, #e6f7ff, #f0fff4);
+  min-height: 100vh;
+}
+
+.sap-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.sap-heading {
+  text-align: center;
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.sap-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.sap-box {
+  flex: 1 1 calc(25% - 16px);
+  background-color: #f1f5f9;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.sap-box h3 {
+  margin-bottom: 8px;
+}
+
+.sap-box p {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.sap-box span {
+  font-size: 14px;
+  color: #555;
+}
+
+.sap-blue { background-color: #dbeafe; color: #1e3a8a; }
+.sap-purple { background-color: #e0e7ff; color: #4f46e5; }
+.sap-orange { background-color: #fef9c3; color: #92400e; }
+.sap-green { background-color: #dcfce7; color: #166534; }
+.sap-red { background-color: #fee2e2; color: #991b1b; }
+
+.sap-chart-box {
+  margin-bottom: 30px;
+}
+
+.sap-predict-box input {
+  padding: 8px;
+  margin-right: 10px;
+  width: 150px;
+}
+
+.sap-predict-box button {
+  padding: 8px 16px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sap-predict-box button:hover {
+  background-color: #059669;
+}
+
+.sap-prediction-result {
+  margin-top: 20px;
+  background: #f9fafb;
+  padding: 16px;
+  border-left: 4px solid #10b981;
+  border-radius: 6px;
+}

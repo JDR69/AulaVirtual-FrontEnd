@@ -195,6 +195,10 @@ const CustomNavbar = () => {
                    <NavDropdown.Item as={Link} to="/dasboard/libretaIA">
                     Libreta IA
                   </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                   <NavDropdown.Item as={Link} to="/dasboard/asistencia-ai">
+                    Asistencia IA
+                  </NavDropdown.Item>
                 </NavDropdown>
               </>
             )}

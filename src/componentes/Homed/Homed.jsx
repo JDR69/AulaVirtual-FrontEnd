@@ -33,6 +33,7 @@ import TipoActividadPage from "../paginas/Evaluacion/TipoActividadPage";
 import LibretaIA from "../paginas/Periodo/LibretaIA";
 
 import SeleccionarGestionPage from "../paginas/Periodo/SeleccionarGestionPage";
+import StudentAttendancePredictor from "../paginas/Periodo/AsistenciaIAPage";
 
 
 
@@ -84,6 +85,7 @@ export const Homed = () => {
                     <Route path="/libreta" element={<LibretaPage />} />
 
                     <Route path="/libretaIA" element={<LibretaIA />} />
+                    <Route path="/asistencia-ai" element={<StudentAttendancePredictor />} />
 
 
                     <Route path="/seleccionar-gestion" element={<SeleccionarGestionPage/>} />

@@ -421,6 +421,8 @@ export const obtenerAsistenciaRequest = (data) => instance.post(`/api/evaluacion
   }
 )
 
+export const obtenerAsistenciPorAlumnoRequest = (id) => { return instance.get(`/api/evaluaciones/obtener-asistencia-gestion/${id}/`,{timeout:tiempoEspera})}
+
 
 // obtener notas
 export const obtenerNotaAlumnosGestionRequest = (id, gestion) => { return instance.get(`/api/evaluaciones/obtener-notas/${id}/${gestion}/`, { timeout: tiempoEspera }) }
