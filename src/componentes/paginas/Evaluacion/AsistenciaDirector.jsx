@@ -5,10 +5,11 @@ function AsistenciaPage() {
   const fechaActual = new Date().toISOString().split('T')[0];
   const [fecha, setFecha] = useState(fechaActual);
   const [mensaje, setMensaje] = useState('');
+  const timeoutRef = useRef(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
-  
+
   // Estado para manejar los estudiantes y su asistencia
   const [estudiantes, setEstudiantes] = useState([]);
   // Agregar un nuevo estado para rastrear asistencias ya registradas
@@ -20,10 +21,10 @@ function AsistenciaPage() {
       try {
         setCargando(true);
         const response = await obtenerUsuarioRequest();
-        
+
         // Filtrar solo los usuarios con rol de Alumno (rol 5)
         const alumnosData = response.data.filter(user => user.rol === 5);
-        
+
         // Formatear los datos para nuestro uso
         const alumnosFormateados = alumnosData.map(user => ({
           id: user.id,
@@ -31,7 +32,7 @@ function AsistenciaPage() {
           nombre: user.nombre,
           estado: false // inicialmente todos ausentes
         }));
-        
+
         setEstudiantes(alumnosFormateados);
         setCargando(false);
       } catch (err) {
@@ -40,33 +41,41 @@ function AsistenciaPage() {
         setCargando(false);
       }
     };
-    
+
     cargarEstudiantes();
   }, []);
 
   // Capturar CI escaneado
   const handleScan = (e) => {
     const ciIngresado = e.target.value.trim();
-    const index = estudiantes.findIndex(est => est.ci === ciIngresado);
+    // Supongamos tienes la lógica para encontrar index...
+    const index = estudiantes.findIndex(est => String(est.ci).trim() === ciIngresado);
+
+    // Limpiar timeout previo si existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
     if (index !== -1) {
       const updated = [...estudiantes];
       updated[index].estado = true; // Marcamos como presente
       setEstudiantes(sortEstudiantes(updated));
-      
+
       // Actualizamos inmediatamente la asistencia de este alumno
       const alumnoActualizado = updated[index];
       actualizarAsistencia(alumnoActualizado);
-      
       setMensaje(`✅ ${alumnoActualizado.nombre} marcado como presente`);
     } else {
-      setMensaje('❌ Estudiante no encontrado');
+      setMensaje('ok');
     }
 
-    setTimeout(() => {
+    // Borra el mensaje y limpia input luego de 1.5 segundos
+    timeoutRef.current = setTimeout(() => {
       setMensaje('');
-      inputRef.current.value = '';
-      inputRef.current.focus();
+      if (inputRef.current) {
+        inputRef.current.value = '';
+        inputRef.current.focus();
+      }
     }, 1500);
   };
 
@@ -79,14 +88,14 @@ function AsistenciaPage() {
         estado: alumno.estado, // true o false (presente/ausente)
         alumno: alumno.id    // ID del alumno (relación ForeignKey)
       };
-      
+
       // Al crear una nueva asistencia, no pasamos ID pues el backend lo genera
       await crearAsistenciaRequest(asistenciaData);
       console.log(`Asistencia actualizada para ${alumno.nombre}`);
-      
+
       // Registrar que este alumno ya tiene su asistencia actualizada
       setAsistenciasRegistradas(prev => new Set([...prev, alumno.id]));
-      
+
     } catch (error) {
       console.error(`Error al actualizar asistencia de ${alumno.nombre}:`, error);
       console.error("Detalles:", error.response?.data);
@@ -115,7 +124,7 @@ function AsistenciaPage() {
     try {
       let procesados = 0;
       let errores = 0;
-      
+
       // Solo procesar estudiantes que no han sido registrados todavía
       for (const est of estudiantes) {
         // Skip estudiantes cuya asistencia ya ha sido registrada
@@ -125,11 +134,11 @@ function AsistenciaPage() {
             estado: est.estado,  // Estado de asistencia (true/false)
             alumno: est.id       // ID del alumno (relación ForeignKey)
           };
-          
+
           try {
             await crearAsistenciaRequest(asistenciaData);
             procesados++;
-            
+
             // Agregar a la lista de registrados
             setAsistenciasRegistradas(prev => new Set([...prev, est.id]));
           } catch (err) {
@@ -138,10 +147,10 @@ function AsistenciaPage() {
           }
         }
       }
-      
+
       const presentes = estudiantes.filter(e => e.estado).length;
       const ausentes = estudiantes.length - presentes;
-      
+
       if (procesados > 0) {
         setMensaje(`✅ Asistencia guardada. Registros procesados: ${procesados}. Presentes: ${presentes}, Ausentes: ${ausentes}`);
       } else if (errores > 0) {
@@ -191,7 +200,7 @@ function AsistenciaPage() {
             className='form-control'
             type="text"
             ref={inputRef}
-            onChange={handleScan}
+            onKeyDown={handleScan}
           />
         </div>
 
@@ -245,8 +254,8 @@ function AsistenciaPage() {
         </div>
 
         <div style={{ marginTop: '20px', textAlign: 'right' }}>
-          <button 
-            onClick={handleGuardarTodos} 
+          <button
+            onClick={handleGuardarTodos}
             className='btn btn-primary'
             disabled={estudiantes.length === 0}
           >
