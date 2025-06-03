@@ -1,21 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
+import { obtenerBitacoraRequestt } from '../../../api/auth';
 
-const bitacoraData = [
-    { id: 1, usuario: 'Juan', fecha: '2025-05-01', hora: '10:00', ip: '192.168.0.1', accion: 'Login' },
-];
+
+
 
 function BitacoraPage() {
     const [usuarioFiltro, setUsuarioFiltro] = useState('');
     const [fechaFiltro, setFechaFiltro] = useState('');
+    const [bitacoraData,setBitacoraData] = useState([])
 
     const datosFiltrados = bitacoraData.filter(item =>
-        item.usuario.toLowerCase().includes(usuarioFiltro.toLowerCase()) &&
+        item.nombre_usuario.toLowerCase().includes(usuarioFiltro.toLowerCase()) &&
         item.fecha.includes(fechaFiltro)
     );
+
+    useEffect ( () => {
+        cargarDatos();
+    },[])
+
+    const cargarDatos =  async () => {
+        try {
+            const res = await obtenerBitacoraRequestt();
+            setBitacoraData(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     const exportarExcel = () => {
         const ws = XLSX.utils.json_to_sheet(datosFiltrados);
@@ -114,7 +129,7 @@ function BitacoraPage() {
                                 {datosFiltrados.map((row, index) => (
                                     <tr key={index}>
                                         <td>{row.id}</td>
-                                        <td>{row.usuario}</td>
+                                        <td>{row.nombre_usuario}</td>
                                         <td>{row.fecha}</td>
                                         <td>{row.hora}</td>
                                         <td>{row.ip}</td>
