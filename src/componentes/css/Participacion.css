@@ -1,0 +1,142 @@
+.titi1 {
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.titi2 {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+}
+
+.titi3 {
+  color: #3a3a3a;
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 2px solid #4c84ff;
+  padding-bottom: 10px;
+}
+
+.titi4 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #4c84ff;
+}
+
+.titi5 {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+}
+
+.titi6 {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.titi7 {
+  background-color: #4c84ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.3s;
+}
+
+.titi7:hover {
+  background-color: #3a70e0;
+}
+
+.titi8 {
+  background-color: #28a745;
+}
+
+.titi8:hover {
+  background-color: #218838;
+}
+
+.titi9 {
+  background-color: #dc3545;
+}
+
+.titi9:hover {
+  background-color: #c82333;
+}
+
+.titi10 {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.titi10 th, .titi10 td {
+  border: 1px solid #dee2e6;
+  padding: 10px;
+  text-align: left;
+}
+
+.titi10 th {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.titi10 tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.titi11 {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: flex-end;
+}
+
+.titi12 {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.titi12:hover {
+  background-color: #138496;
+}
+
+.titi13 {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.titi13:hover {
+  background-color: #e0a800;
+}
+
+.titi14 {
+  background-color: #6c757d;
+  color: white;
+}
+
+.titi14:hover {
+  background-color: #5a6268;
+}
+
+.titi15 {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.titi16 {
+  margin: 15px 0;
+}

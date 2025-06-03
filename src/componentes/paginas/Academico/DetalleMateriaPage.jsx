@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 import {
     obtenerMateriasRequest,
     obtenerHorariosRequest,
@@ -144,6 +148,132 @@ function DetalleMateriaPage() {
         setIndiceEditando(index);
     };
 
+    // Add report generation functions
+    const generarPDF = () => {
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(18);
+        doc.text('Reporte de Asignaciones', 14, 22);
+        doc.setFontSize(11);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 30);
+        
+        // Define the table columns and data
+        const columns = [
+            { header: 'Materia', dataKey: 'materia' },
+            { header: 'Profesor', dataKey: 'profesor' },
+            { header: 'Horario', dataKey: 'horario' },
+            { header: 'Curso', dataKey: 'curso' },
+            { header: 'Paralelo', dataKey: 'paralelo' }
+        ];
+        
+        const data = detalleMateria.map(asig => ({
+            materia: asig.descripcion.materia_nombre,
+            profesor: asig.descripcion.profesor_nombre,
+            horario: asig.horarios[0].hora_inicial + ' - ' + asig.horarios[0].hora_final,
+            curso: asig.horarios[0].nombre_curso,
+            paralelo: asig.horarios[0].descripcion_paralelo
+        }));
+        
+        // Generate the table
+        doc.autoTable({
+            columns,
+            body: data,
+            startY: 40,
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
+            alternateRowStyles: { fillColor: [245, 245, 245] }
+        });
+        
+        // Save the PDF
+        doc.save('ReporteAsignaciones.pdf');
+    };
+    
+    const generarExcel = () => {
+        // Prepare the data
+        const data = detalleMateria.map(asig => ({
+            'Materia': asig.descripcion.materia_nombre,
+            'Profesor': asig.descripcion.profesor_nombre,
+            'Horario': asig.horarios[0].hora_inicial + ' - ' + asig.horarios[0].hora_final,
+            'Curso': asig.horarios[0].nombre_curso,
+            'Paralelo': asig.horarios[0].descripcion_paralelo
+        }));
+        
+        // Create worksheet
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        
+        // Create workbook
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Asignaciones');
+        
+        // Generate Excel file
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+        
+        // Save file
+        saveAs(blob, 'ReporteAsignaciones.xlsx');
+    };
+    
+    const generarHTML = () => {
+        // Create HTML content
+        let htmlContent = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Reporte de Asignaciones</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; }
+                    h1 { color: #2980b9; }
+                    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #2980b9; color: white; }
+                    tr:nth-child(even) { background-color: #f2f2f2; }
+                    .date { margin-bottom: 20px; }
+                </style>
+            </head>
+            <body>
+                <h1>Reporte de Asignaciones</h1>
+                <div class="date">Fecha: ${new Date().toLocaleDateString()}</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Materia</th>
+                            <th>Profesor</th>
+                            <th>Horario</th>
+                            <th>Curso</th>
+                            <th>Paralelo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        // Add table rows
+        detalleMateria.forEach(asig => {
+            htmlContent += `
+                <tr>
+                    <td>${asig.descripcion.materia_nombre}</td>
+                    <td>${asig.descripcion.profesor_nombre}</td>
+                    <td>${asig.horarios[0].hora_inicial} - ${asig.horarios[0].hora_final}</td>
+                    <td>${asig.horarios[0].nombre_curso}</td>
+                    <td>${asig.horarios[0].descripcion_paralelo}</td>
+                </tr>
+            `;
+        });
+        
+        // Close HTML tags
+        htmlContent += `
+                    </tbody>
+                </table>
+            </body>
+            </html>
+        `;
+        
+        // Create and download the HTML file
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        saveAs(blob, 'ReporteAsignaciones.html');
+    };
+
     return (
         <div className='contenedor-principal'>
             <div className='contenedor-secundario'>
@@ -241,9 +371,21 @@ function DetalleMateriaPage() {
                 </div>
 
                 {/* Tabla de asignaciones */}
-                {/* Tabla de asignaciones */}
                 <div className="dimensionTable">
-                    <h2>Asignaciones Realizadas</h2>
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Asignaciones Realizadas</h2>
+                        <div className="btn-group">
+                            <button className="btn btn-danger" onClick={generarPDF}>
+                                <i className="fas fa-file-pdf"></i> PDF
+                            </button>
+                            <button className="btn btn-success" onClick={generarExcel}>
+                                <i className="fas fa-file-excel"></i> Excel
+                            </button>
+                            <button className="btn btn-primary" onClick={generarHTML}>
+                                <i className="fas fa-file-code"></i> HTML
+                            </button>
+                        </div>
+                    </div>
                     <table className="table-striped table-bordered">
                         <thead>
                             <tr>

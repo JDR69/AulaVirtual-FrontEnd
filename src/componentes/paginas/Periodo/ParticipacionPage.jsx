@@ -6,6 +6,10 @@ import {
     crearParticipacionesRequest,
     obtenerParticipacionesRequest
 } from '../../../api/auth';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import '../../../componentes/css/Participacion.css';
 
 function ParticipacionPage() {
     // Estados para datos desde API
@@ -161,19 +165,159 @@ function ParticipacionPage() {
         setMateria('');
     };
 
+    // Funciones para exportar datos
+    const exportToPDF = () => {
+        if (alumnos.length === 0) {
+            alert("No hay datos para exportar");
+            return;
+        }
+
+        const doc = new jsPDF();
+        
+        // Añadir título
+        doc.setFontSize(18);
+        doc.text("Reporte de Participaciones", 14, 22);
+        
+        // Añadir fecha de generación
+        doc.setFontSize(11);
+        const fecha = new Date().toLocaleString();
+        doc.text(`Generado: ${fecha}`, 14, 30);
+        
+        // Crear tabla
+        const headers = [["Alumno", "Descripción", "Fecha", "Curso", "Materia"]];
+        const data = alumnos.map(item => [
+            item.nombre,
+            item.descripcion,
+            item.fecha,
+            item.curso,
+            item.materia
+        ]);
+        
+        doc.autoTable({
+            head: headers,
+            body: data,
+            startY: 35,
+            styles: {
+                fontSize: 10,
+                cellPadding: 3,
+                overflow: 'linebreak'
+            },
+            headStyles: {
+                fillColor: [76, 132, 255],
+                textColor: 255
+            },
+            alternateRowStyles: {
+                fillColor: [240, 240, 240]
+            }
+        });
+        
+        doc.save("participaciones.pdf");
+    };
+
+    const exportToExcel = () => {
+        if (alumnos.length === 0) {
+            alert("No hay datos para exportar");
+            return;
+        }
+
+        const data = alumnos.map(item => ({
+            "Alumno": item.nombre,
+            "Descripción": item.descripcion,
+            "Fecha": item.fecha,
+            "Curso": item.curso,
+            "Materia": item.materia
+        }));
+        
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Participaciones");
+        
+        // Generar archivo Excel y descargarlo
+        XLSX.writeFile(workbook, "participaciones.xlsx");
+    };
+
+    const exportToHTML = () => {
+        if (alumnos.length === 0) {
+            alert("No hay datos para exportar");
+            return;
+        }
+
+        let html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Reporte de Participaciones</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                h1 { color: #4c84ff; text-align: center; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+                th { background-color: #f2f2f2; }
+                tr:nth-child(even) { background-color: #f9f9f9; }
+                .footer { margin-top: 30px; font-style: italic; text-align: right; }
+            </style>
+        </head>
+        <body>
+            <h1>Reporte de Participaciones</h1>
+            <p>Fecha de generación: ${new Date().toLocaleString()}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Alumno</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Curso</th>
+                        <th>Materia</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        alumnos.forEach(item => {
+            html += `
+                <tr>
+                    <td>${item.nombre}</td>
+                    <td>${item.descripcion}</td>
+                    <td>${item.fecha}</td>
+                    <td>${item.curso}</td>
+                    <td>${item.materia}</td>
+                </tr>
+            `;
+        });
+
+        html += `
+                </tbody>
+            </table>
+            <div class="footer">Reporte generado desde el Sistema de Aula Virtual</div>
+        </body>
+        </html>
+        `;
+
+        // Crear un blob y descargar el archivo HTML
+        const blob = new Blob([html], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = "participaciones.html";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
     return (
-        <div className='contenedor-principal'>
-            <div className='contenedor-secundario'>
-                <h1 className='titulo'>Participación</h1>
+        <div className='titi1'>
+            <div className='titi2'>
+                <h1 className='titi3'>Registro de Participación</h1>
 
                 {error && <div className="alert alert-danger">{error}</div>}
 
                 {/* Formulario para listar participaciones */}
-                <div className='contenedor-contenido'>
-                    <h2>Listar Participaciones</h2>
-                    <div>
+                <div className='titi2'>
+                    <h2 className='titi4'>Listar Participaciones</h2>
+                    <div className='titi16'>
                         <select
-                            className="form-select"
+                            className="titi5"
                             value={nombre}
                             onChange={e => setNombre(e.target.value)}
                             disabled={loadingAlumnos}
@@ -185,11 +329,11 @@ function ParticipacionPage() {
                                 </option>
                             ))}
                         </select>
-                        {loadingAlumnos && <small className="text-muted">Cargando alumnos...</small>}
+                        {loadingAlumnos && <small className="titi15">Cargando alumnos...</small>}
                     </div>
-                    <div>
+                    <div className='titi16'>
                         <select
-                            className="form-select"
+                            className="titi5"
                             value={materia}
                             onChange={e => setMateria(e.target.value)}
                             disabled={loadingMaterias}
@@ -201,21 +345,21 @@ function ParticipacionPage() {
                                 </option>
                             ))}
                         </select>
-                        {loadingMaterias && <small className="text-muted">Cargando materias...</small>}
+                        {loadingMaterias && <small className="titi15">Cargando materias...</small>}
                     </div>
-                    <div>
-                        <button className="btn btn-primary" onClick={listarParticipaciones}>
+                    <div className='titi6'>
+                        <button className="titi7" onClick={listarParticipaciones}>
                             Listar Participaciones
                         </button>
                     </div>
                 </div>
 
                 {/* Formulario para agregar participaciones */}
-                <div className='contenedor-contenido mt-4'>
-                    <h2>Agregar Participación</h2>
-                    <div>
+                <div className='titi2'>
+                    <h2 className='titi4'>Agregar Participación</h2>
+                    <div className='titi16'>
                         <select
-                            className="form-select"
+                            className="titi5"
                             value={nombre}
                             onChange={e => setNombre(e.target.value)}
                             disabled={loadingAlumnos}
@@ -227,20 +371,20 @@ function ParticipacionPage() {
                                 </option>
                             ))}
                         </select>
-                        {loadingAlumnos && <small className="text-muted">Cargando alumnos...</small>}
+                        {loadingAlumnos && <small className="titi15">Cargando alumnos...</small>}
                     </div>
-                    <div>
+                    <div className='titi16'>
                         <input
                             type="text"
-                            className="form-control"
+                            className="titi5"
                             placeholder="Descripción"
                             value={descripcion}
                             onChange={e => setDescripcion(e.target.value)}
                         />
                     </div>
-                    <div>
+                    <div className='titi16'>
                         <select
-                            className="form-select"
+                            className="titi5"
                             value={curso}
                             onChange={e => setCurso(e.target.value)}
                             disabled={loadingCursos}
@@ -252,11 +396,11 @@ function ParticipacionPage() {
                                 </option>
                             ))}
                         </select>
-                        {loadingCursos && <small className="text-muted">Cargando cursos...</small>}
+                        {loadingCursos && <small className="titi15">Cargando cursos...</small>}
                     </div>
-                    <div>
+                    <div className='titi16'>
                         <select
-                            className="form-select"
+                            className="titi5"
                             value={materia}
                             onChange={e => setMateria(e.target.value)}
                             disabled={loadingMaterias}
@@ -268,19 +412,33 @@ function ParticipacionPage() {
                                 </option>
                             ))}
                         </select>
-                        {loadingMaterias && <small className="text-muted">Cargando materias...</small>}
+                        {loadingMaterias && <small className="titi15">Cargando materias...</small>}
                     </div>
-                    <div>
-                        <button className="btn btn-success" onClick={agregarAlumno}>
+                    <div className='titi6'>
+                        <button className="titi7 titi8" onClick={agregarAlumno}>
                             Agregar Participación
                         </button>
                     </div>
                 </div>
 
                 {/* Tabla de participaciones */}
-                <div className='dimensionTable mt-4'>
-                    <h2>Participaciones Registradas</h2>
-                    <table className='table-striped'>
+                <div className='titi2'>
+                    <h2 className='titi4'>Participaciones Registradas</h2>
+                    
+                    {/* Botones de exportación */}
+                    <div className='titi11'>
+                        <button className="titi7 titi12" onClick={exportToPDF}>
+                            Exportar PDF
+                        </button>
+                        <button className="titi7 titi13" onClick={exportToExcel}>
+                            Exportar Excel
+                        </button>
+                        <button className="titi7 titi14" onClick={exportToHTML}>
+                            Exportar HTML
+                        </button>
+                    </div>
+                    
+                    <table className='titi10'>
                         <thead>
                             <tr>
                                 <th>Alumno</th>
@@ -300,7 +458,7 @@ function ParticipacionPage() {
                                     <td>{participacion.curso}</td>
                                     <td>{participacion.materia}</td>
                                     <td>
-                                        <button className="btn btn-danger" onClick={() => eliminarAlumno(participacion.id)}>Eliminar</button>
+                                        <button className="titi7 titi9" onClick={() => eliminarAlumno(participacion.id)}>Eliminar</button>
                                     </td>
                                 </tr>
                             ))}

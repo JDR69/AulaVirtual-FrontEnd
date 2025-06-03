@@ -132,7 +132,6 @@ function LibretaIA() {
   const renderGrafica = () => {
     if (!materiaSeleccionada || gestionesDisponibles.length === 0) return null;
 
-   
     const datosMateria = gestionesDisponibles.map(anio => {
         const notas = datosNotas[anio].filter(d => d.nombre_materia === materiaSeleccionada);
         const totalNotas = notas.flatMap(n => n.dimensiones).reduce((acc, dim) => acc + (dim.promedio || 0), 0);
@@ -167,10 +166,39 @@ function LibretaIA() {
                     </LineChart>
                 </ResponsiveContainer>
             </div>
+            
             <div className="comentario-desempeno">
                 <div className="comentario-card">
-                    <h4>📊 Interpretación del Desempeño</h4>
-                    <p>{comentario}</p>
+                    <div className="comentario-header">
+                        <Brain size={24} />
+                        <h4>Análisis de IA</h4>
+                    </div>
+                    <div className="comentario-contenido">
+                        <p className="comentario-texto">{comentario}</p>
+                        
+                        {prediccion !== null && (
+                            <div className="prediccion-container">
+                                <h5>Predicción para el próximo año:</h5>
+                                <div className="prediccion-valor">
+                                    <span className="badge">{prediccion}</span>
+                                    <span className="tendencia">
+                                        {datosMateria.length >= 2 && 
+                                         prediccion > datosMateria[datosMateria.length-2].promedio ? 
+                                         '↗️ En ascenso' : '↘️ En descenso'}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+                        
+                        <div className="recomendacion-container">
+                            <h5>Recomendaciones:</h5>
+                            <ul className="recomendacion-lista">
+                                <li>Continuar con el plan de estudio personalizado</li>
+                                <li>Reforzar los conceptos fundamentales de la materia</li>
+                                <li>Implementar técnicas de estudio activo</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>

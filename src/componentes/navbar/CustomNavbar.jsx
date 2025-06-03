@@ -101,22 +101,28 @@ const CustomNavbar = () => {
                 <Nav.Link as={Link} to="/dasboard/perfil-usuario">
                   Perfil
                 </Nav.Link>
+                <NavDropdown title="Estudiantes" id="basic-nav-dropdown">
 
-                <Nav.Link as={Link} to="/profesor/asistencia-profesor">
-                  Asistencia
-                </Nav.Link>
-
-                <Nav.Link as={Link} to="/profesor/actividades">
-                  Actividades
-                </Nav.Link>
-
-                <Nav.Link as={Link} to="/profesor/calificaciones">
-                  Calificaciones
-                </Nav.Link>
-
-                <Nav.Link as={Link} to="/profesor/participacion">
-                  Participación
-                </Nav.Link>
+                  <NavDropdown.Item as={Link} to="/profesor/asistencia-profesor">
+                    Asistencia
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/profesor/actividades">
+                    Actividades
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/profesor/calificaciones">
+                    Calificaciones
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/profesor/participacion">
+                    Participación
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item as={Link} to="/profesor/crear-notificacion">
+                    Notificar
+                  </NavDropdown.Item>
+                </NavDropdown>
               </>
             ) : (
               // Si no es profesor, mostrar menú normal
@@ -165,17 +171,21 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/tipo-actividad">
                     Tipo Activdades
                   </NavDropdown.Item>
-                    <NavDropdown.Divider />
+                  <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/calificaciones">
                     Calificaciones
                   </NavDropdown.Item>
-                   <NavDropdown.Divider />
+                  <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/asistencia">
                     Asistencia
                   </NavDropdown.Item>
                 </NavDropdown>
 
                 <NavDropdown title="Periodos" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/dasboard/gestiones">
+                    Gestiones
+                  </NavDropdown.Item>
+                      <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/participacion">
                     Participacion
                   </NavDropdown.Item>
@@ -183,20 +193,18 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/libreta">
                     Libreta Alumnos
                   </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item as={Link} to="/dasboard/gestiones">
-                    Gestiones
-                  </NavDropdown.Item>
+              
+
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/crear-notificacion">
                     Mandar Notificacion
-                         </NavDropdown.Item>
+                  </NavDropdown.Item>
                   <NavDropdown.Divider />
-                   <NavDropdown.Item as={Link} to="/dasboard/libretaIA">
+                  <NavDropdown.Item as={Link} to="/dasboard/libretaIA">
                     Libreta IA
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                   <NavDropdown.Item as={Link} to="/dasboard/asistencia-ai">
+                  <NavDropdown.Item as={Link} to="/dasboard/asistencia-ai">
                     Asistencia IA
                   </NavDropdown.Item>
                 </NavDropdown>

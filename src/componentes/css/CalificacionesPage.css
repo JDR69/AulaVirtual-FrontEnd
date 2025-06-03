@@ -98,3 +98,85 @@ thead label {
   color: #475569;
 }
 
+/* Responsive Report Panel Styles */
+.reporte-panel {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background-color: #f9fafb;
+}
+
+.reporte-titulo {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #1f2937;
+}
+
+.reporte-controles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.reporte-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1;
+  min-width: 250px;
+}
+
+.reporte-selector label {
+  margin-bottom: 0.25rem;
+}
+
+.reporte-selector select {
+  flex: 1;
+  min-width: 120px;
+}
+
+.reporte-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.reporte-botones button {
+  min-width: 80px;
+}
+
+/* Media queries for better responsiveness */
+@media (max-width: 768px) {
+  .reporte-controles {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .reporte-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .reporte-botones {
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reporte-botones {
+    flex-direction: column;
+  }
+  
+  .reporte-botones button {
+    width: 100%;
+  }
+  
+  .reporte-panel {
+    padding: 0.75rem;
+  }
+}
+
