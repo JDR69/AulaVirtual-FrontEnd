@@ -291,6 +291,17 @@ export const actualizarNotificacionesRequest = (id, data) => instance.put(`/api/
   },
   withCredentials: true
 })
+export const crearNuevaNotificacionRequest = (data, id) => instance.post(`/api/periodo/crear-notificacion-uni/${id}/`,
+  data, {
+  headers: {
+    "Content-Type": "application/json"
+  },
+  withCredentials: true
+}
+)
+
+
+
 
 //GESTIONES
 export const crearNuevaGestionRequest = (data) => instance.post(`/api/periodo/crear-gestion/`,

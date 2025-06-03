@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { obtenerUsuarioRequest, nuevoNotificacionRequest } from '../../../api/auth'
+import { obtenerUsuarioRequest, crearNuevaNotificacionRequest } from '../../../api/auth'
 
 function CrearNotificacionPage() {
   const [usuarios, setUsuarios] = useState([])
@@ -54,7 +54,7 @@ function CrearNotificacionPage() {
     console.log('Datos de notificación a enviar:', notificacion)
     
     try {
-      const response = await nuevoNotificacionRequest(notificacion, parseInt(notificacion.usuario))
+      const response = await crearNuevaNotificacionRequest(notificacion, parseInt(notificacion.usuario))
       console.log('Notificación enviada exitosamente:', response)
       setSuccess(true)
       // Resetear el formulario
