@@ -97,6 +97,8 @@ function Licencias() {
 
   return (
     <div className='contenedor-principal'>
+      <div className='contenedor-secundario'>
+
       <div className="licencias-container">
         <div className="licencias-header">
           <h1>Gestión de Licencias</h1>
@@ -104,7 +106,7 @@ function Licencias() {
         </div>
         
         <div className="licencias-content">
-          <div className="licencias-form-section">
+          {/* <div className="licencias-form-section">
             <h2>Nueva Solicitud</h2>
             <form onSubmit={handleSubmit} className="licencia-form">
               <div className="form-group">
@@ -178,7 +180,7 @@ function Licencias() {
                 {loading ? 'Enviando...' : 'Enviar Solicitud'}
               </button>
             </form>
-          </div>
+          </div> */}
           
           <div className="licencias-list-section">
             <h2>Mis Solicitudes</h2>
@@ -236,6 +238,7 @@ function Licencias() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
