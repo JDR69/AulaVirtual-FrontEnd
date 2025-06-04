@@ -182,10 +182,15 @@ const CustomNavbar = () => {
                 </NavDropdown>
 
                 <NavDropdown title="Periodos" id="basic-nav-dropdown">
+                  <NavDropdown.Item as={Link} to="/dasboard/licencias">
+                    Licencias
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+
                   <NavDropdown.Item as={Link} to="/dasboard/gestiones">
                     Gestiones
                   </NavDropdown.Item>
-                      <NavDropdown.Divider />
+                  <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/participacion">
                     Participacion
                   </NavDropdown.Item>
@@ -193,7 +198,7 @@ const CustomNavbar = () => {
                   <NavDropdown.Item as={Link} to="/dasboard/libreta">
                     Libreta Alumnos
                   </NavDropdown.Item>
-              
+
 
                   <NavDropdown.Divider />
                   <NavDropdown.Item as={Link} to="/dasboard/crear-notificacion">

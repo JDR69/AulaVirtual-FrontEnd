@@ -415,7 +415,7 @@ export const actualizarAsistenciaRequest = (data) => instance.put(`/api/evaluaci
     }
   }
 )
-export const obtenerAlumnosRequest = (anio_escolar,id_cursoparalelo) => {
+export const obtenerAlumnosRequest = (anio_escolar, id_cursoparalelo) => {
   return instance.get(`/api/usuario/obtener-alumnos/${anio_escolar}/${id_cursoparalelo}/`, {
     timeout: tiempoEspera
   });
@@ -432,7 +432,7 @@ export const obtenerAsistenciaRequest = (data) => instance.post(`/api/evaluacion
   }
 )
 
-export const obtenerAsistenciPorAlumnoRequest = (id) => { return instance.get(`/api/evaluaciones/obtener-asistencia-gestion/${id}/`,{timeout:tiempoEspera})}
+export const obtenerAsistenciPorAlumnoRequest = (id) => { return instance.get(`/api/evaluaciones/obtener-asistencia-gestion/${id}/`, { timeout: tiempoEspera }) }
 
 
 // obtener notas
@@ -456,9 +456,20 @@ export const obtenerParticipacionesRequest = (id, materia) => {
 
 //DASBOARD
 
-export const obtenerDasboard = () => { return instance.get(`/api/usuario/api/dashboard-stats/`, {timeout:tiempoEspera})}
+export const obtenerDasboard = () => { return instance.get(`/api/usuario/api/dashboard-stats/`, { timeout: tiempoEspera }) }
 
 
 //bitacora
 
-export const obtenerBitacoraRequestt = () => {return instance.get(`/api/usuario/obtener-bitacora/`,{timeout:tiempoEspera})}
+export const obtenerBitacoraRequestt = () => { return instance.get(`/api/usuario/obtener-bitacora/`, { timeout: tiempoEspera }) }
+
+
+// LICENCIAS
+export const obtenerLicenciaRequeet = (data = {}) => {
+  return instance.post(`/api/periodo/obtener-licencias/`, data, {
+    headers: {
+      "Content-Type": "application/json"
+    },
+    timeout: tiempoEspera
+  });
+}

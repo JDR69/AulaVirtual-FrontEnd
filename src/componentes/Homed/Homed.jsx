@@ -34,6 +34,7 @@ import LibretaIA from "../paginas/Periodo/LibretaIA";
 
 import SeleccionarGestionPage from "../paginas/Periodo/SeleccionarGestionPage";
 import StudentAttendancePredictor from "../paginas/Periodo/AsistenciaIAPage";
+import Licencias from "../paginas/Periodo/Licencias";
 
 
 
@@ -83,6 +84,8 @@ export const Homed = () => {
                     <Route path="/crear-notificacion" element={<CrearNotificacionPage />} />
                     <Route path="/gestiones" element={<Gestiones />} />
                     <Route path="/libreta" element={<LibretaPage />} />
+                    <Route path="/licencias" element={<Licencias />} />
+                
 
                     <Route path="/libretaIA" element={<LibretaIA />} />
                     <Route path="/asistencia-ai" element={<StudentAttendancePredictor />} />
