@@ -211,6 +211,7 @@ function Licencias() {
                       <th>Descripción</th>
                       <th>Fecha</th>
                       <th>Usuario</th>
+                      <th>CI</th>
                       <th>Documento</th>
                     </tr>
                   </thead>
@@ -221,6 +222,7 @@ function Licencias() {
                         <td>{licencia.descripcion}</td>
                         <td>{licencia.fecha}</td>
                         <td>{licencia.nombre_usuario}</td>
+                        <td>{licencia.ci_usuario}</td>
                         <td>
                           {licencia.imagen && (
                             <button className="btn-accion" onClick={() => window.open(licencia.imagen, '_blank')}>
